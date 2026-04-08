@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Generate Registration Codes{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h1>Generate Registration Codes</h1>
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="module aligned">
+                <div class="form-row">
+                    <div>
+                        <label for="{{ form.department.id_for_label }}">Department:</label>
+                        {{ form.department }}
+                        {% if form.department.errors %}
+                            <div class="error">{{ form.department.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label for="{{ form.num_codes.id_for_label }}">Number of Codes:</label>
+                        {{ form.num_codes }}
+                        {% if form.num_codes.errors %}
+                            <div class="error">{{ form.num_codes.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <div class="submit-row">
+                <input type="submit" value="Generate Codes" class="default">
+                <a href="{% url 'admin:core_registrationcode_changelist' %}" class="button">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

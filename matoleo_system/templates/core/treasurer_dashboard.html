@@ -1,0 +1,491 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Treasurer Dashboard{% endblock %}
+{% block page_title %}Treasurer Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- WELCOME BANNER -->
+<div style="background: linear-gradient(135deg, rgba(0,51,102,0.7), rgba(26,82,118,0.7)); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 16px; margin-bottom: 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; min-height: auto; overflow: hidden;">
+  <div style="flex-shrink:0;">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 55px; width: auto; max-width: 100%;">
+  </div>
+  <div style="flex: 1; min-width: 150px; overflow: hidden;">
+    <h1 style="font-size:1.1rem; font-weight:800; color:var(--white); margin-bottom:2px; word-break: break-word; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+      Treasurer Dashboard
+    </h1>
+    <p style="color:rgba(255,255,255,0.7); font-size:0.8rem; margin:0; line-height:1.3; overflow: hidden; text-overflow: ellipsis;">
+      Manage payments and final approvals for expense requests and retirement forms
+    </p>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.7rem; margin-top:2px;">
+      <i class="fas fa-calendar-alt"></i> {% now "d M Y" %}
+    </p>
+  </div>
+</div>
+
+<!-- QUICK STATS -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:16px; max-width: 100%; overflow: hidden;">
+  <div>
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="fas fa-clock"></i></div>
+      <div class="stat-info">
+        <div class="stat-value" style="font-size: 1.6rem;">{{ pending_payments_expenses.count }}</div>
+        <div class="stat-label" style="font-size: 0.75rem;">Pending Expense Payments</div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-info">
+        <div class="stat-value" style="font-size: 1.6rem;">{{ recent_payments_expenses.count }}</div>
+        <div class="stat-label" style="font-size: 0.75rem;">Recent Expense Payments</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top:20px;">
+  <div class="card">
+    <div class="card-header">
+      <h5><i class="fas fa-clock" style="color:var(--danger);"></i> Pending Payments</h5>
+    </div>
+    <div class="card-body">
+      {% if pending_payments_expenses or pending_payments_retirement %}
+      <div class="payment-list">
+      <div class="payment-list-header">
+        <span>Department</span>
+        <span>Amount</span>
+        <span>Status</span>
+      </div>
+      {% for expense in pending_payments_expenses %}
+      <div class="payment-item" onclick="togglePaymentDetails(this)">
+        <div class="payment-primary">
+          <div>{{ expense.department.name|default:"—" }}</div>
+          <div>TSh {{ expense.total_amount|floatformat:2 }}</div>
+          <div><span class="status-pill warning">{{ expense.get_status_display }}</span></div>
+          <div class="payment-toggle"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="payment-details">
+          <div><strong>Form:</strong> {{ expense.form_number }}</div>
+          {% if expense.submitted_at %}<div><strong>Submitted:</strong> {{ expense.submitted_at|date:"d M Y" }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="fas fa-hourglass-end"></i>
+        <p>No pending payments.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h5><i class="fas fa-history" style="color:var(--success);"></i> Recent Payments</h5>
+    </div>
+    <div class="card-body">
+      {% if recent_payments_expenses or recent_payments_retirement %}
+      <div class="payment-list">
+      <div class="payment-list-header">
+        <span>Department</span>
+        <span>Amount</span>
+        <span>Status</span>
+      </div>
+      {% for expense in recent_payments_expenses %}
+      <div class="payment-item" onclick="togglePaymentDetails(this)">
+        <div class="payment-primary">
+          <div>{{ expense.department.name|default:"—" }}</div>
+          <div>TSh {{ expense.total_amount|floatformat:2 }}</div>
+          <div><span class="status-pill success">{{ expense.get_status_display }}</span></div>
+          <div class="payment-toggle"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="payment-details">
+          <div><strong>Form:</strong> {{ expense.form_number }}</div>
+          {% if expense.paid_at %}<div><strong>Paid:</strong> {{ expense.paid_at|date:"d M Y" }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+      {% for retirement in recent_payments_retirement %}
+      <div class="payment-item" onclick="togglePaymentDetails(this)">
+        <div class="payment-primary">
+          <div>{{ retirement.department.name|default:"—" }}</div>
+          <div>TSh {{ retirement.total_amount|floatformat:2 }}</div>
+          <div><span class="status-pill success">{{ retirement.get_status_display }}</span></div>
+          <div class="payment-toggle"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="payment-details">
+          <div><strong>Form:</strong> {{ retirement.form_number }}</div>
+          {% if retirement.paid_at %}<div><strong>Paid:</strong> {{ retirement.paid_at|date:"d M Y" }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="fas fa-coins"></i>
+        <p>No recent payments.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ANNOUNCEMENTS MANAGEMENT -->
+<div class="card" style="margin-top:20px;">
+  <div class="card-header">
+    <h5><i class="fas fa-bullhorn" style="color:var(--accent);"></i> Announcements</h5>
+    <button class="btn btn-sm btn-accent" onclick="showAnnouncementModal()">
+      <i class="fas fa-plus"></i> Post Announcement
+    </button>
+  </div>
+  <div class="card-body">
+    {% if announcements %}
+    <div class="announcement-grid">
+      {% for ann in announcements %}
+      <div class="announcement-card">
+        {% if ann.image %}
+        <img src="{{ ann.image.url }}" alt="{{ ann.title }}" class="announcement-img">
+        {% else %}
+        <div style="height:100px; background:linear-gradient(135deg, rgba(0,51,102,0.6), rgba(26,82,118,0.6)); display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:var(--accent);">
+          <i class="fas fa-bullhorn"></i>
+        </div>
+        {% endif %}
+        <div class="announcement-body">
+          <div class="announcement-title">{{ ann.title }}</div>
+          <div class="announcement-text">{{ ann.content }}</div>
+          <div class="announcement-date">
+            <i class="fas fa-clock"></i> {{ ann.created_at|date:"d M Y" }}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-bullhorn"></i>
+      <p>No announcements yet.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ANNOUNCEMENT MODAL -->
+<div id="announcementModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5>Post New Announcement</h5>
+      <span class="modal-close" onclick="hideAnnouncementModal()">&times;</span>
+    </div>
+    <form method="post" action="{% url 'core:add_announcement' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="content">Content</label>
+          <textarea id="content" name="content" class="form-control" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="image">Image (optional)</label>
+          <input type="file" id="image" name="image" class="form-control" accept="image/*">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="hideAnnouncementModal()">Cancel</button>
+        <button type="submit" class="btn btn-accent">Post Announcement</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function showAnnouncementModal() {
+  document.getElementById('announcementModal').style.display = 'block';
+}
+
+function hideAnnouncementModal() {
+  document.getElementById('announcementModal').style.display = 'none';
+}
+
+function togglePaymentDetails(item) {
+  item.classList.toggle('expanded');
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const modal = document.getElementById('announcementModal');
+  if (event.target == modal) {
+    modal.style.display = 'none';
+  }
+}
+</script>
+
+<style>
+.badge-expense {
+  background: var(--primary);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.badge-retirement {
+  background: var(--accent);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.payment-list {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.payment-list-header,
+.payment-primary {
+  display: grid;
+  grid-template-columns: minmax(130px, 1.5fr) minmax(90px, 0.95fr) minmax(80px, 0.95fr) 28px;
+  gap: 6px;
+  align-items: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.8rem;
+  width: 100%;
+}
+
+.payment-list-header {
+  padding: 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.payment-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.payment-item:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.14);
+}
+
+.payment-primary,
+.payment-primary > div,
+.payment-toggle {
+  min-width: 0;
+}
+
+.payment-primary > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.payment-toggle {
+  display: flex;
+  justify-content: flex-end;
+  color: rgba(255,255,255,0.55);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: white;
+}
+
+.payment-toggle {
+  display: flex;
+  justify-content: flex-end;
+  color: rgba(255,255,255,0.55);
+}
+
+.payment-toggle i {
+  transition: transform 0.2s ease;
+}
+
+.payment-details {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
+  display: grid;
+  gap: 6px;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.8rem;
+  padding-left: 0;
+}
+
+.payment-item.expanded .payment-details {
+  max-height: 240px;
+  opacity: 1;
+}
+
+.payment-item.expanded .payment-toggle i {
+  transform: rotate(180deg);
+}
+
+.payment-details div {
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.status-pill.warning {
+  background-color: var(--warning);
+}
+
+.status-pill.success {
+  background-color: var(--success);
+}
+
+@media (max-width: 760px) {
+  .payment-list-header,
+  .payment-primary {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .payment-list-header {
+    display: none;
+  }
+
+  .payment-primary > div {
+    min-width: 0;
+  }
+}
+
+.announcement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.announcement-card {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+}
+
+.announcement-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.announcement-body {
+  padding: 12px;
+}
+
+.announcement-title {
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.announcement-text {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.announcement-date {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: var(--bg-secondary);
+  margin: 10% auto;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h5 {
+  margin: 0;
+  color: var(--white);
+}
+
+.modal-close {
+  color: rgba(255,255,255,0.5);
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  color: var(--white);
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+</style>
+
+{% endblock %}

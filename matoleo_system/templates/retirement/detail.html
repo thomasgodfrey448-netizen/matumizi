@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Retirement {{ form.form_number }}{% endblock %}
+{% block page_title %}Retirement Form Details{% endblock %}
+
+{% block content %}
+<div class="form-page">
+
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+    <a href="{% url 'retirement:dashboard' %}" class="btn btn-outline">
+      <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      {% if form.status == 'draft' and form.submitted_by == user or form.status == 'rejected_for_editing' and form.submitted_by == user %}
+      <a href="{% url 'retirement:edit' form.pk %}" class="btn btn-primary">
+        <i class="fas fa-edit"></i> Edit
+      </a>
+      <form method="post" action="{% url 'retirement:submit' form.pk %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-accent" onclick="return confirm('Submit this retirement form for approval?')">
+          <i class="fas fa-paper-plane"></i> Submit for Approval
+        </button>
+      </form>
+      <form method="post" action="{% url 'retirement:delete' form.pk %}" class="delete-form" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </form>
+      {% endif %}
+      <a href="{% url 'retirement:download' form.pk %}" class="btn btn-success">
+        <i class="fas fa-download"></i> Download PDF
+      </a>
+    </div>
+  </div>
+
+  <div class="form-header-card" style="background: linear-gradient(135deg, rgba(26,82,118,0.8), rgba(21,67,96,0.8));">
+    <div style="margin-bottom:8px;"><img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 50px; width: auto;"></div>
+    <h3>Seventh-day Adventist Church</h3>
+    <p style="font-size:1rem; font-weight:700; color:var(--white);">Makongo Juu</p>
+    <p style="color:rgba(255,255,255,0.7);">Finance Department</p>
+    <div style="font-size:1rem; font-weight:800; color:var(--accent); margin-top:8px; text-transform:uppercase; letter-spacing:2px;">Retirement Form</div>
+    <div class="form-number-badge">Form No: {{ form.form_number }}</div>
+  </div>
+
+  <!-- APPROVAL STATUS -->
+  <div class="card">
+    <div class="card-header">
+      <h5><i class="fas fa-tasks" style="color:var(--accent);"></i> Approval Status</h5>
+    </div>
+    <div class="card-body">
+      <div class="approval-status-bar">
+        <div class="approval-step">
+          <div class="step-circle {% if form.status != 'draft' %}done{% else %}current{% endif %}">
+            <i class="fas fa-paper-plane"></i>
+          </div>
+          <div class="step-label">Submitted</div>
+        </div>
+        <div class="approval-step">
+          <div class="step-circle {% if form.status == 'first_approved' or form.status == 'second_approved' or form.status == 'approved' or form.status == 'paid' %}done{% elif form.status == 'submitted' %}current{% elif form.status == 'rejected' %}rejected{% endif %}">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <div class="step-label">1st Approval</div>
+        </div>
+        <div class="approval-step">
+          <div class="step-circle {% if form.status == 'second_approved' or form.status == 'approved' or form.status == 'paid' %}done{% elif form.status == 'first_approved' %}current{% endif %}">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <div class="step-label">2nd Approval</div>
+        </div>
+        <div class="approval-step">
+          <div class="step-circle {% if form.status == 'approved' or form.status == 'paid' %}done{% elif form.status == 'second_approved' %}current{% elif form.status == 'rejected' %}rejected{% endif %}">
+            <i class="fas fa-check-double"></i>
+          </div>
+          <div class="step-label">
+            {% if form.status == 'approved' or form.status == 'paid' %}Closed{% elif form.status == 'rejected' %}Rejected{% else %}Final{% endif %}
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:12px;">
+        {% if form.status == 'approved' %}
+        <span class="badge badge-approved" style="font-size:0.9rem; padding:6px 16px;">
+          <i class="fas fa-check-double"></i> Approved / Closed{% if form.is_paid %} & Paid{% endif %}
+        </span>
+        {% elif form.status == 'rejected' %}
+        <span class="badge badge-rejected" style="font-size:0.9rem; padding:6px 16px;">
+          <i class="fas fa-times"></i> Rejected
+        </span>
+        {% elif form.status == 'rejected_for_editing' %}
+        {% if can_see_rejection_type %}
+        <span class="badge badge-warning" style="font-size:0.9rem; padding:6px 16px; background-color: var(--warning); color:var(--dark);">
+          <i class="fas fa-pencil-alt"></i> Needs Editing
+        </span>
+        {% else %}
+        <span class="badge badge-rejected" style="font-size:0.9rem; padding:6px 16px;">
+          <i class="fas fa-times"></i> Rejected
+        </span>
+        {% endif %}
+        {% elif form.status == 'draft' %}
+        <span class="badge badge-draft" style="font-size:0.9rem; padding:6px 16px;">
+          <i class="fas fa-pencil-alt"></i> Draft
+        </span>
+        {% else %}
+        <span class="badge badge-submitted" style="font-size:0.9rem; padding:6px 16px;">
+          <i class="fas fa-clock"></i> {{ form.get_status_display }}
+        </span>
+        {% endif %}
+      </div>
+      {% if form.rejection_reason %}
+      <div class="alert alert-danger" style="margin-top:12px;">
+        <i class="fas fa-exclamation-circle"></i>
+        <strong>Rejection Reason:</strong> {{ form.rejection_reason }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- DETAILS -->
+  <div class="card">
+    <div class="card-header">
+      <h5><i class="fas fa-info-circle" style="color:var(--accent);"></i> Form Details</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-2">
+          <div class="detail-section">
+            <h6>Personal Information</h6>
+            <div class="detail-row"><span class="detail-label">Full Name:</span><span class="detail-value">{{ form.first_name }} {{ form.last_name }}</span></div>
+            <div class="detail-row"><span class="detail-label">Phone:</span><span class="detail-value">{{ form.phone_number }}</span></div>
+            <div class="detail-row"><span class="detail-label">Department:</span><span class="detail-value">{% if form.department %}{{ form.department }}{% else %}No Department{% endif %}</span></div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="detail-section">
+            <h6>Dates & Amounts</h6>
+            <div class="detail-row"><span class="detail-label">Date of Request:</span><span class="detail-value">{{ form.date_of_request|date:"d M Y" }}</span></div>
+            <div class="detail-row"><span class="detail-label">Date of Retirement:</span><span class="detail-value">{{ form.date_of_retirement|date:"d M Y" }}</span></div>
+            <div class="detail-row"><span class="detail-label">Total Amount:</span><span class="detail-value" style="color:var(--accent); font-weight:800;">TZS {{ form.total_amount|floatformat:2|intcomma }}</span></div>
+            <div class="detail-row"><span class="detail-label">Remaining:</span><span class="detail-value">TZS {{ form.remaining_amount|floatformat:2|intcomma }}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h6>Reason / Description</h6>
+        <p style="color:rgba(255,255,255,0.8); font-size:0.9rem; line-height:1.6;">{{ form.reason }}</p>
+      </div>
+      {% if form.attachment %}
+      <div class="detail-section">
+        <h6>Attachment</h6>
+        <a href="{{ form.attachment.url }}" target="_blank" class="btn btn-outline btn-sm">
+          <i class="fas fa-paperclip"></i> View Attachment
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ITEMS -->
+  <div class="card">
+    <div class="card-header">
+      <h5><i class="fas fa-list" style="color:var(--accent);"></i> Expense Items</h5>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div class="items-table-wrapper">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th>Description</th>
+              <th style="width:180px; text-align:right;">Amount (TZS)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in form.items.all %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ item.description }}</td>
+              <td style="text-align:right;">{{ item.amount|floatformat:2|intcomma }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" style="text-align:center; color:rgba(255,255,255,0.4);">No items</td></tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" style="text-align:right;">TOTAL:</td>
+              <td style="text-align:right;">TZS {{ form.total_amount|floatformat:2|intcomma }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPROVALS -->
+  <div class="card">
+    <div class="card-header">
+      <h5><i class="fas fa-signature" style="color:var(--accent);"></i> Approvals</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-3">
+          <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">First Approver</div>
+            <div style="font-weight:600; color:var(--white); font-size:0.9rem;">{% if form.first_approver %}{{ form.first_approver.get_full_name }}{% else %}Pending{% endif %}</div>
+            {% if form.first_approved_at %}<div style="font-size:0.75rem; color:var(--success); margin-top:4px;"><i class="fas fa-check"></i> {{ form.first_approved_at|date:"d M Y" }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="col-3">
+          <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Second Approver</div>
+            <div style="font-weight:600; color:var(--white); font-size:0.9rem;">Okoth Oloo</div>
+            {% if form.second_approved_at %}<div style="font-size:0.75rem; color:var(--success); margin-top:4px;"><i class="fas fa-check"></i> {{ form.second_approved_at|date:"d M Y" }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="col-3">
+          <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Treasurer</div>
+            <div style="font-weight:600; color:var(--white); font-size:0.9rem;">
+              {{ form.treasurer_name|default:"Pending" }}
+            </div>
+            {% if form.treasurer_approved_at %}
+            <div style="font-size:0.75rem; color:var(--success); margin-top:4px;">
+              <i class="fas fa-check"></i> {{ form.treasurer_approved_at|date:"d M Y" }}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if can_first_approve or can_second_approve or can_admin_approve %}
+      <div style="margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.1);">
+        <h6 style="color:var(--accent); font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Your Action Required</h6>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <form method="post" action="{% url 'retirement:approve' form.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="approve">
+            <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Approve this retirement form?')">
+              <i class="fas fa-check"></i> Approve
+            </button>
+          </form>
+          <button type="button" class="btn btn-danger btn-lg" onclick="openModal('rejectModal')">
+            <i class="fas fa-times"></i> Reject
+          </button>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fas fa-times-circle" style="color:var(--danger);"></i> Reject Form</div>
+    <form method="post" action="{% url 'retirement:approve' form.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="reject">
+      
+      {% if can_see_rejection_type %}
+      <div class="form-group">
+        <label class="form-label">Rejection Type <span style="color:var(--accent);">*</span></label>
+        <div style="display:flex; gap:16px; margin-top:12px;">
+          <div style="flex:1;">
+            <input type="radio" id="rejectForEditing" name="reject_type" value="for_editing" checked required>
+            <label for="rejectForEditing" style="cursor:pointer; font-weight:600; color:var(--warning); display:flex; align-items:center; gap:8px;">
+              <i class="fas fa-edit"></i> Reject for Editing
+            </label>
+            <p style="color:rgba(255,255,255,0.6); font-size:0.85rem; margin:6px 0 0 24px;">
+              Return to requester for changes. They can resubmit.
+            </p>
+          </div>
+          <div style="flex:1;">
+            <input type="radio" id="rejectTotal" name="reject_type" value="total" required>
+            <label for="rejectTotal" style="cursor:pointer; font-weight:600; color:var(--danger); display:flex; align-items:center; gap:8px;">
+              <i class="fas fa-ban"></i> Total Reject
+            </label>
+            <p style="color:rgba(255,255,255,0.6); font-size:0.85rem; margin:6px 0 0 24px;">
+              Permanent rejection. Cannot be resubmitted.
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      
+      <div class="form-group" style="margin-top:20px;">
+        <label class="form-label">Reason for Rejection <span style="color:var(--accent);">*</span></label>
+        <textarea name="rejection_reason" class="form-control" rows="4" required placeholder="Please provide a reason..."></textarea>
+      </div>
+      
+      <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('rejectModal')">Cancel</button>
+        <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i> Confirm Rejection</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

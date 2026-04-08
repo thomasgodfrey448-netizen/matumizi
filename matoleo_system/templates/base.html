@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Matumizi System{% endblock %} | Makongo Juu SDA Church</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% if user.is_authenticated %}
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="app-wrapper">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div style="margin-bottom:8px;">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 50px; width: auto;">
+      </div>
+      <div class="church-title">Makongo Juu SDA Church</div>
+      <div class="system-subtitle">Finance Department</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main Menu</div>
+      <a href="{% url 'core:home' %}" class="nav-item">
+        <i class="fas fa-home"></i> Home
+      </a>
+      <a href="{% url 'expenses:dashboard' %}" class="nav-item">
+        <i class="fas fa-receipt"></i> Expense Requests
+      </a>
+      <a href="{% url 'retirement:dashboard' %}" class="nav-item">
+        <i class="fas fa-archive"></i> Retirement Forms
+      </a>
+      <a href="{% url 'reports:dashboard' %}" class="nav-item">
+        <i class="fas fa-chart-bar"></i> Reports
+      </a>
+
+      <div class="nav-section-title" style="margin-top:8px;">Account</div>
+      <a href="{% url 'core:notifications' %}" class="nav-item">
+        <i class="fas fa-bell"></i> Notifications
+        {% if unread_notifications_count > 0 %}
+        <span class="nav-badge">{{ unread_notifications_count }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'accounts:profile' %}" class="nav-item">
+        <i class="fas fa-user-circle"></i> My Profile
+      </a>
+
+      {% if user.is_staff or user.is_superuser %}
+      <div class="nav-section-title" style="margin-top:8px;">Administration</div>
+      <a href="{% url 'core:admin_dashboard' %}" class="nav-item">
+        <i class="fas fa-cogs"></i> Admin Panel
+      </a>
+      <a href="/admin/" class="nav-item">
+        <i class="fas fa-database"></i> Django Admin
+      </a>
+      {% endif %}
+      
+      {% if user_role == 'Treasurer' %}
+      <div class="nav-section-title" style="margin-top:8px;">Treasurer</div>
+      <a href="{% url 'core:treasurer_dashboard' %}" class="nav-item">
+        <i class="fas fa-coins"></i> Treasurer Panel
+      </a>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+        <div>
+          <div class="user-name">{{ user.get_full_name|default:user.username }}</div>
+          <div class="user-role">{{ user_role }}</div>
+        </div>
+      </div>
+      <a href="{% url 'accounts:logout' %}" class="btn btn-outline" style="width:100%; justify-content:center;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <span class="page-title">{% block page_title %}Dashboard{% endblock %}</span>
+      </div>
+      <div class="topbar-right">
+        <a href="{% url 'core:notifications' %}" class="notif-btn">
+          <i class="fas fa-bell"></i>
+          {% if unread_notifications_count > 0 %}
+          <span class="notif-count">{{ unread_notifications_count }}</span>
+          {% endif %}
+        </a>
+        <span style="font-size:0.82rem; color:rgba(255,255,255,0.6);">
+          {{ user.get_full_name|default:user.username }}
+        </span>
+      </div>
+    </header>
+
+    <!-- MESSAGES -->
+    {% if messages %}
+    <div style="padding: 12px 24px 0;" id="alertContainer">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div id="alertContainer" style="padding: 0 24px;"></div>
+    {% endif %}
+
+    <!-- PAGE CONTENT -->
+    <main class="page-content">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      <div class="footer-title">Makongo Juu SDA Church</div>
+      <div class="footer-subtitle">Finance Department &mdash; Expenses Management System &copy; 2026</div>
+      <div class="footer-links">
+        <a href="{% url 'core:home' %}">Home</a>
+        <a href="{% url 'expenses:dashboard' %}">Expenses</a>
+        <a href="{% url 'retirement:dashboard' %}">Retirement</a>
+        <a href="{% url 'reports:dashboard' %}">Reports</a>
+        <a href="{% url 'accounts:profile' %}">Profile</a>
+      </div>
+    </footer>
+  </div>
+</div>
+
+{% else %}
+{% block auth_content %}{% endblock %}
+{% endif %}
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

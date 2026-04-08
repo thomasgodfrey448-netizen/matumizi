@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if action == 'edit' %}Edit{% else %}New{% endif %} Retirement Form{% endblock %}
+{% block page_title %}{% if action == 'edit' %}Edit Retirement Form{% else %}New Retirement Form{% endif %}{% endblock %}
+
+{% block content %}
+<div class="form-page">
+
+  <div class="form-header-card" style="background: linear-gradient(135deg, rgba(26,82,118,0.8), rgba(21,67,96,0.8));">
+    <div style="margin-bottom:8px;">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 60px; width: auto;">
+    </div>
+    <h3>Seventh-day Adventist Church</h3>
+    <p style="font-size:1rem; font-weight:700; color:var(--white);">Makongo Juu</p>
+    <p style="color:rgba(255,255,255,0.7);">Financial Department</p>
+    <div style="font-size:1rem; font-weight:800; color:var(--accent); margin-top:8px; text-transform:uppercase; letter-spacing:2px;">
+      Retirement Form
+    </div>
+    {% if form_obj %}
+    <div class="form-number-badge">Form No: {{ form_obj.form_number }}</div>
+    {% endif %}
+  </div>
+
+  <form method="post" enctype="multipart/form-data" id="expenseForm">
+    {% csrf_token %}
+
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-user" style="color:var(--accent);"></i> Personal Information</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-2">
+            <div class="form-group">
+              <label class="form-label">First Name <span style="color:var(--accent);">*</span></label>
+              <input type="text" name="first_name" class="form-control"
+                     value="{{ form_obj.first_name|default:user.first_name }}" required placeholder="First name">
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <label class="form-label">Last Name <span style="color:var(--accent);">*</span></label>
+              <input type="text" name="last_name" class="form-control"
+                     value="{{ form_obj.last_name|default:user.last_name }}" required placeholder="Last name">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-2">
+            <div class="form-group">
+              <label class="form-label">Phone Number <span style="color:var(--accent);">*</span></label>
+              <input type="text" name="phone_number" class="form-control"
+                     value="{{ form_obj.phone_number|default:profile.phone_number }}" required placeholder="+255 xxx xxx xxx">
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <label class="form-label">Department <span style="color:var(--accent);">*</span></label>
+              {% if action == 'create' %}
+                {% if profile.department %}
+                  <input type="hidden" name="department" value="{{ profile.department.id }}">
+                  <input type="text" class="form-control" value="{{ profile.department.name }}" readonly>
+                {% else %}
+                  <div class="alert alert-warning">No department assigned to your profile. Please contact administrator.</div>
+                {% endif %}
+              {% else %}
+                {% if form_obj.department %}
+                  <input type="hidden" name="department" value="{{ form_obj.department.id }}">
+                  <input type="text" class="form-control" value="{{ form_obj.department.name }}" readonly>
+                {% else %}
+                  <div class="alert alert-warning">No department assigned to this form. Please contact administrator.</div>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-2">
+            <div class="form-group">
+              <label class="form-label">Date of Request <span style="color:var(--accent);">*</span></label>
+              <input type="date" name="date_of_request" class="form-control"
+                     value="{{ form_obj.date_of_request|date:'Y-m-d'|default:today_date }}" required>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <label class="form-label">Date of Retirement <span style="color:var(--accent);">*</span></label>
+              <input type="date" name="date_of_retirement" class="form-control"
+                     value="{{ form_obj.date_of_retirement|date:'Y-m-d'|default:today_date }}" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reason / Description <span style="color:var(--accent);">*</span></label>
+          <textarea name="reason" class="form-control" required placeholder="Describe the purpose of this retirement form...">{{ form_obj.reason|default:'' }}</textarea>
+        </div>
+        <div class="row">
+          <div class="col-2">
+            <div class="form-group">
+              <label class="form-label">Remaining Amount (TZS)</label>
+              <input type="number" name="remaining_amount" class="form-control"
+                     value="{{ form_obj.remaining_amount|default:'0' }}" step="0.01" min="0" placeholder="0.00">
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <label class="form-label">Attach File (optional)</label>
+              <input type="file" name="attachment" class="form-control" accept=".pdf,.doc,.docx,.jpg,.png">
+              {% if form_obj.attachment %}
+              <small style="color:var(--accent); font-size:0.78rem;">
+                <i class="fas fa-paperclip"></i> Current: <a href="{{ form_obj.attachment.url }}" target="_blank" style="color:var(--accent);">View File</a>
+              </small>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ITEMS TABLE -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-list" style="color:var(--accent);"></i> Description of Expenses</h5>
+      </div>
+      <div class="card-body">
+        <div class="items-table-wrapper">
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th style="width:40px;">#</th>
+                <th>Description</th>
+                <th style="width:160px;">Amount (TZS)</th>
+                <th style="width:50px;"></th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody">
+              {% if form_obj and form_obj.items.all %}
+                {% for item in form_obj.items.all %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td><input type="text" name="item_description[]" class="form-control item-desc" value="{{ item.description }}" required></td>
+                  <td><input type="number" name="item_amount[]" class="form-control item-amount" value="{{ item.amount }}" step="0.01" min="0" required></td>
+                  <td><button type="button" class="btn-remove-row" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td>1</td>
+                  <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="Expense description" required></td>
+                  <td><input type="number" name="item_amount[]" class="form-control item-amount" placeholder="0.00" step="0.01" min="0" required></td>
+                  <td><button type="button" class="btn-remove-row" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
+                </tr>
+              {% endif %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2" style="text-align:right; font-weight:700; color:rgba(255,255,255,0.8);">TOTAL:</td>
+                <td style="font-weight:800; color:var(--accent);">TZS <span id="totalAmount">0.00</span></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <button type="button" class="btn-add-row" id="addItemRow">
+          <i class="fas fa-plus"></i> Add Item
+        </button>
+      </div>
+    </div>
+
+    <!-- APPROVAL INFO -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-signature" style="color:var(--accent);"></i> Approval Information</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-3">
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">First Approver</div>
+              <div style="font-size:0.88rem; color:rgba(255,255,255,0.8);" id="firstApproverDisplay">
+                <i class="fas fa-user-check" style="color:var(--accent);"></i> Based on Department
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Second Approver</div>
+              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">Okoth Oloo</div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Treasurer</div>
+              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">Eric Bisanda</div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.4); margin-top:4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; justify-content:flex-end; flex-wrap:wrap; margin-top:8px;">
+      <a href="{% url 'retirement:dashboard' %}" class="btn btn-outline">
+        <i class="fas fa-arrow-left"></i> Cancel
+      </a>
+      <button type="submit" class="btn btn-accent btn-lg">
+        <i class="fas fa-save"></i>
+        {% if action == 'edit' %}Update Form{% else %}Save as Draft{% endif %}
+      </button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

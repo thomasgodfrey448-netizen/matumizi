@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Expense Requests{% endblock %}
+{% block page_title %}Expense Requests{% endblock %}
+
+{% block content %}
+
+<!-- HEADER ROW -->
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+  <div>
+    <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
+      <i class="fas fa-building" style="color:var(--accent);"></i> Expense Requests
+    </h2>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">
+      {% if is_admin or is_approver or is_treasurer %}All submitted expense requests{% else %}Your expense requests{% endif %}
+    </p>
+  </div>
+  {% if not is_approver and not is_treasurer %}
+  <a href="{% url 'expenses:create' %}" class="btn btn-accent">
+    <i class="fas fa-plus"></i> New Request
+  </a>
+  {% endif %}
+</div>
+
+<!-- FILTER BY MONTH -->
+<div style="margin-bottom:16px; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:12px; background:rgba(255,255,255,0.03);">
+  <form method="get" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+    <div class="form-group" style="margin-bottom:0;">
+      <label class="form-label">Month</label>
+      <input type="month" name="month" class="form-control" value="{{ selected_month }}" required>
+    </div>
+    <button type="submit" class="btn btn-accent" style="margin-top:20px;">Apply</button>
+    <a href="{% url 'expenses:dashboard' %}" class="btn btn-outline" style="margin-top:20px;">Clear</a>
+    <div style="margin-left:auto; color:rgba(255,255,255,0.75); font-size:0.85rem;">
+      Showing: {{ date_from|date:"d M Y" }} - {{ date_to|date:"d M Y" }}
+    </div>
+  </form>
+</div>
+
+<!-- STATS -->
+<div class="row" style="margin-bottom:20px;">
+  {% with total=requests.count %}
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fas fa-file"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ total }}</div>
+        <div class="stat-label">Total Requests</div>
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ pending_count }}</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ approved_count }}</div>
+        <div class="stat-label">Approved</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TABLE -->
+<div class="card">
+  <div class="card-header">
+    <h5><i class="fas fa-list"></i> All Requests</h5>
+  </div>
+  <div class="card-body" style="padding:0;">
+    {% if requests %}
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Form No</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Date</th>
+            <th>Amount (TZS)</th>
+            <th>Status</th>
+            <th>Payment</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for req in requests %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <a href="{% url 'expenses:detail' req.pk %}" style="color:var(--accent); font-weight:600; text-decoration:none;">
+                {{ req.form_number }}
+              </a>
+            </td>
+            <td>{{ req.first_name }} {{ req.last_name }}</td>
+            <td>{% if req.department %}{{ req.department }}{% else %}No Department{% endif %}</td>
+            <td>{{ req.date|date:"d M Y" }}</td>
+            <td style="font-weight:600;">{{ req.total_amount|floatformat:2|intcomma }}</td>
+            <td>
+              {% if req.is_paid or req.status == 'paid' %}
+              <span class="badge badge-second">&#10003;&#10003; Second Approved</span>
+              {% elif req.status == 'draft' %}
+              <span class="badge badge-draft"><i class="fas fa-pencil-alt"></i> Draft</span>
+              {% elif req.status == 'submitted' %}
+              <span class="badge badge-submitted"><i class="fas fa-paper-plane"></i> Submitted</span>
+              {% elif req.status == 'first_approved' %}
+              <span class="badge badge-first">&#10003; First Approved</span>
+              {% elif req.status == 'second_approved' %}
+              <span class="badge badge-second">&#10003;&#10003; Second Approved</span>
+              {% elif req.status == 'approved' %}
+              <span class="badge badge-approved"><i class="fas fa-check-double"></i> Approved</span>
+              {% elif req.status == 'rejected' %}
+              <span class="badge badge-rejected"><i class="fas fa-times"></i> Rejected</span>
+              {% elif req.status == 'rejected_for_editing' %}
+              <span class="badge badge-warning" style="background-color: var(--warning); color:var(--dark);"><i class="fas fa-pencil-alt"></i> Needs Editing</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if req.is_paid %}
+              <span class="badge badge-approved">Paid</span>
+              {% else %}
+              <span class="badge badge-rejected">Unpaid</span>
+              {% endif %}
+            </td>
+            <td>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <a href="{% url 'expenses:detail' req.pk %}" class="btn btn-sm btn-outline">
+                  <i class="fas fa-eye"></i>
+                </a>
+                {% if req.status == 'draft' and req.submitted_by == user or req.status == 'rejected_for_editing' and req.submitted_by == user %}
+                <a href="{% url 'expenses:edit' req.pk %}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <form method="post" action="{% url 'expenses:delete' req.pk %}" class="delete-form" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+                {% endif %}
+                <a href="{% url 'expenses:download' req.pk %}" class="btn btn-sm btn-success">
+                  <i class="fas fa-download"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-building"></i>
+      <p>No expense requests found.</p>
+      {% if not is_approver and not is_treasurer %}
+      <a href="{% url 'expenses:create' %}" class="btn btn-accent" style="margin-top:12px;">
+        <i class="fas fa-plus"></i> Create First Request
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

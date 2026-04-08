@@ -1,0 +1,522 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel{% endblock %}
+{% block page_title %}Admin Panel{% endblock %}
+
+{% block content %}
+
+<!-- STATS -->
+<div class="row" style="margin-bottom:24px;">
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ regular_users|length }}</div>
+        <div class="stat-label">Regular Users</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon orange"><i class="fas fa-shield-alt"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ admins|length }}</div>
+        <div class="stat-label">Admins</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fas fa-user-check"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ first_approvers|length }}</div>
+        <div class="stat-label">1st Approvers</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon purple"><i class="fas fa-user-tie"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ second_approvers|length }}</div>
+        <div class="stat-label">2nd Approvers</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fas fa-money-bill"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ treasurers|length }}</div>
+        <div class="stat-label">Treasurers</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="fas fa-key"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ pending_approvals }}</div>
+        <div class="stat-label">Pending Approvals</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- LEFT COLUMN -->
+  <div class="col">
+
+    <!-- DEPARTMENTS -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-building" style="color:var(--accent);"></i> Departments</h5>
+        <button class="btn btn-sm btn-accent" onclick="openModal('addDeptModal')">
+          <i class="fas fa-plus"></i> Add
+        </button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if departments %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Code</th><th>Active</th><th></th></tr></thead>
+            <tbody>
+              {% for dept in departments %}
+              <tr>
+                <td>{{ dept.name }}</td>
+                <td>{{ dept.code|default:"—" }}</td>
+                <td>{% if dept.is_active %}<span class="badge badge-approved">Yes</span>{% else %}<span class="badge badge-rejected">No</span>{% endif %}</td>
+                <td>
+                  <form method="post" action="{% url 'core:delete_department' dept.pk %}" class="delete-form" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-building"></i><p>No departments yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- FIRST APPROVERS -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-user-check" style="color:var(--accent);"></i> First Approvers</h5>
+        <button class="btn btn-sm btn-accent" onclick="openModal('addApproverModal')">
+          <i class="fas fa-plus"></i> Add
+        </button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if first_approvers %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Departments</th><th>Phone</th><th>Active</th><th></th></tr></thead>
+            <tbody>
+              {% for ap in first_approvers %}
+              <tr>
+                <td>{{ ap.user.get_full_name }}</td>
+                <td>
+                  {% for dept in ap.departments.all %}
+                    <span class="badge badge-primary">{{ dept.name }}</span>
+                  {% empty %}
+                    <span style="color:rgba(255,255,255,0.4);">—</span>
+                  {% endfor %}
+                </td>
+                <td>{{ ap.phone_number|default:"—" }}</td>
+                <td>{% if ap.is_active %}<span class="badge badge-approved">Yes</span>{% else %}<span class="badge badge-rejected">No</span>{% endif %}</td>
+                <td>
+                  <form method="post" action="{% url 'core:remove_approver' ap.pk %}" class="delete-form" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-user-check"></i><p>No first approvers configured.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- SECOND APPROVERS -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-user-tie" style="color:var(--accent);"></i> Second Approvers</h5>
+        <button class="btn btn-sm btn-accent" onclick="openModal('addApproverModal')">
+          <i class="fas fa-plus"></i> Add
+        </button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if second_approvers %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Phone</th><th>Active</th><th></th></tr></thead>
+            <tbody>
+              {% for ap in second_approvers %}
+              <tr>
+                <td>{{ ap.user.get_full_name }}</td>
+                <td>{{ ap.phone_number|default:"—" }}</td>
+                <td>{% if ap.is_active %}<span class="badge badge-approved">Yes</span>{% else %}<span class="badge badge-rejected">No</span>{% endif %}</td>
+                <td>
+                  <form method="post" action="{% url 'core:remove_approver' ap.pk %}" class="delete-form" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-user-tie"></i><p>No second approvers configured.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- TREASURERS -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-money-bill" style="color:var(--accent);"></i> Treasurers</h5>
+        <button class="btn btn-sm btn-accent" onclick="openModal('addTreasurerModal')">
+          <i class="fas fa-plus"></i> Add
+        </button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if treasurers %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Phone</th><th>Active</th><th></th></tr></thead>
+            <tbody>
+              {% for tr in treasurers %}
+              <tr>
+                <td>{{ tr.user.get_full_name }}</td>
+                <td>{{ tr.phone_number|default:"—" }}</td>
+                <td>{% if tr.is_active %}<span class="badge badge-approved">Yes</span>{% else %}<span class="badge badge-rejected">No</span>{% endif %}</td>
+                <td>
+                  <form method="post" action="{% url 'core:remove_treasurer' tr.pk %}" class="delete-form" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-money-bill"></i><p>No treasurers configured.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- REGISTRATION CODES -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-key" style="color:var(--accent);"></i> Registration Codes</h5>
+        <form method="post" action="{% url 'core:generate_reg_code' %}" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          {% csrf_token %}
+          <select name="department" class="form-control" style="min-width:180px; padding:6px 10px;">
+            <option value="">All Departments</option>
+            {% for dept in departments %}
+            <option value="{{ dept.pk }}">{{ dept.name }}</option>
+            {% endfor %}
+          </select>
+          <input type="number" name="max_uses" value="1" min="1" max="100" class="form-control" style="width:90px; padding:6px 10px;">
+          <button type="submit" class="btn btn-sm btn-accent"><i class="fas fa-plus"></i> Generate</button>
+        </form>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if reg_codes %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Code</th><th>Dept</th><th>Uses</th><th>Max</th><th>Created</th><th></th></tr></thead>
+            <tbody>
+              {% for code in reg_codes %}
+              <tr>
+                <td style="font-family:monospace; font-weight:700; color:var(--accent);">{{ code.code }}</td>
+                <td>{% if code.department %}{{ code.department.name }}{% else %}All{% endif %}</td>
+                <td>{{ code.use_count }}</td>
+                <td>{{ code.max_uses }}</td>
+                <td>{{ code.created_at|date:"d M Y" }}</td>
+                <td>
+                  <form method="post" action="{% url 'core:delete_reg_code' code.pk %}" class="delete-form" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-key"></i><p>No registration codes.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="col">
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-bullhorn" style="color:var(--accent);"></i> Announcements</h5>
+        <button class="btn btn-sm btn-accent" onclick="openModal('addAnnModal')">
+          <i class="fas fa-plus"></i> Add
+        </button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if announcements %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Title</th><th>Active</th><th>Date</th><th></th></tr></thead>
+            <tbody>
+              {% for ann in announcements %}
+              <tr>
+                <td>{{ ann.title|truncatechars:30 }}</td>
+                <td>{% if ann.is_active %}<span class="badge badge-approved">Yes</span>{% else %}<span class="badge badge-rejected">No</span>{% endif %}</td>
+                <td>{{ ann.created_at|date:"d M Y" }}</td>
+                <td>
+                  <form method="post" action="{% url 'core:delete_announcement' ann.pk %}" class="delete-form" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-bullhorn"></i><p>No announcements.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- REGULAR USERS -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-user" style="color:var(--accent);"></i> Regular Users</h5>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if regular_users %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Username</th><th>Full Name</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody>
+              {% for u in regular_users %}
+              <tr>
+                <td style="font-weight:600;">{{ u.username }}</td>
+                <td>{{ u.get_full_name|default:"—" }}</td>
+                <td>{{ u.date_joined|date:"d M Y" }}</td>
+                <td>
+                  <div style="display:flex; gap:6px;">
+                    {% if u != request.user %}
+                    <form method="post" action="{% url 'core:delete_user' u.pk %}" class="delete-form" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-user"></i><p>No regular users.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ADMIN USERS -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-shield-alt" style="color:var(--accent);"></i> Admin Users</h5>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if admins %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Username</th><th>Full Name</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody>
+              {% for u in admins %}
+              <tr>
+                <td style="font-weight:600;">{{ u.username }}</td>
+                <td>{{ u.get_full_name|default:"—" }}</td>
+                <td>{{ u.date_joined|date:"d M Y" }}</td>
+                <td>
+                  <div style="display:flex; gap:6px;">
+                    {% if u != request.user %}
+                    <form method="post" action="{% url 'core:delete_user' u.pk %}" class="delete-form" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-shield-alt"></i><p>No admin users.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="addDeptModal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fas fa-building" style="color:var(--accent);"></i> Add Department</div>
+    <form method="post" action="{% url 'core:add_department' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Department Name *</label>
+        <input type="text" name="name" class="form-control" required placeholder="e.g. Youth Department">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Code (optional)</label>
+        <input type="text" name="code" class="form-control" placeholder="e.g. YTH">
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addDeptModal')">Cancel</button>
+        <button type="submit" class="btn btn-accent"><i class="fas fa-plus"></i> Add</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addApproverModal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fas fa-user-check" style="color:var(--accent);"></i> Add Approver</div>
+    <form method="post" action="{% url 'core:add_approver' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Select User *</label>
+        <select name="user_id" class="form-control" required>
+          <option value="">-- Select User --</option>
+          {% for u in regular_users %}
+          <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.username }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Approver Level *</label>
+        <select name="level" class="form-control" required onchange="toggleDeptSelect(this.value)">
+          <option value="first">First Approver</option>
+          <option value="second">Second Approver</option>
+        </select>
+      </div>
+      <div class="form-group" id="deptSelectGroup">
+        <label class="form-label">Departments (for 1st approver) *</label>
+        <select name="departments" class="form-control" multiple required>
+          {% for dept in departments %}
+          <option value="{{ dept.id }}">{{ dept.name }}</option>
+          {% endfor %}
+        </select>
+        <small style="color:rgba(255,255,255,0.4);">Hold Ctrl/Cmd to select multiple</small>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="text" name="phone_number" class="form-control" placeholder="+255 xxx xxx xxx">
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addApproverModal')">Cancel</button>
+        <button type="submit" class="btn btn-accent"><i class="fas fa-plus"></i> Add Approver</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addTreasurerModal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fas fa-money-bill" style="color:var(--accent);"></i> Add Treasurer</div>
+    <form method="post" action="{% url 'core:add_treasurer' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Select User *</label>
+        <select name="user_id" class="form-control" required>
+          <option value="">-- Select User --</option>
+          {% for u in regular_users %}
+          <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.username }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="text" name="phone_number" class="form-control" placeholder="+255 xxx xxx xxx">
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addTreasurerModal')">Cancel</button>
+        <button type="submit" class="btn btn-accent"><i class="fas fa-plus"></i> Add Treasurer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addAnnModal">
+  <div class="modal-box" style="max-width:560px;">
+    <div class="modal-title"><i class="fas fa-bullhorn" style="color:var(--accent);"></i> Add Announcement</div>
+    <form method="post" action="{% url 'core:add_announcement' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Title *</label>
+        <input type="text" name="title" class="form-control" required placeholder="Announcement title">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Content *</label>
+        <textarea name="content" class="form-control" rows="4" required placeholder="Announcement content..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Image (optional)</label>
+        <input type="file" name="image" class="form-control" accept="image/*">
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addAnnModal')">Cancel</button>
+        <button type="submit" class="btn btn-accent"><i class="fas fa-plus"></i> Publish</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function toggleDeptSelect(level) {
+  const deptGroup = document.getElementById('deptSelectGroup');
+  const deptSelect = deptGroup.querySelector('select');
+  if (level === 'first') {
+    deptGroup.style.display = 'block';
+    deptSelect.required = true;
+  } else {
+    deptGroup.style.display = 'none';
+    deptSelect.required = false;
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  toggleDeptSelect('first');
+});
+</script>
+
+{% endblock %}

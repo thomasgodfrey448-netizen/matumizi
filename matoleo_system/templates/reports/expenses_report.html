@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Expenses Report{% endblock %}
+{% block page_title %}Expenses Report{% endblock %}
+
+{% block content %}
+
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+  <div>
+    <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
+      <i class="fas fa-file-invoice-dollar" style="color:var(--accent);"></i> Expenses Report
+    </h2>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">Expense requests and payment tracking</p>
+  </div>
+  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <a href="{% url 'reports:retirement_report' %}" class="btn btn-outline">
+      <i class="fas fa-archive"></i> Retirement Report
+    </a>
+    <a href="{% url 'reports:download_expenses' %}?date_from={{ date_from }}&date_to={{ date_to }}&status={{ status_filter }}&payment_status={{ payment_status_filter }}&search={{ search }}"
+       class="btn btn-success">
+      <i class="fas fa-download"></i> Download Report
+    </a>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <form method="get" style="display:contents;">
+    <div class="form-group">
+      <label class="form-label"><i class="fas fa-calendar"></i> Date From</label>
+      <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+    </div>
+    <div class="form-group">
+      <label class="form-label"><i class="fas fa-calendar"></i> Date To</label>
+      <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+    </div>
+    <div class="form-group">
+      <label class="form-label"><i class="fas fa-search"></i> Search</label>
+      <input type="text" name="search" class="form-control" placeholder="Name, form no, reason..." value="{{ search }}">
+    </div>
+    <div class="form-group">
+      <label class="form-label"><i class="fas fa-filter"></i> Status</label>
+      <select name="status" class="form-control">
+        <option value="">All Statuses</option>
+        {% for val, label in status_choices %}
+        <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label"><i class="fas fa-money-bill"></i> Payment Status</label>
+      <select name="payment_status" class="form-control">
+        <option value="">All Payment Statuses</option>
+        {% for val, label in payment_status_choices %}
+        <option value="{{ val }}" {% if payment_status_filter == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div style="display:flex; gap:8px; align-items:flex-end;">
+      <button type="submit" class="btn btn-accent">
+        <i class="fas fa-filter"></i> Filter
+      </button>
+      <a href="{% url 'reports:expenses_report' %}" class="btn btn-outline">
+        <i class="fas fa-times"></i> Clear
+      </a>
+    </div>
+  </form>
+</div>
+
+<!-- SUMMARY STATS -->
+<div class="row" style="margin-bottom:20px;">
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fas fa-file-invoice-dollar"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ total_expenses }}</div>
+        <div class="stat-label">Total Requests</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon orange"><i class="fas fa-coins"></i></div>
+      <div class="stat-info">
+        <div class="stat-value" style="font-size:1.2rem;">{{ expense_total|floatformat:2|intcomma }}</div>
+        <div class="stat-label">Total Amount (TZS)</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fas fa-money-bill-wave"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ paid_expenses }}</div>
+        <div class="stat-label">Paid Requests</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="fas fa-hourglass-half"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">{{ unpaid_expenses }}</div>
+        <div class="stat-label">Unpaid Requests</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT SUMMARY -->
+<div class="row" style="margin-bottom:20px;">
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-info">
+        <div class="stat-value" style="font-size:1.1rem;">{{ paid_total|floatformat:2|intcomma }}</div>
+        <div class="stat-label">Paid Amount (TZS)</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+      <div class="stat-info">
+        <div class="stat-value" style="font-size:1.1rem;">{{ unpaid_total|floatformat:2|intcomma }}</div>
+        <div class="stat-label">Unpaid Amount (TZS)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPENSE REQUESTS TABLE -->
+<div class="card">
+  <div class="card-header">
+    <h5><i class="fas fa-file-invoice-dollar" style="color:var(--accent);"></i> Expense Requests</h5>
+    <span style="font-size:0.8rem; color:rgba(255,255,255,0.5);">{{ total_expenses }} records</span>
+  </div>
+  <div class="card-body" style="padding:0;">
+    {% if expenses %}
+    <div class="table-wrapper" style="width:100%;">
+      <table class="data-table" style="width:100%; table-layout:fixed;";
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Form No</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Date</th>
+            <th>Reason</th>
+            <th>Amount (TZS)</th>
+            <th>Status</th>
+            <th>Payment</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in expenses %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><a href="{% url 'expenses:detail' e.pk %}" style="color:var(--accent); font-weight:600; text-decoration:none;">{{ e.form_number }}</a></td>
+            <td>{{ e.first_name }} {{ e.last_name }}</td>
+            <td>{{ e.department }}</td>
+            <td>{{ e.date|date:"d M Y" }}</td>
+            <td>{{ e.reason|truncatewords:8 }}</td>
+            <td style="font-weight:600;">{{ e.total_amount|floatformat:2|intcomma }}</td>
+            <td>
+              {% if e.status == 'approved' %}
+              <span class="badge badge-approved"><i class="fas fa-check-double"></i> Approved</span>
+              {% elif e.status == 'rejected' %}
+              <span class="badge badge-rejected"><i class="fas fa-times"></i> Rejected</span>
+              {% elif e.status == 'submitted' %}
+              <span class="badge badge-submitted">Submitted</span>
+              {% elif e.status == 'first_approved' %}
+              <span class="badge badge-first">&#10003; 1st</span>
+              {% elif e.status == 'second_approved' %}
+              <span class="badge badge-second">&#10003;&#10003; 2nd</span>
+              {% else %}
+              <span class="badge badge-draft">Draft</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if e.payment_status == 'paid' %}
+              <span class="badge" style="background:rgba(39,174,96,0.2); color:#58d68d; border:1px solid rgba(39,174,96,0.3); font-size:0.8rem; padding:4px 8px;"><i class="fas fa-money-bill-wave"></i> Paid</span>
+              {% else %}
+              <span class="badge" style="background:rgba(231,76,60,0.2); color:#f1948a; border:1px solid rgba(231,76,60,0.3); font-size:0.8rem; padding:4px 8px;"><i class="fas fa-hourglass-half"></i> Unpaid</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'expenses:download' e.pk %}" class="btn btn-sm btn-success">
+                <i class="fas fa-download"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" style="text-align:right; font-weight:700; color:rgba(255,255,255,0.7); padding:10px 14px;">TOTAL:</td>
+            <td style="font-weight:800; color:var(--accent); padding:10px 14px;">{{ expense_total|floatformat:2|intcomma }}</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="fas fa-file-invoice-dollar"></i><p>No expense requests found.</p></div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

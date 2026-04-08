@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block auth_content %}
+<div class="auth-wrapper">
+  <div class="auth-card" style="max-width:540px;">
+    <div class="auth-logo">
+      <div style="margin-bottom:8px;">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 70px; width: auto;">
+      </div>
+      <div class="church-name">Financial Department Expenses System</div>
+      <div class="system-subtitle">Makongo Juu SDA Church</div>
+    </div>
+
+    <h2><i class="fas fa-user-plus" style="color:var(--accent);"></i> Create Account</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      <i class="fas fa-exclamation-circle"></i> {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'accounts:register' %}">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-user"></i> First Name</label>
+            <input type="text" name="first_name" class="form-control" placeholder="First name" required value="{{ form_values.first_name|default:'' }}">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-user"></i> Last Name</label>
+            <input type="text" name="last_name" class="form-control" placeholder="Last name" required value="{{ form_values.last_name|default:'' }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-at"></i> Username</label>
+        <input type="text" name="username" class="form-control" placeholder="Choose a username" required value="{{ form_values.username|default:'' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-phone"></i> Phone Number</label>
+        <input type="text" name="phone_number" class="form-control" placeholder="+255 xxx xxx xxx" required value="{{ form_values.phone_number|default:'' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-building"></i> Department</label>
+        <select name="department" class="form-control" id="id_department" required>
+          <option value="">Select Department</option>
+          {% for dept in departments %}
+          <option value="{{ dept.id }}" {% if form_values.department_id == dept.id|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-lock"></i> Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Min 6 characters" required>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-lock"></i> Confirm Password</label>
+            <input type="password" name="confirm_password" class="form-control" placeholder="Repeat password" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-key"></i> Registration Code <span style="color:var(--accent);">*</span></label>
+        <input type="text" name="registration_code" class="form-control" placeholder="Enter code given by admin" required value="{{ form_values.registration_code|default:'' }}">
+        <small style="color:rgba(255,255,255,0.45); font-size:0.78rem;">Contact your administrator for a registration code.</small>
+      </div>
+
+      <button type="submit" class="btn btn-accent btn-lg" style="width:100%; justify-content:center; margin-top:8px;">
+        <i class="fas fa-user-plus"></i> Create Account
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:20px; font-size:0.88rem; color:rgba(255,255,255,0.6);">
+      Already have an account?
+      <a href="{% url 'accounts:login' %}" style="color:var(--accent); font-weight:600; text-decoration:none;">
+        Login here
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

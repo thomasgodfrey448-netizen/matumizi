@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Notifications{% endblock %}
+{% block page_title %}Notifications{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div style="max-width:800px; margin:0 auto;" data-csrf-token="{{ csrf_token }}">
+  <div class="card">
+    <div class="card-header">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h5><i class="fas fa-bell" style="color:var(--accent);"></i> All Notifications</h5>
+          <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-top:4px;">
+            Total: <strong>{{ notifications|length }}</strong> 
+            | Unread: <strong style="color:var(--accent);">{{ unread_count }}</strong>
+            | Read: <strong style="color:rgba(255,255,255,0.5);">{{ read_count }}</strong>
+          </div>
+        </div>
+        {% if unread_count %}
+        <button onclick="markAllAsRead()" class="btn btn-sm btn-outline" style="font-size:0.8rem;">
+          <i class="fas fa-check-double"></i> Mark All as Read
+        </button>
+        {% endif %}
+      </div>
+    </div>
+    <div class="card-body" style="padding:0;">
+      {% if notifications %}
+        <div style="background:rgba(255,255,255,0.02); border-bottom:1px solid rgba(255,255,255,0.1); padding:12px 16px; font-size:0.75rem; color:rgba(255,255,255,0.5);">
+          <i class="fas fa-info-circle"></i> <strong>Note:</strong> Read notifications automatically disappear after 24 hours. Unread notifications remain until you view them.
+        </div>
+        {% for notif in notifications %}
+        <a href="{% url 'core:mark_notification_read' notif.pk %}"
+           class="notif-item {{ notif.notification_type }} {% if not notif.is_read %}unread{% else %}read{% endif %}">
+          <div class="notif-icon">
+            {% if 'approved' in notif.notification_type %}
+              <i class="fas fa-check-circle"></i>
+            {% elif 'rejected' in notif.notification_type %}
+              <i class="fas fa-times-circle"></i>
+            {% elif 'retirement' in notif.notification_type %}
+              <i class="fas fa-calendar-check"></i>
+            {% else %}
+              <i class="fas fa-bell"></i>
+            {% endif %}
+          </div>
+          <div style="flex:1;">
+            <div class="notif-title">
+              {{ notif.title }}
+            </div>
+            <div class="notif-msg">{{ notif.message }}</div>
+            <div class="notif-time">
+              {% if notif.is_read and notif.read_at %}
+              <i class="fas fa-check-circle"></i> Read: {{ notif.read_at|date:"d M Y H:i" }}
+              <span class="notif-expiry" data-read-at="{{ notif.read_at|date:'U' }}"></span>
+              {% else %}
+              <i class="fas fa-bell"></i> Created: {{ notif.created_at|date:"d M Y H:i" }}
+              {% endif %}
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      {% else %}
+      <div class="empty-state">
+        <i class="fas fa-bell-slash"></i>
+        <p>No notifications yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+function markAllAsRead() {
+  const unreadNotifs = document.querySelectorAll('.notif-item.unread');
+  if (unreadNotifs.length === 0) {
+    alert('All notifications are already read.');
+    return;
+  }
+  
+  if (confirm('Mark all notifications as read?')) {
+    // Redirect to a bulk mark-all-read endpoint or reload page
+    // For now, just reload to trigger the old behavior
+    location.reload();
+  }
+}
+
+// Calculate and display expiry time for read notifications
+function updateExpiryTimes() {
+  const expirySpans = document.querySelectorAll('.notif-expiry');
+  expirySpans.forEach(span => {
+    const readAtTimestamp = parseInt(span.getAttribute('data-read-at')) * 1000;
+    const expiryTime = readAtTimestamp + (24 * 60 * 60 * 1000); // 24 hours in milliseconds
+    const now = Date.now();
+    const timeLeft = expiryTime - now;
+    
+    if (timeLeft > 0) {
+      const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      span.innerHTML = ` | Expires in <strong>${hours}h ${minutes}m</strong>`;
+      const notifItem = span.closest('.notif-item');
+      if (timeLeft < (2 * 60 * 60 * 1000)) { // Less than 2 hours
+        notifItem.classList.add('expiring');
+      }
+    } else {
+      span.innerHTML = ` | <strong style="color:#e74c3c;">Expired</strong>`;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', updateExpiryTimes);
+// Update every minute
+setInterval(updateExpiryTimes, 60000);
+</script>
+{% endblock %}

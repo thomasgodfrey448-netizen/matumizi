@@ -1,0 +1,22 @@
+venv/
+IMPLENTATION_GUIDE.md
+DETAILED_CHANGELOG.md
+Logo.png
+QUICKSTART.md
+README.md/
+__pycache__/
+db.sqlite3/
+Expense request form for SDA chucrch.png/
+Retirement form for Samweli Okuku.png/
+Malipo.png/
+# Python
+*.pyc
+staticfiles/
+# Django
+db.sqlite3
+
+# Virtual environment
+venv/
+
+# VS Code (optional)
+.vscode/
