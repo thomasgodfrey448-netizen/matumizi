@@ -1,4 +1,4 @@
-# Matoleo System — Makong Juu SDA Church Finance Department
+# Matumizi System — Makongo Juu SDA Church Finance Department
 
 A full-featured Django web application for managing expense requests and retirement forms with a multi-level approval workflow.
 
@@ -62,17 +62,6 @@ python manage.py runserver
 ```
 
 Open http://127.0.0.1:8000 in your browser.
-
----
-
-## Default Credentials (Demo)
-
-| Role | Username | Password |
-|------|----------|----------|
-| Super Admin | `admin` | `admin123` |
-| 2nd Approver | `yohana.sefue` | `yohana123` |
-
-> **Change these passwords immediately in production!**
 
 ---
 
