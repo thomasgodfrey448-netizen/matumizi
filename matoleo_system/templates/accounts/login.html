@@ -8,10 +8,10 @@
   <div class="auth-card">
     <div class="auth-logo">
       <div style="margin-bottom:8px;">
-        <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 70px; width: auto;">
+        <img src="{% static 'images/logo_clean_plain_v2.png' %}" alt="Logo" class="logo-img">
       </div>
       <div class="church-name">Makongo Juu SDA Church</div>
-      <div class="system-subtitle">Financial Department Expenses system</div>
+      <div class="system-subtitle">Financial Department Expenses&Retirement Management system</div>
     </div>
 
     <h2><i class="fas fa-sign-in-alt" style="color:var(--accent);"></i> Login</h2>
@@ -32,7 +32,12 @@
       </div>
       <div class="form-group">
         <label class="form-label"><i class="fas fa-lock"></i> Password</label>
-        <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+        <div style="position:relative;">
+          <input type="password" name="password" id="passwordInput" class="form-control" placeholder="Enter your password" required style="padding-right:44px;">
+          <button type="button" id="togglePassword" onclick="togglePasswordVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.6); font-size:1rem; padding:4px;">
+            <i class="fas fa-eye" id="toggleIcon"></i>
+          </button>
+        </div>
       </div>
       <button type="submit" class="btn btn-accent btn-lg" style="width:100%; justify-content:center; margin-top:8px;">
         <i class="fas fa-sign-in-alt"></i> Login
@@ -47,4 +52,22 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePasswordVisibility() {
+  const input = document.getElementById('passwordInput');
+  const icon = document.getElementById('toggleIcon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  } else {
+    input.type = 'password';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+  }
+}
+</script>
 {% endblock %}

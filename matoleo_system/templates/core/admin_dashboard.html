@@ -279,19 +279,24 @@
       <div class="card-body" style="padding:0;">
         {% if announcements %}
         <div class="table-wrapper">
-          <table class="data-table">
-            <thead><tr><th>Title</th><th>Active</th><th>Date</th><th></th></tr></thead>
+          <table class="data-table compact-announcement-table">
+            <thead><tr><th>Announcement</th><th>Status</th></tr></thead>
             <tbody>
               {% for ann in announcements %}
               <tr>
-                <td>{{ ann.title|truncatechars:30 }}</td>
-                <td>{% if ann.is_active %}<span class="badge badge-approved">Yes</span>{% else %}<span class="badge badge-rejected">No</span>{% endif %}</td>
-                <td>{{ ann.created_at|date:"d M Y" }}</td>
                 <td>
-                  <form method="post" action="{% url 'core:delete_announcement' ann.pk %}" class="delete-form" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                  </form>
+                  <div class="announcement-title-cell">{{ ann.title|truncatechars:35 }}</div>
+                  <div class="announcement-content-snippet">{{ ann.content|truncatechars:60 }}</div>
+                  <div class="announcement-date">{{ ann.created_at|date:"d M Y" }}</div>
+                </td>
+                <td>
+                  <div>{% if ann.is_active %}<span class="badge badge-approved">Active</span>{% else %}<span class="badge badge-rejected">Inactive</span>{% endif %}</div>
+                  <div style="margin-top:8px;">
+                    <form method="post" action="{% url 'core:delete_announcement' ann.pk %}" class="delete-form" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                    </form>
+                  </div>
                 </td>
               </tr>
               {% endfor %}

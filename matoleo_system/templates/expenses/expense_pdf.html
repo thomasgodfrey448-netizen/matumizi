@@ -343,34 +343,34 @@
                 <img src="data:image/png;base64,{{ logo_base64 }}" alt="Church Logo" style="height: 80px; width: auto;">
             </div>
             <h1>SEVENTH-DAY ADVENTIST CHURCH</h1>
-            <h2>EAST-CENTRAL TANZANIA CONFERENCE</h2>
+            <h2>EAST-COASTAL TANZANIA FIELD</h2>
             <p>PO BOX 105, Bagamoyo</p>
-            <p style="font-weight: 600; margin-top: 8px;">EXPENSE REQUEST FORM</p>
+            <p style="font-weight: 600; margin-top: 8px;">HATI YA MAOMBI YA FEDHA</p>
             <div class="form-number">{{ expense.form_number }}</div>
         </div>
 
         <!-- PERSONAL INFORMATION -->
         <div class="section-title">
-            <i>📋</i> Personal Information
+            <i>📋</i> Taarifa za Muombaji
         </div>
         <div class="section">
             <div class="row">
                 <div class="field">
-                    <span class="label">First Name</span>
+                    <span class="label">Jina la kwanza</span>
                     <div class="value">{{ expense.first_name }}</div>
                 </div>
                 <div class="field">
-                    <span class="label">Last Name</span>
+                    <span class="label">Jina La Mwisho</span>
                     <div class="value">{{ expense.last_name }}</div>
                 </div>
             </div>
             <div class="row">
                 <div class="field">
-                    <span class="label">Phone Number</span>
+                    <span class="label">Namba ya Simu</span>
                     <div class="value">{{ expense.phone_number }}</div>
                 </div>
                 <div class="field">
-                    <span class="label">Department</span>
+                    <span class="label">Idara/Kitengo</span>
                     <div class="value">{{ expense.department }}</div>
                 </div>
             </div>
@@ -378,22 +378,22 @@
 
         <!-- REQUEST DETAILS -->
         <div class="section-title">
-            <i>💰</i> Request Details
+            <i>💰</i> Taarifa za Maombi ya Fedha
         </div>
         <div class="section">
             <div class="row">
                 <div class="field">
-                    <span class="label">Expense Date</span>
+                    <span class="label">Tarehe</span>
                     <div class="value">{{ expense.date|date:"d M Y" }}</div>
                 </div>
                 <div class="field">
-                    <span class="label">Total Amount (TZS)</span>
+                    <span class="label">Jumla Ya Kiasi (TZS)</span>
                     <div class="value highlight">{{ expense.total_amount|floatformat:2 }}</div>
                 </div>
             </div>
             <div class="row full">
                 <div class="field">
-                    <span class="label">Reason for Expense</span>
+                    <span class="label">Dhumuni la Maombi ya Fedha</span>
                     <div class="value" style="min-height: 60px;">{{ expense.reason }}</div>
                 </div>
             </div>
@@ -403,14 +403,14 @@
         {% if expense.items.all %}
         <div class="items-section">
             <div class="section-title">
-                <i>📝</i> Requested Items
+                <i>📝</i> Mchanganuo wa Maombi ya Fedha
             </div>
             <table>
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Description</th>
-                        <th class="text-right">Amount (TZS)</th>
+                        <th>Mchanganuo</th>
+                        <th class="text-right">Kiasi (TZS)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -425,7 +425,7 @@
             </table>
             <div class="totals">
                 <div class="total-row">
-                    <div class="total-label">TOTAL AMOUNT:</div>
+                    <div class="total-label">JUMLA:</div>
                     <div class="total-value">{{ expense.total_amount|floatformat:2 }} TZS</div>
                 </div>
             </div>
@@ -451,8 +451,8 @@
                 </div>
                 <div class="field">
                     <span class="label">Payment Status</span>
-                    <div class="value {% if expense.payment_status == 'paid' %}status-approved{% else %}status-pending{% endif %}">
-                        {{ expense.get_payment_status_display }}
+                    <div class="value {% if expense.is_paid %}status-approved{% else %}status-pending{% endif %}">
+                        {% if expense.is_paid %}Paid{% else %}Pending{% endif %}
                     </div>
                 </div>
             </div>
@@ -461,32 +461,32 @@
         <!-- APPROVAL SECTION -->
         <div class="approval-section">
             <div class="section-title">
-                <i>🖋️</i> Approval Signatures
+                <i>🖋️</i>  Uthibitisho/Idhini ya Maombi ya Fedha
             </div>
             <div class="approval-grid">
                 <div class="approval-block">
-                    <div class="approval-label">First Approver</div>
+                    <div class="approval-label">Mzee wa Idara</div>
                     {% if expense.first_approver_name %}
                     <p style="font-size: 11px; margin-top: 30px;">{{ expense.first_approver_name }}</p>
                     <p style="font-size: 10px; color: #666;">{{ expense.first_approved_at|date:"d M Y H:i"|default:"Pending" }}</p>
                     {% endif %}
-                    <div class="approval-date">Date: _______________</div>
+                    <div class="approval-date">Tarehe: _______________</div>
                 </div>
                 <div class="approval-block">
-                    <div class="approval-label">Second Approver</div>
+                    <div class="approval-label">Mzee Kiongozi</div>
                     {% if expense.second_approver_name %}
                     <p style="font-size: 11px; margin-top: 30px;">{{ expense.second_approver_name }}</p>
                     <p style="font-size: 10px; color: #666;">{{ expense.second_approved_at|date:"d M Y H:i"|default:"Pending" }}</p>
                     {% endif %}
-                    <div class="approval-date">Date: _______________</div>
+                    <div class="approval-date">Tarehe: _______________</div>
                 </div>
                 <div class="approval-block">
-                    <div class="approval-label">Treasurer / Finance</div>
+                    <div class="approval-label">Mhazini</div>
                     {% if expense.treasurer_name %}
                     <p style="font-size: 11px; margin-top: 30px;">{{ expense.treasurer_name }}</p>
                     <p style="font-size: 10px; color: #666;">{{ expense.treasurer_approved_at|date:"d M Y H:i"|default:"Pending" }}</p>
                     {% endif %}
-                    <div class="approval-date">Date: _______________</div>
+                    <div class="approval-date">Tarehe: _______________</div>
                 </div>
             </div>
         </div>

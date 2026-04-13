@@ -37,11 +37,11 @@
   </div>
 
   <div class="form-header-card" style="background: linear-gradient(135deg, rgba(26,82,118,0.8), rgba(21,67,96,0.8));">
-    <div style="margin-bottom:8px;"><img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 50px; width: auto;"></div>
+    <div style="margin-bottom:8px;"><img src="{% static 'images/logo_clean_plain_v2.png' %}" alt="Logo" class="logo-img"></div>
     <h3>Seventh-day Adventist Church</h3>
-    <p style="font-size:1rem; font-weight:700; color:var(--white);">Makongo Juu</p>
-    <p style="color:rgba(255,255,255,0.7);">Finance Department</p>
-    <div style="font-size:1rem; font-weight:800; color:var(--accent); margin-top:8px; text-transform:uppercase; letter-spacing:2px;">Retirement Form</div>
+    <p style="font-size:1rem; font-weight:700; color:var(--white);">East-Coastal Tanzania Field</p>
+    <p style="color:rgba(255,255,255,0.7);">Makongo Juu SDA Church</p>
+    <div style="font-size:1rem; font-weight:800; color:var(--accent); margin-top:8px; text-transform:uppercase; letter-spacing:2px;">HATI YA MAREJESHO YA FEDHA</div>
     <div class="form-number-badge">Form No: {{ form.form_number }}</div>
   </div>
 
@@ -82,7 +82,7 @@
       <div style="text-align:center; margin-top:12px;">
         {% if form.status == 'approved' %}
         <span class="badge badge-approved" style="font-size:0.9rem; padding:6px 16px;">
-          <i class="fas fa-check-double"></i> Approved / Closed{% if form.is_paid %} & Paid{% endif %}
+          <i class="fas fa-check-double"></i> Closed{% if form.is_paid %} & Paid{% endif %}
         </span>
         {% elif form.status == 'rejected' %}
         <span class="badge badge-rejected" style="font-size:0.9rem; padding:6px 16px;">
@@ -203,21 +203,21 @@
       <div class="row">
         <div class="col-3">
           <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">First Approver</div>
+            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Mzee wa Idara</div>
             <div style="font-weight:600; color:var(--white); font-size:0.9rem;">{% if form.first_approver %}{{ form.first_approver.get_full_name }}{% else %}Pending{% endif %}</div>
             {% if form.first_approved_at %}<div style="font-size:0.75rem; color:var(--success); margin-top:4px;"><i class="fas fa-check"></i> {{ form.first_approved_at|date:"d M Y" }}</div>{% endif %}
           </div>
         </div>
         <div class="col-3">
           <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Second Approver</div>
-            <div style="font-weight:600; color:var(--white); font-size:0.9rem;">Okoth Oloo</div>
+            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Mzee Kiongozi</div>
+            <div style="font-weight:600; color:var(--white); font-size:0.9rem;">{{ form.second_approver_name|default:"Pending" }}</div>
             {% if form.second_approved_at %}<div style="font-size:0.75rem; color:var(--success); margin-top:4px;"><i class="fas fa-check"></i> {{ form.second_approved_at|date:"d M Y" }}</div>{% endif %}
           </div>
         </div>
         <div class="col-3">
           <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Treasurer</div>
+            <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Mhazini</div>
             <div style="font-weight:600; color:var(--white); font-size:0.9rem;">
               {{ form.treasurer_name|default:"Pending" }}
             </div>

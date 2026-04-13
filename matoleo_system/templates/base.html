@@ -19,7 +19,7 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div style="margin-bottom:8px;">
-        <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 50px; width: auto;">
+        <img src="{% static 'images/logo_clean_plain_v2.png' %}" alt="Logo" class="logo-img">
       </div>
       <div class="church-title">Makongo Juu SDA Church</div>
       <div class="system-subtitle">Finance Department</div>
@@ -31,13 +31,13 @@
         <i class="fas fa-home"></i> Home
       </a>
       <a href="{% url 'expenses:dashboard' %}" class="nav-item">
-        <i class="fas fa-receipt"></i> Expense Requests
+        <i class="fas fa-receipt"></i> Expenses Request
       </a>
       <a href="{% url 'retirement:dashboard' %}" class="nav-item">
-        <i class="fas fa-archive"></i> Retirement Forms
+        <i class="fas fa-archive"></i> Retirement
       </a>
       <a href="{% url 'reports:dashboard' %}" class="nav-item">
-        <i class="fas fa-chart-bar"></i> Reports
+        <i class="fas fa-chart-bar"></i> Report
       </a>
 
       <div class="nav-section-title" style="margin-top:8px;">Account</div>
@@ -128,12 +128,12 @@
     <!-- FOOTER -->
     <footer class="app-footer">
       <div class="footer-title">Makongo Juu SDA Church</div>
-      <div class="footer-subtitle">Finance Department &mdash; Expenses Management System &copy; 2026</div>
+      <div class="footer-subtitle">Finance Department &mdash; Expenses&Retirement Management System &copy; 2026</div>
       <div class="footer-links">
         <a href="{% url 'core:home' %}">Home</a>
-        <a href="{% url 'expenses:dashboard' %}">Expenses</a>
-        <a href="{% url 'retirement:dashboard' %}">Retirement</a>
-        <a href="{% url 'reports:dashboard' %}">Reports</a>
+        <a href="{% url 'expenses:dashboard' %}">Maombi ya Fedha</a>
+        <a href="{% url 'retirement:dashboard' %}">Marejesho</a>
+        <a href="{% url 'reports:dashboard' %}">Taarifa</a>
         <a href="{% url 'accounts:profile' %}">Profile</a>
       </div>
     </footer>

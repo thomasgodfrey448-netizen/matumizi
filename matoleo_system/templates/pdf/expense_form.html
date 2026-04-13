@@ -153,13 +153,13 @@
     <div class="form-number">{{ form.form_number }}</div>
 
     <div class="header">
-        <img src="{% static 'images/logo.png' %}" alt="Church Logo" class="logo">
+        <img src="{% static 'images/logo_clean_plain_v2.png' %}" alt="Church Logo" class="logo">
         <div class="church-name">SEVENTH-DAY ADVENTIST CHURCH</div>
-        <div class="conference-name">EAST-CENTRAL TANZANIA CONFERENCE</div>
+        <div class="conference-name">EAST-COASTAL TANZANIA FIELD</div>
         <div class="address">PO BOX 105, Bagamoyo</div>
     </div>
 
-    <div class="form-title">EXPENSE FORM</div>
+    <div class="form-title">HATI YA MAOMBI YA FEDHA</div>
 
     <table class="info-table">
         <tr>
@@ -171,36 +171,36 @@
         <tr>
             <td class="label">Kanisa:</td>
             <td>Makongo Juu SDA Church</td>
-            <td class="label">Date of Request:</td>
-            <td>{{ form.date_of_request|date:"d/m/Y" }}</td>
+            <td class="label">Tarehe:</td>
+            <td>{{ form.date|date:"d/m/Y" }}</td>
         </tr>
         <tr>
-            <td class="label">Name:</td>
+            <td class="label">Jina:</td>
             <td>{{ form.first_name }} {{ form.last_name }}</td>
-            <td class="label">Phone:</td>
+            <td class="label">Namba ya simu:</td>
             <td>{{ form.phone_number }}</td>
         </tr>
         <tr>
-            <td class="label">Department:</td>
+            <td class="label">Idara/Kitengo:</td>
             <td>{% if form.department %}{{ form.department }}{% else %}N/A{% endif %}</td>
-            <td class="label">Event Date:</td>
-            <td>{% if form.event_date %}{{ form.event_date|date:"d/m/Y" }}{% else %}N/A{% endif %}</td>
+            <td class="label">Tarehe ya Pesa Kutumika:</td>
+            <td>N/A</td>
         </tr>
     </table>
 
     <div class="details-section">
-        <div class="section-title">PURPOSE OF EXPENSE</div>
-        <p>{{ form.purpose }}</p>
+        <div class="section-title">DHUMUNI LA MAOMBI YA FEDHA</div>
+        <p>{{ form.reason }}</p>
     </div>
 
     <div class="details-section">
-        <div class="section-title">EXPENSE ITEMS</div>
+        <div class="section-title">MCHANGANUO WA MAOMBI YA FEDHA</div>
         <table class="items-table">
             <thead>
                 <tr>
                     <th style="width: 10%;">#</th>
-                    <th style="width: 70%;">Description</th>
-                    <th style="width: 20%;" class="amount">Amount (TZS)</th>
+                    <th style="width: 70%;">Mchanganuo</th>
+                    <th style="width: 20%;" class="amount">Kiasi (TZS)</th>
                 </tr>
             </thead>
             <tbody>
@@ -212,13 +212,13 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3" style="text-align: center;">No expense items</td>
+                    <td colspan="3" style="text-align: center;">Hakuna Mchanganuo wa Maombi ya Fedha</td>
                 </tr>
                 {% endfor %}
             </tbody>
             <tfoot>
                 <tr class="total-row">
-                    <td colspan="2" style="text-align: right; font-weight: bold;">TOTAL:</td>
+                    <td colspan="2" style="text-align: right; font-weight: bold;">JUMLA:</td>
                     <td class="amount">{{ form.total_amount|floatformat:2|intcomma }}</td>
                 </tr>
             </tfoot>
@@ -227,10 +227,10 @@
 
     {% if form.is_paid %}
     <div class="payment-info">
-        <div class="section-title">PAYMENT INFORMATION</div>
+        <div class="section-title">TAARIFA YA MALIPO</div>
         <table class="info-table">
             <tr>
-                <td class="label">Payment Date:</td>
+                <td class="label">Tarehe ya Malipo:</td>
                 <td>{{ form.payment_date|date:"d/m/Y" }}</td>
                 <td class="label">Paid At:</td>
                 <td>{{ form.paid_at|date:"d/m/Y H:i" }}</td>
@@ -240,12 +240,12 @@
     {% endif %}
 
     <div class="approval-section">
-        <div class="section-title">APPROVAL SIGNATURES</div>
+        <div class="section-title">UTHIBITISHO/IDHINI YA MAOMBI YA FEDHA</div>
         <table class="approval-table">
             <tr class="role">
-                <td>First Approver</td>
-                <td>Second Approver</td>
-                <td>Treasurer</td>
+                <td>Mzee wa Idara</td>
+                <td>Mzee Kiongozi</td>
+                <td>Mhazini</td>
             </tr>
             <tr>
                 <td>
@@ -269,15 +269,15 @@
             <tr>
                 <td>
                     <div class="signature-line"></div>
-                    <small>Signature</small>
+                    <small>Sahihi</small>
                 </td>
                 <td>
                     <div class="signature-line"></div>
-                    <small>Signature</small>
+                    <small>Sahihi</small>
                 </td>
                 <td>
                     <div class="signature-line"></div>
-                    <small>Signature</small>
+                    <small>Sahihi</small>
                 </td>
             </tr>
             <tr>
@@ -304,9 +304,9 @@
                 </td>
             </tr>
             <tr>
-                <td><small>Date</small></td>
-                <td><small>Date</small></td>
-                <td><small>Date</small></td>
+                <td><small>Tarehe</small></td>
+                <td><small>Tarehe</small></td>
+                <td><small>Tarehe</small></td>
             </tr>
         </table>
     </div>

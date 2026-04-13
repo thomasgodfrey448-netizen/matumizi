@@ -9,8 +9,11 @@
 
 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
   <div>
-    <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
-      <i class="fas fa-file-invoice-dollar" style="color:var(--accent);"></i> Expenses Report
+    <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0; display:flex; align-items:center; gap:0.7rem;">
+      <span style="display:inline-flex; align-items:center; gap:0.45rem;">
+        <i class="fas fa-chart-line" style="color:var(--accent);"></i>
+      </span>
+      Expenses Report
     </h2>
     <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">Expense requests and financial statements</p>
   </div>
@@ -146,13 +149,12 @@
             <td>{{ e.reason|truncatewords:8 }}</td>
             <td style="font-weight:600;">{{ e.total_amount|floatformat:2|intcomma }}</td>
             <td>
-              {% if e.status == 'paid' or e.is_paid %}<span class="badge badge-second">&#10003;&#10003; 2nd</span>
-              {% elif e.status == 'approved' %}<span class="badge badge-approved"><i class="fas fa-check-double"></i> Approved</span>
+              {% if e.status == 'approved' or e.status == 'paid' %}<span class="badge badge-approved"><i class="fas fa-check-double"></i> Approved</span>
               {% elif e.status == 'rejected' %}<span class="badge badge-rejected"><i class="fas fa-times"></i> Rejected</span>
               {% elif e.status == 'submitted' %}<span class="badge badge-submitted">Submitted</span>
               {% elif e.status == 'first_approved' %}<span class="badge badge-first">&#10003; 1st</span>
               {% elif e.status == 'second_approved' %}<span class="badge badge-second">&#10003;&#10003; 2nd</span>
-              {% else %}<span class="badge badge-draft">Draft</span>{% endif %}
+              {% else %}<span class="badge badge-approved"><i class="fas fa-check-double"></i> Approved</span>{% endif %}
             </td>
             <td>
               {% if e.is_paid %}<span class="badge badge-success"><i class="fas fa-check"></i> Paid</span>

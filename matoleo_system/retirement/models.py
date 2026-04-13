@@ -9,7 +9,7 @@ class RetirementForm(models.Model):
         ('submitted', 'Submitted'),
         ('first_approved', 'First Approved'),
         ('second_approved', 'Second Approved'),
-        ('approved', 'Approved / Closed'),
+        ('approved', 'Closed'),
         ('paid', 'Paid'),
         ('rejected', 'Not Approved'),
         ('rejected_for_editing', 'Rejected for Editing'),

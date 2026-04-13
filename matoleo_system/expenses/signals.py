@@ -7,23 +7,23 @@ from core.models import Notification
 @receiver(pre_save, sender=ExpenseRequest)
 def pre_save_expense_request(sender, instance, **kwargs):
     if not instance.pk:
-        instance._old_payment_status = None
+        instance._old_is_paid = False
         return
     try:
         existing = ExpenseRequest.objects.get(pk=instance.pk)
-        instance._old_payment_status = existing.payment_status
+        instance._old_is_paid = existing.is_paid
     except ExpenseRequest.DoesNotExist:
-        instance._old_payment_status = None
+        instance._old_is_paid = False
 
 
 @receiver(post_save, sender=ExpenseRequest)
 def post_save_expense_request(sender, instance, created, **kwargs):
     if created:
         return
-    old_status = getattr(instance, '_old_payment_status', None)
-    new_status = instance.payment_status
+    old_is_paid = getattr(instance, '_old_is_paid', False)
+    new_is_paid = instance.is_paid
 
-    if old_status != 'paid' and new_status == 'paid':
+    if not old_is_paid and new_is_paid:
         Notification.objects.create(
             recipient=instance.submitted_by,
             title='Expense Request Marked Paid',

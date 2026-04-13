@@ -7,12 +7,15 @@ from django.db import transaction
 from django.contrib.auth.models import User
 from .models import ExpenseRequest, ExpenseItem
 import calendar
+import logging
 from datetime import datetime, date
 from core.models import Department, Approver, Treasurer, Notification, UserProfile
 from core.pdf_utils import expense_to_pdf, payment_voucher_pdf
 from django.conf import settings
 import io
 import os
+
+logger = logging.getLogger(__name__)
 
 
 def send_notification(recipient, title, message, link='', notification_type='general'):
@@ -101,9 +104,8 @@ def expense_dashboard(request):
 
     requests = requests.filter(date__gte=start_date, date__lte=end_date)
 
-    # Count pending and approved requests
-    pending_requests = requests.exclude(status='approved').exclude(status='rejected')
-    approved_requests = requests.filter(status='approved')
+    approved_requests = requests.filter(status__in=['approved', 'paid'])
+    pending_requests = requests.exclude(status__in=['approved', 'paid'])
 
     return render(request, 'expenses/dashboard.html', {
         'requests': requests,
@@ -170,10 +172,14 @@ def create_expense(request):
             if desc:
                 try:
                     amt_val = float(amt) if amt else 0
+                    if amt_val < 0:
+                        messages.error(request, 'Item amounts cannot be negative.')
+                        return redirect(request.path)
                     total += amt_val
                     items_data.append((desc, amt_val, i))
                 except ValueError:
-                    pass
+                    messages.error(request, 'Invalid amount value. Please enter a valid number.')
+                    return redirect(request.path)
 
         with transaction.atomic():
             expense = ExpenseRequest.objects.create(
@@ -199,11 +205,15 @@ def create_expense(request):
         return redirect('expenses:detail', pk=expense.pk)
 
     today_date = date.today().isoformat()
+    second_approver = Approver.objects.filter(level='second', is_active=True).select_related('user').first()
+    treasurer = Treasurer.objects.filter(is_active=True).select_related('user').first()
     return render(request, 'expenses/form.html', {
         'departments': departments,
         'profile': profile,
         'action': 'create',
         'today_date': today_date,
+        'second_approver': second_approver,
+        'treasurer': treasurer,
     })
 
 
@@ -253,10 +263,14 @@ def edit_expense(request, pk):
             if desc:
                 try:
                     amt_val = float(amt) if amt else 0
+                    if amt_val < 0:
+                        messages.error(request, 'Item amounts cannot be negative.')
+                        return redirect(request.path)
                     total += amt_val
                     items_data.append((desc, amt_val, i))
                 except ValueError:
-                    pass
+                    messages.error(request, 'Invalid amount value. Please enter a valid number.')
+                    return redirect(request.path)
 
         with transaction.atomic():
             expense.first_name = first_name
@@ -276,8 +290,11 @@ def edit_expense(request, pk):
         messages.success(request, 'Expense request updated.')
         return redirect('expenses:detail', pk=expense.pk)
 
+    second_approver = Approver.objects.filter(level='second', is_active=True).select_related('user').first()
+    treasurer = Treasurer.objects.filter(is_active=True).select_related('user').first()
     return render(request, 'expenses/form.html', {
-        'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+        'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit',
+        'today_date': date.today().isoformat(), 'second_approver': second_approver, 'treasurer': treasurer,
     })
 
 
@@ -384,10 +401,8 @@ def expense_detail(request, pk):
             'can_see_rejection_type': can_see_rejection_type,
         })
     except Exception as e:
-        print(f"Error rendering expense_detail for pk={pk}: {e}")
-        import traceback
-        print(traceback.format_exc())
-        return HttpResponse(f"Internal server error: {str(e)}", status=500)
+        logger.exception("Error rendering expense_detail for pk=%s", pk)
+        return HttpResponse("Internal server error.", status=500)
 
 
 @login_required
@@ -501,8 +516,6 @@ def approve_expense(request, pk):
         expense.status = 'approved'
         expense.admin_approver = user
         expense.admin_approved_at = timezone.now()
-        expense.treasurer_name = user.get_full_name()
-        expense.treasurer_approved_at = timezone.now()
         expense.save()
         send_notification(
             expense.submitted_by,
@@ -598,7 +611,7 @@ def download_expense_pdf(request, pk):
     story = []
 
     # Try to add church logo if it exists
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
     if os.path.exists(logo_path):
         try:
             img = Image(logo_path, width=40*mm, height=40*mm)
@@ -616,11 +629,11 @@ def download_expense_pdf(request, pk):
     normal_c = ParagraphStyle('nc', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER, spaceAfter=2)
 
     story.append(Paragraph("SEVENTH-DAY ADVENTIST CHURCH", header_style))
-    story.append(Paragraph("EAST-CENTRAL TANZANIA CONFERENCE", sub_style))
+    story.append(Paragraph("EAST-COASTAL TANZANIA FIELD", sub_style))
     story.append(Paragraph("PO BOX 105", ParagraphStyle('po', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER, spaceAfter=1)))
     story.append(Paragraph("Bagamoyo", ParagraphStyle('mtaa', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER, spaceAfter=4)))
     story.append(Spacer(1, 6*mm))
-    story.append(Paragraph("EXPENSE REQUEST FORM", ParagraphStyle('title', parent=styles['Normal'],
+    story.append(Paragraph("HATI YA MAOMBI YA FEDHA", ParagraphStyle('title', parent=styles['Normal'],
                             fontSize=13, fontName='Helvetica-Bold', alignment=TA_CENTER,
                             textColor=colors.HexColor('#003366'), spaceAfter=4)))
     story.append(Spacer(1, 4*mm))
@@ -630,9 +643,9 @@ def download_expense_pdf(request, pk):
         ['Mtaa', 'Makongo Juu'],
         ['PO Box', '33516'],
         ['Kanisa', 'Makongo Juu SDA Church'],
-        [f'Form No: {expense.form_number}', f'Date: {expense.date}'],
-        [f'Department: {expense.department}', f'Phone: {expense.phone_number}'],
-        [f'Name: {expense.first_name} {expense.last_name}', f'Status: {expense.get_status_display()}'],
+        [f'Form No: {expense.form_number}', f'Tarehe: {expense.date}'],
+        [f'Idara/Kitengo: {expense.department}', f'Namba ya Simu: {expense.phone_number}'],
+        [f'Jina la Mkuu wa Idara/Kitengo: {expense.first_name} {expense.last_name}', f'Status: {expense.get_status_display()}'],
     ]
     info_table = Table(info_data, colWidths=[90*mm, 80*mm])
     info_table.setStyle(TableStyle([
@@ -643,14 +656,14 @@ def download_expense_pdf(request, pk):
     story.append(info_table)
     story.append(Spacer(1, 4*mm))
 
-    story.append(Paragraph(f"<b>Reason for Request:</b> {expense.reason}", styles['Normal']))
+    story.append(Paragraph(f"<b>DHUMUNI LA MAOMBI YA FEDHA:</b> {expense.reason}", styles['Normal']))
     story.append(Spacer(1, 4*mm))
 
     # Items table
-    items_header = [['#', 'Description', 'Amount (TZS)']]
+    items_header = [['#', 'Mchanganuo', 'Kiasi (TZS)']]
     items_rows = [[str(i+1), item.description, f"{item.amount:,.2f}"]
                   for i, item in enumerate(expense.items.all())]
-    items_rows.append(['', 'TOTAL', f"{expense.total_amount:,.2f}"])
+    items_rows.append(['', 'JUMLA', f"{expense.total_amount:,.2f}"])
 
     items_table = Table(items_header + items_rows, colWidths=[15*mm, 120*mm, 35*mm])
     items_table.setStyle(TableStyle([
@@ -672,16 +685,16 @@ def download_expense_pdf(request, pk):
     requester_name = f"{expense.first_name} {expense.last_name}"
 
     # Approval section
-    story.append(Paragraph("<b>APPROVAL SIGNATURES</b>", ParagraphStyle('ah', parent=styles['Normal'],
+    story.append(Paragraph("<b>UTHIBITISHO/IDHINI YA MAOMBI YA FEDHA</b>", ParagraphStyle('ah', parent=styles['Normal'],
                             fontSize=11, fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=4)))
 
     approval_data = [
-        ['Requester', 'First Approver', 'Second Approver'],
-        [f'Name: {requester_name}', f'Name: {first_approver_name}', f'Name: {second_approver_name}'],
-        ['Signature: _______________', 'Signature: _______________', 'Signature: _______________'],
-        ['Date: __________________', 'Date: __________________', 'Date: __________________'],
+        ['Mkuu wa Idara', 'Mzee wa Idara', 'Mzee Kiongozi', 'Mhazini'],
+        [requester_name, first_approver_name, second_approver_name, expense.treasurer_name or "Pending"],
+        ['Sahihi: _______________', 'Sahihi: _______________', 'Sahihi: _______________', 'Sahihi: _______________'],
+        ['Tarehe: __________', 'Tarehe: __________', 'Tarehe: __________', 'Tarehe: __________'],
     ]
-    approval_table = Table(approval_data, colWidths=[57*mm, 57*mm, 57*mm])
+    approval_table = Table(approval_data, colWidths=[42*mm, 42*mm, 42*mm, 42*mm])
     approval_table.setStyle(TableStyle([
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
@@ -716,7 +729,7 @@ def download_payment_pdf(request, pk):
         messages.error(request, 'Payment form is available only after the request is marked as paid.')
         return redirect('expenses:detail', pk=pk)
 
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
     pdf_buffer = payment_voucher_pdf(expense, logo_path)
     response = HttpResponse(pdf_buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="payment_voucher_{expense.form_number}.pdf"'

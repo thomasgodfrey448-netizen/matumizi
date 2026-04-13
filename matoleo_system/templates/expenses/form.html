@@ -10,13 +10,13 @@
   <!-- FORM HEADER -->
   <div class="form-header-card">
     <div style="margin-bottom:8px;">
-      <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 60px; width: auto;">
+      <img src="{% static 'images/logo_clean_plain_v2.png' %}" alt="Logo" class="logo-img">
     </div>
     <h3>Seventh-day Adventist Church</h3>
-    <p style="font-size:1rem; font-weight:700; color:var(--white); margin:4px 0;">Makongo Juu</p>
-    <p style="color:rgba(255,255,255,0.7);">Financial Department</p>
+    <p style="font-size:1rem; font-weight:700; color:var(--white); margin:4px 0;">Eeast-Coastal Tanzania Field</p>
+    <p style="color:rgba(255,255,255,0.7);">Makongo Juu SDA Church</p>
     <div style="margin-top:12px; font-size:1.1rem; font-weight:800; color:var(--accent); text-transform:uppercase; letter-spacing:2px;">
-      Expense Request Form
+      HATI YA MAOMBI YA FEDHA
     </div>
     {% if expense %}
     <div class="form-number-badge">Form No: {{ expense.form_number }}</div>
@@ -28,20 +28,20 @@
 
     <div class="card">
       <div class="card-header">
-        <h5><i class="fas fa-user" style="color:var(--accent);"></i> Personal Information</h5>
+        <h5><i class="fas fa-user" style="color:var(--accent);"></i> Taarifa za Muombaji</h5>
       </div>
       <div class="card-body">
         <div class="row">
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">First Name <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Jina la Kwanza <span style="color:var(--accent);">*</span></label>
               <input type="text" name="first_name" class="form-control"
                      value="{{ expense.first_name|default:user.first_name }}" required placeholder="First name">
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Last Name <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Jina la Mwisho <span style="color:var(--accent);">*</span></label>
               <input type="text" name="last_name" class="form-control"
                      value="{{ expense.last_name|default:user.last_name }}" required placeholder="Last name">
             </div>
@@ -50,21 +50,21 @@
         <div class="row">
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Phone Number <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Namba ya Simu <span style="color:var(--accent);">*</span></label>
               <input type="text" name="phone_number" class="form-control"
                      value="{{ expense.phone_number|default:profile.phone_number }}" required placeholder="+255 xxx xxx xxx">
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Date <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Tarehe <span style="color:var(--accent);">*</span></label>
               <input type="date" name="date" class="form-control"
                      value="{{ expense.date|date:'Y-m-d'|default:today_date }}" readonly>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Department <span style="color:var(--accent);">*</span></label>
+          <label class="form-label">Idara/Kitengo <span style="color:var(--accent);">*</span></label>
           {% if action == 'edit' %}
             {% if expense.department %}
               <input type="text" class="form-control" value="{{ expense.department.name }}" readonly>
@@ -85,8 +85,8 @@
           <div class="approver-info-box" id="approverInfoBox"></div>
         </div>
         <div class="form-group">
-          <label class="form-label">Reason for Request <span style="color:var(--accent);">*</span></label>
-          <textarea name="reason" class="form-control" required placeholder="Describe the reason for this expense request...">{{ expense.reason|default:'' }}</textarea>
+          <label class="form-label">Kusudi la Maombi ya Fedha <span style="color:var(--accent);">*</span></label>
+          <textarea name="reason" class="form-control" required placeholder="Andika kusudi la maombi ya fedha...">{{ expense.reason|default:'' }}</textarea>
         </div>
       </div>
     </div>
@@ -94,7 +94,7 @@
     <!-- ITEMS TABLE -->
     <div class="card">
       <div class="card-header">
-        <h5><i class="fas fa-list" style="color:var(--accent);"></i> Requested Items</h5>
+        <h5><i class="fas fa-list" style="color:var(--accent);"></i> Maelezo ya Malipo</h5>
       </div>
       <div class="card-body">
         <div class="items-table-wrapper">
@@ -102,8 +102,8 @@
             <thead>
               <tr>
                 <th style="width:40px;">#</th>
-                <th>Description</th>
-                <th style="width:160px;">Amount (TZS)</th>
+                <th>Mchanganuo</th>
+                <th style="width:160px;">Kiasi (TZS)</th>
                 <th style="width:50px;"></th>
               </tr>
             </thead>
@@ -120,7 +120,7 @@
               {% else %}
                 <tr>
                   <td>1</td>
-                  <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="Item description" required></td>
+                  <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="Mchanganuo wa maombi ya fedha" required></td>
                   <td><input type="number" name="item_amount[]" class="form-control item-amount" placeholder="0.00" step="0.01" min="0" required></td>
                   <td><button type="button" class="btn-remove-row" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
                 </tr>
@@ -128,7 +128,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="2" style="text-align:right; font-weight:700; color:rgba(255,255,255,0.8);">TOTAL:</td>
+                <td colspan="2" style="text-align:right; font-weight:700; color:rgba(255,255,255,0.8);">JUMLA:</td>
                 <td style="font-weight:800; color:var(--accent);">TZS <span id="totalAmount">0.00</span></td>
                 <td></td>
               </tr>
@@ -136,7 +136,7 @@
           </table>
         </div>
         <button type="button" class="btn-add-row" id="addItemRow">
-          <i class="fas fa-plus"></i> Add Item
+          <i class="fas fa-plus"></i> Ongeza Mchanganuo
         </button>
       </div>
     </div>
@@ -144,26 +144,26 @@
     <!-- APPROVAL INFO -->
     <div class="card">
       <div class="card-header">
-        <h5><i class="fas fa-signature" style="color:var(--accent);"></i> Approval Information</h5>
+        <h5><i class="fas fa-signature" style="color:var(--accent);"></i> Uthibitisho/Idhini ya Maombi ya Fedha</h5>
       </div>
       <div class="card-body">
         <div class="row">
           <div class="col-3">
             <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">First Approver</div>
-              <div style="font-size:0.88rem; color:rgba(255,255,255,0.8);">Based on Department</div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Mzee wa Idara</div>
+              <div style="font-size:0.88rem; color:rgba(255,255,255,0.8);">Idara Husika</div>
             </div>
           </div>
           <div class="col-3">
             <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Second Approver</div>
-              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">Okoth Oloo</div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Mzee Kiongozi</div>
+              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">{% if second_approver %}{{ second_approver.user.get_full_name }}{% else %}—{% endif %}</div>
             </div>
           </div>
           <div class="col-3">
             <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Treasurer</div>
-              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">Eric Bisanda</div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Mhazini</div>
+              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">{% if treasurer %}{{ treasurer.user.get_full_name }}{% else %}—{% endif %}</div>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@
       <a href="{% url 'expenses:dashboard' %}" class="btn btn-outline">
         <i class="fas fa-arrow-left"></i> Cancel
       </a>
-      <button type="submit" class="btn btn-accent btn-lg">
+      <button type="submit" class="btn btn-accent btn-lg" id="submitBtn" onclick="this.disabled=true; this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Saving...'; this.form.submit();">
         <i class="fas fa-save"></i>
         {% if action == 'edit' %}Update Form{% else %}Save as Draft{% endif %}
       </button>

@@ -8,15 +8,23 @@ from django.http import JsonResponse
 from core.models import UserProfile, RegistrationCode, Department, Approver
 
 
+def _get_user_profile(user):
+    try:
+        return user.profile
+    except UserProfile.DoesNotExist:
+        return None
+
+
 def _is_user_code_department_valid(user):
-    if not hasattr(user, 'profile') or not user.profile.registration_code_used:
+    profile = _get_user_profile(user)
+    if not profile or not profile.registration_code_used:
         return True
     try:
-        code_obj = RegistrationCode.objects.get(code=user.profile.registration_code_used)
+        code_obj = RegistrationCode.objects.get(code=profile.registration_code_used)
     except RegistrationCode.DoesNotExist:
         return False
     if code_obj.department:
-        return user.profile.department is not None and code_obj.department_id == user.profile.department_id
+        return profile.department is not None and code_obj.department_id == profile.department_id
     return True
 
 
@@ -126,6 +134,7 @@ def logout_view(request):
     return redirect('accounts:login')
 
 
+@login_required
 def get_department_from_code(request):
     code = request.GET.get('code', '').strip()
     if code:

@@ -13,7 +13,9 @@ import uuid
 
 @login_required
 def home(request):
-    announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')[:10]
+    all_announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
+    ticker_announcements = all_announcements
+    card_announcements = all_announcements[:3]
     
     # Check if user is approver or treasurer
     is_approver = hasattr(request.user, 'approver_profile')
@@ -24,7 +26,8 @@ def home(request):
     unread_notifications_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
     
     return render(request, 'core/home.html', {
-        'announcements': announcements,
+        'ticker_announcements': ticker_announcements,
+        'card_announcements': card_announcements,
         'is_approver': is_approver,
         'is_treasurer': is_treasurer,
         'is_admin': is_admin,
@@ -57,10 +60,7 @@ def notifications_view(request):
     })
 
 
-from django.views.decorators.csrf import csrf_exempt
-
 @login_required
-@csrf_exempt
 def mark_notification_read(request, pk):
     from django.utils import timezone
     notif = get_object_or_404(Notification, pk=pk, recipient=request.user)
@@ -287,7 +287,12 @@ def remove_treasurer(request, pk):
 @staff_member_required
 def generate_reg_code(request):
     if request.method == 'POST':
-        max_uses = int(request.POST.get('max_uses', 1))
+        try:
+            max_uses = int(request.POST.get('max_uses', 1))
+            if max_uses < 1:
+                max_uses = 1
+        except (ValueError, TypeError):
+            max_uses = 1
         department_id = request.POST.get('department')
         department = None
         if department_id:
@@ -361,11 +366,12 @@ def delete_user(request, pk):
     return redirect('core:admin_dashboard')
 
 
+@login_required
 def get_approver_info(request):
     dept_id = request.GET.get('department_id')
     if dept_id:
         approvers = Approver.objects.filter(
-            department_id=dept_id, level='first', is_active=True
+            departments=dept_id, level='first', is_active=True
         ).select_related('user')
         data = [{'name': a.user.get_full_name(), 'phone': a.phone_number} for a in approvers]
         return JsonResponse({'approvers': data})

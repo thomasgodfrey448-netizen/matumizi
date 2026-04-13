@@ -9,10 +9,13 @@ from django.conf import settings
 import os
 import io
 import calendar
+import logging
 from datetime import datetime, date
 from .models import RetirementForm, RetirementItem
 from core.models import Department, Approver, Treasurer, Notification, UserProfile
 from core.pdf_utils import retirement_to_pdf, payment_voucher_pdf
+
+logger = logging.getLogger(__name__)
 
 
 def send_notification(recipient, title, message, link='', notification_type='general'):
@@ -22,6 +25,7 @@ def send_notification(recipient, title, message, link='', notification_type='gen
     Notification.objects.create(recipient=recipient, title=title, message=message, link=link, notification_type=notification_type)
 
 
+@login_required
 def get_first_approver(request, department_id):
     """API endpoint to get the first approver for a department"""
     try:
@@ -148,6 +152,50 @@ def create_retirement(request):
                 'today_date': date.today().isoformat(),
             })
 
+        # Validate dates
+        try:
+            from datetime import date as date_type
+            parsed_request = datetime.strptime(date_request, '%Y-%m-%d').date()
+            parsed_retirement = datetime.strptime(date_retirement, '%Y-%m-%d').date()
+            if parsed_retirement < parsed_request:
+                messages.error(request, 'Retirement date cannot be before the request date.')
+                return render(request, 'retirement/form.html', {
+                    'departments': departments,
+                    'profile': profile,
+                    'action': 'create',
+                    'today_date': date.today().isoformat(),
+                })
+        except ValueError:
+            messages.error(request, 'Invalid date format. Please use the date picker.')
+            return render(request, 'retirement/form.html', {
+                'departments': departments,
+                'profile': profile,
+                'action': 'create',
+                'today_date': date.today().isoformat(),
+            })
+
+        # Validate file attachment
+        if attachment:
+            allowed_extensions = {'.pdf', '.jpg', '.jpeg', '.png'}
+            max_size_mb = 5
+            ext = os.path.splitext(attachment.name)[1].lower()
+            if ext not in allowed_extensions:
+                messages.error(request, 'Only PDF, JPG, and PNG files are allowed.')
+                return render(request, 'retirement/form.html', {
+                    'departments': departments,
+                    'profile': profile,
+                    'action': 'create',
+                    'today_date': date.today().isoformat(),
+                })
+            if attachment.size > max_size_mb * 1024 * 1024:
+                messages.error(request, f'File size must not exceed {max_size_mb}MB.')
+                return render(request, 'retirement/form.html', {
+                    'departments': departments,
+                    'profile': profile,
+                    'action': 'create',
+                    'today_date': date.today().isoformat(),
+                })
+
         try:
             dept = Department.objects.get(id=dept_id)
         except Department.DoesNotExist:
@@ -166,10 +214,14 @@ def create_retirement(request):
             if desc:
                 try:
                     amt_val = float(amt) if amt else 0
+                    if amt_val < 0:
+                        messages.error(request, 'Item amounts cannot be negative.')
+                        return redirect(request.path)
                     total += amt_val
                     items_data.append((desc, amt_val, i))
                 except ValueError:
-                    pass
+                    messages.error(request, 'Invalid amount value. Please enter a valid number.')
+                    return redirect(request.path)
 
         try:
             remaining_val = float(remaining)
@@ -200,11 +252,15 @@ def create_retirement(request):
         return redirect('retirement:detail', pk=form.pk)
 
     today_date = date.today().isoformat()
+    second_approver = Approver.objects.filter(level='second', is_active=True).select_related('user').first()
+    treasurer = Treasurer.objects.filter(is_active=True).select_related('user').first()
     return render(request, 'retirement/form.html', {
         'departments': departments,
         'profile': profile,
         'action': 'create',
         'today_date': today_date,
+        'second_approver': second_approver,
+        'treasurer': treasurer,
     })
 
 
@@ -255,10 +311,14 @@ def edit_retirement(request, pk):
             if desc:
                 try:
                     amt_val = float(amt) if amt else 0
+                    if amt_val < 0:
+                        messages.error(request, 'Item amounts cannot be negative.')
+                        return redirect(request.path)
                     total += amt_val
                     items_data.append((desc, amt_val, i))
                 except ValueError:
-                    pass
+                    messages.error(request, 'Invalid amount value. Please enter a valid number.')
+                    return redirect(request.path)
 
         try:
             remaining_val = float(remaining)
@@ -287,8 +347,11 @@ def edit_retirement(request, pk):
         messages.success(request, 'Retirement form updated.')
         return redirect('retirement:detail', pk=form.pk)
 
+    second_approver = Approver.objects.filter(level='second', is_active=True).select_related('user').first()
+    treasurer = Treasurer.objects.filter(is_active=True).select_related('user').first()
     return render(request, 'retirement/form.html', {
-        'departments': departments, 'form_obj': form, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+        'departments': departments, 'form_obj': form, 'profile': profile, 'action': 'edit',
+        'today_date': date.today().isoformat(), 'second_approver': second_approver, 'treasurer': treasurer,
     })
 
 
@@ -393,10 +456,8 @@ def retirement_detail(request, pk):
             'can_see_rejection_type': can_see_rejection_type,
         })
     except Exception as e:
-        print(f"Error rendering retirement_detail for pk={pk}: {e}")
-        import traceback
-        print(traceback.format_exc())
-        return HttpResponse(f"Internal server error: {str(e)}", status=500)
+        logger.exception("Error rendering retirement_detail for pk=%s", pk)
+        return HttpResponse("Internal server error.", status=500)
 
 
 @login_required
@@ -508,8 +569,6 @@ def approve_retirement(request, pk):
         form.status = 'approved'
         form.admin_approver = user
         form.admin_approved_at = timezone.now()
-        form.treasurer_name = user.get_full_name()
-        form.treasurer_approved_at = timezone.now()
         form.save()
         send_notification(
             form.submitted_by,
@@ -593,7 +652,7 @@ def download_retirement_pdf(request, pk):
 
     # If paid, download payment voucher
     if form.is_paid:
-        logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo.png')
+        logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
         pdf_buffer = payment_voucher_pdf(form, logo_path)
         response = HttpResponse(pdf_buffer, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="payment_voucher_{form.form_number}.pdf"'
@@ -614,7 +673,7 @@ def download_retirement_pdf(request, pk):
     story = []
 
     # Add the church logo from static files
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
     if os.path.exists(logo_path):
         try:
             img = Image(logo_path, width=40*mm, height=40*mm)
@@ -630,11 +689,11 @@ def download_retirement_pdf(request, pk):
                                 fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=2)
 
     story.append(Paragraph("SEVENTH-DAY ADVENTIST CHURCH", header_style))
-    story.append(Paragraph("EAST-CENTRAL TANZANIA CONFERENCE", sub_style))
+    story.append(Paragraph("EAST-COASTAL TANZANIA FIELD", sub_style))
     story.append(Paragraph("PO BOX 105", ParagraphStyle('po', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER, spaceAfter=1)))
     story.append(Paragraph("Bagamoyo", ParagraphStyle('mtaa', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER, spaceAfter=4)))
     story.append(Spacer(1, 6*mm))
-    story.append(Paragraph("RETIREMENT FORM", ParagraphStyle('title', parent=styles['Normal'],
+    story.append(Paragraph("HATI YA MAREJESHO YA FEDHA", ParagraphStyle('title', parent=styles['Normal'],
                             fontSize=13, fontName='Helvetica-Bold', alignment=TA_CENTER,
                             textColor=colors.HexColor('#003366'), spaceAfter=4)))
     story.append(Spacer(1, 4*mm))
@@ -644,10 +703,10 @@ def download_retirement_pdf(request, pk):
         ['Mtaa', 'Makongo Juu'],
         ['PO Box', '33516'],
         ['Kanisa', 'Makongo Juu SDA Church'],
-        [f'Form No: {form.form_number}', f'Date: {form.date_of_request}'],
-        [f'Department: {form.department}', f'Phone: {form.phone_number}'],
-        [f'Name: {form.first_name} {form.last_name}', f'Status: {form.get_status_display()}'],
-        [f'Retirement Date: {form.date_of_retirement}', ''],
+        [f'Form No: {form.form_number}', f'Tarehe ya maombi ya fedha: {form.date_of_request}'],
+        [f'Idara/Kitengo: {form.department}', f'Namba ya Simu: {form.phone_number}'],
+        [f'Jina la Mkuu wa Idara/Kitengo: {form.first_name} {form.last_name}', f'Status: {form.get_status_display()}'],
+        [f'Tarehe ya Marejesho: {form.date_of_retirement}', ''],
     ]
     info_table = Table(info_data, colWidths=[90*mm, 80*mm])
     info_table.setStyle(TableStyle([
@@ -658,14 +717,14 @@ def download_retirement_pdf(request, pk):
     story.append(info_table)
     story.append(Spacer(1, 4*mm))
 
-    story.append(Paragraph(f"<b>Reason:</b> {form.reason}", styles['Normal']))
+    story.append(Paragraph(f"<b>MAELEZO YA MAREJESHO:</b> {form.reason}", styles['Normal']))
     story.append(Spacer(1, 4*mm))
 
     # Items table
-    items_header = [['#', 'Description', 'Amount (TZS)']]
+    items_header = [['#', 'Mchanganuo', 'Kiasi (TZS)']]
     items_rows = [[str(i+1), item.description, f"{item.amount:,.2f}"]
                   for i, item in enumerate(form.items.all())]
-    items_rows.append(['', 'TOTAL', f"{form.total_amount:,.2f}"])
+    items_rows.append(['', 'JUMLA', f"{form.total_amount:,.2f}"])
 
     items_table = Table(items_header + items_rows, colWidths=[15*mm, 120*mm, 35*mm])
     items_table.setStyle(TableStyle([
@@ -686,20 +745,20 @@ def download_retirement_pdf(request, pk):
                                      fontName='Helvetica-Bold', textColor=colors.HexColor('#003366'), spaceAfter=4)
     requester_value = ParagraphStyle('requester_value', parent=styles['Normal'], fontSize=10, leading=14)
 
-    story.append(Paragraph('Requester', requester_title))
-    story.append(Paragraph(f'Name: {form.first_name} {form.last_name}', requester_value))
-    story.append(Paragraph('Signature: ________________________________', requester_value))
-    story.append(Paragraph('Date: ________________________________', requester_value))
+    story.append(Paragraph('Mkuu wa Idara/Kitengo', requester_title))
+    story.append(Paragraph(f'Jina: {form.first_name} {form.last_name}', requester_value))
+    story.append(Paragraph('Sahihi: ________________________________', requester_value))
+    story.append(Paragraph('Tarehe: ________________________________', requester_value))
     story.append(Spacer(1, 8*mm))
 
     treasurer_name = form.treasurer_name or '________________'
     treasurer_phone = form.treasurer_phone or '___________'
 
-    story.append(Paragraph('Treasurer', requester_title))
-    story.append(Paragraph(f'Name: {treasurer_name}', requester_value))
-    story.append(Paragraph('Signature: ________________________________', requester_value))
-    story.append(Paragraph(f'Phone: {treasurer_phone}', requester_value))
-    story.append(Paragraph('Date: ________________________________', requester_value))
+    story.append(Paragraph('Mhazini', requester_title))
+    story.append(Paragraph(f'Jina: {treasurer_name}', requester_value))
+    story.append(Paragraph('Sahihi: ________________________________', requester_value))
+    story.append(Paragraph(f'Namba ya simu: {treasurer_phone}', requester_value))
+    story.append(Paragraph('Tarehe: ________________________________', requester_value))
 
     doc.build(story)
     buffer.seek(0)
@@ -724,9 +783,7 @@ def download_payment_pdf_retirement(request, pk):
         messages.error(request, 'Payment form is available only after the form is marked as paid.')
         return redirect('retirement:detail', pk=pk)
 
-    from django.conf import settings
-    import os
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
     pdf_buffer = payment_voucher_pdf(form, logo_path)
     response = HttpResponse(pdf_buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="payment_voucher_{form.form_number}.pdf"'

@@ -327,34 +327,34 @@
                 <img src="data:image/png;base64,{{ logo_base64 }}" alt="Church Logo" style="height: 80px; width: auto;">
             </div>
             <h1>SEVENTH-DAY ADVENTIST CHURCH</h1>
-            <h2>EAST-CENTRAL TANZANIA CONFERENCE</h2>
+            <h2>EAST-COASTAL TANZANIA FIELD</h2>
             <p>PO BOX 105, Bagamoyo</p>
-            <p style="font-weight: 600; margin-top: 8px;">RETIREMENT SETTLEMENT FORM</p>
+            <p style="font-weight: 600; margin-top: 8px;">HATI YA MAREJESHO YA FEDHA</p>
             <div class="form-number">{{ retirement.form_number }}</div>
         </div>
 
         <!-- PERSONAL INFORMATION -->
         <div class="section-title">
-            <i>👤</i> Employee Information
+            <i>👤</i> Taarifa za Muwasilishaji
         </div>
         <div class="section">
             <div class="row">
                 <div class="field">
-                    <span class="label">First Name</span>
+                    <span class="label">Jina la kwanza</span>
                     <div class="value">{{ retirement.first_name }}</div>
                 </div>
                 <div class="field">
-                    <span class="label">Last Name</span>
+                    <span class="label">Jina la Mwisho</span>
                     <div class="value">{{ retirement.last_name }}</div>
                 </div>
             </div>
             <div class="row">
                 <div class="field">
-                    <span class="label">Phone Number</span>
+                    <span class="label">Namba ya Simu</span>
                     <div class="value">{{ retirement.phone_number }}</div>
                 </div>
                 <div class="field">
-                    <span class="label">Department</span>
+                    <span class="label">Idara/Kitengo</span>
                     <div class="value">{{ retirement.department }}</div>
                 </div>
             </div>
@@ -362,26 +362,26 @@
 
         <!-- RETIREMENT DETAILS -->
         <div class="section-title">
-            <i>📅</i> Retirement Details
+            <i>📅</i> Taarifa za Marejesho
         </div>
         <div class="section">
             <div class="row">
                 <div class="field">
-                    <span class="label">Date of Request</span>
+                    <span class="label">Tarehe ya Maombi ya Fedha</span>
                     <div class="value">{{ retirement.date_of_request|date:"d M Y" }}</div>
                 </div>
                 <div class="field">
-                    <span class="label">Date of Retirement</span>
+                    <span class="label">Tarehe ya Marejsho</span>
                     <div class="value">{{ retirement.date_of_retirement|date:"d M Y" }}</div>
                 </div>
             </div>
             <div class="row">
                 <div class="field">
-                    <span class="label">Total Allocation</span>
+                    <span class="label">Kiasi Chote</span>
                     <div class="value highlight">{{ retirement.amount|floatformat:2 }} TZS</div>
                 </div>
                 <div class="field">
-                    <span class="label">Amount Remaining</span>
+                    <span class="label">Kiasi Kilichobakia</span>
                     <div class="value highlight">{{ retirement.remaining_amount|floatformat:2 }} TZS</div>
                 </div>
             </div>
@@ -389,17 +389,17 @@
 
         <!-- SETTLEMENT SUMMARY -->
         <div class="section-title">
-            <i>💵</i> Settlement Summary
+            <i>💵</i> Taarifa ya Marejesho ya Fedha
         </div>
         <div class="section">
             <div class="summary-grid">
                 <div class="summary-block">
-                    <div class="summary-label">Total Allocation</div>
+                    <div class="summary-label">Kiasi Chote</div>
                     <div class="summary-value">{{ retirement.amount|floatformat:2 }}</div>
                     <div style="font-size: 10px; color: #666; margin-top: 5px;">TZS</div>
                 </div>
                 <div class="summary-block">
-                    <div class="summary-label">Amount Remaining</div>
+                    <div class="summary-label">Kiasi Kilichobakia</div>
                     <div class="summary-value">{{ retirement.remaining_amount|floatformat:2 }}</div>
                     <div style="font-size: 10px; color: #666; margin-top: 5px;">TZS</div>
                 </div>
@@ -424,7 +424,7 @@
                     </div>
                 </div>
                 <div class="field">
-                    <span class="label">Request Date</span>
+                    <span class="label">Tarehe ya maombi ya fedha</span>
                     <div class="value">{{ retirement.created_at|date:"d M Y" }}</div>
                 </div>
             </div>
@@ -441,32 +441,32 @@
         <!-- APPROVAL SECTION -->
         <div class="approval-section">
             <div class="section-title">
-                <i>🖋️</i> Approval Signatures
+                <i>🖋️</i> Uthibitisho/Idhini ya Marejesho ya Fedha
             </div>
             <div class="approval-grid">
                 <div class="approval-block">
-                    <div class="approval-label">First Approver</div>
+                    <div class="approval-label">Mzee wa Idara</div>
                     {% if retirement.first_approver_name %}
                     <p style="font-size: 11px; margin-top: 30px;">{{ retirement.first_approver_name }}</p>
                     <p style="font-size: 10px; color: #666;">{{ retirement.first_approved_at|date:"d M Y H:i"|default:"Pending" }}</p>
                     {% endif %}
-                    <div class="approval-date">Date: _______________</div>
+                    <div class="approval-date">Tarehe: _______________</div>
                 </div>
                 <div class="approval-block">
-                    <div class="approval-label">Second Approver</div>
+                    <div class="approval-label">Mzee Kiongozi</div>
                     {% if retirement.second_approver_name %}
                     <p style="font-size: 11px; margin-top: 30px;">{{ retirement.second_approver_name }}</p>
                     <p style="font-size: 10px; color: #666;">{{ retirement.second_approved_at|date:"d M Y H:i"|default:"Pending" }}</p>
                     {% endif %}
-                    <div class="approval-date">Date: _______________</div>
+                    <div class="approval-date">Tarehe: _______________</div>
                 </div>
                 <div class="approval-block">
-                    <div class="approval-label">Treasurer / Finance</div>
+                    <div class="approval-label">Mhazini</div>
                     {% if retirement.treasurer_name %}
                     <p style="font-size: 11px; margin-top: 30px;">{{ retirement.treasurer_name }}</p>
                     <p style="font-size: 10px; color: #666;">{{ retirement.treasurer_approved_at|date:"d M Y H:i"|default:"Pending" }}</p>
                     {% endif %}
-                    <div class="approval-date">Date: _______________</div>
+                    <div class="approval-date">Tarehe: _______________</div>
                 </div>
             </div>
         </div>

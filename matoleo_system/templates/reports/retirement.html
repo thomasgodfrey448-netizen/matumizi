@@ -88,7 +88,7 @@
       <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
       <div class="stat-info">
         <div class="stat-value">{{ approved_count }}</div>
-        <div class="stat-label">Approved</div>
+        <div class="stat-label">Closed</div>
       </div>
     </div>
   </div>
@@ -121,7 +121,6 @@
             <th>Department</th>
             <th>Date Req.</th>
             <th>Date Ret.</th>
-            <th>Amount (TZS)</th>
             <th>Remaining</th>
             <th>Status</th>
             <th>Action</th>
@@ -136,7 +135,6 @@
             <td>{% if r.department %}{{ r.department }}{% else %}No Department{% endif %}</td>
             <td>{{ r.date_of_request|date:"d M Y" }}</td>
             <td>{{ r.date_of_retirement|date:"d M Y" }}</td>
-            <td style="font-weight:600;">{{ r.total_amount|floatformat:2|intcomma }}</td>
             <td>{{ r.remaining_amount|floatformat:2|intcomma }}</td>
             <td>
               {% if r.status == 'paid' %}<span class="badge badge-success"><i class="fas fa-money-bill-wave"></i> Paid</span>
@@ -157,7 +155,7 @@
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="7" style="text-align:right; font-weight:700; color:rgba(255,255,255,0.7); padding:10px 14px;">TOTAL:</td>
+            <td colspan="6" style="text-align:right; font-weight:700; color:rgba(255,255,255,0.7); padding:10px 14px;">TOTAL:</td>
             <td style="font-weight:800; color:var(--accent); padding:10px 14px;">{{ total|floatformat:2|intcomma }}</td>
             <td colspan="2"></td>
           </tr>

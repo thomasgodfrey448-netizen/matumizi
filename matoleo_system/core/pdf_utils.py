@@ -115,9 +115,9 @@ def expense_to_pdf(expense_request, logo_path=None):
         ['', ''],
         ['Treasurer', expense_request.treasurer_name or 'TBD'],
         ['Treasurer Phone', expense_request.treasurer_phone or 'TBD'],
-        ['Treasurer Approved', 'Yes' if hasattr(expense_request, 'treasurer_approved') and expense_request.treasurer_approved else 'No'],
+        ['Treasurer Approved', 'Yes' if expense_request.treasurer_approved_at is not None else 'No'],
     ]
-    
+
     return generate_pdf_with_logo('expense_request.pdf', 'Expense Request Form', data, logo_path)
 
 
@@ -143,9 +143,9 @@ def retirement_to_pdf(retirement_form, logo_path=None):
         ['', ''],
         ['Treasurer', retirement_form.treasurer_name or 'TBD'],
         ['Treasurer Phone', retirement_form.treasurer_phone or 'TBD'],
-        ['Treasurer Approved', 'Yes' if hasattr(retirement_form, 'treasurer_approved') and retirement_form.treasurer_approved else 'No'],
+        ['Treasurer Approved', 'Yes' if retirement_form.treasurer_approved_at is not None else 'No'],
     ]
-    
+
     return generate_pdf_with_logo('retirement_form.pdf', 'Retirement Form', data, logo_path)
 
 
@@ -217,25 +217,26 @@ def payment_voucher_pdf(request_obj, logo_path=None):
             pass
 
     story.append(Paragraph('SEVENTH-DAY ADVENTIST CHURCH', title_style))
-    story.append(Paragraph('EAST-CENTRAL TANZANIA CONFERENCE', subtitle_style))
+    story.append(Paragraph('EAST-COASTAL TANZANIA FIELD', subtitle_style))
+    story.append(Spacer(1, 6))
     story.append(Paragraph('PO BOX 105, Bagamoyo', normal_center))
     story.append(Spacer(1, 10))
-    story.append(Paragraph('PAYMENT FORM', ParagraphStyle('heading', parent=styles['Heading2'], fontSize=16, alignment=TA_CENTER, fontName='Helvetica-Bold', textColor=colors.HexColor('#003366'))))
+    story.append(Paragraph('HATI YA MALIPO YA FEDHA', ParagraphStyle('heading', parent=styles['Heading2'], fontSize=16, alignment=TA_CENTER, fontName='Helvetica-Bold', textColor=colors.HexColor('#003366'))))
     story.append(Spacer(1, 12))
 
     header_data = [
         ['Payment Form No:', payment_form_number],
-        ['Date of Request:', request_date],
-        ['Date of Final Approval:', final_approval_date],
-        ['Date of Payment:', payment_date],
-        ['Requester:', requester_name],
-        ['Department:', department],
+        ['Tarehe ya Maombi ya Fedha:', request_date],
+        ['Tarehe ya kuidhinisha:', final_approval_date],
+        ['Tarehe ya Malipo:', payment_date],
+        ['Mkuu wa Idara:', requester_name],
+        ['Idara/Kitengo:', department],
         ['Mtaa:', location_mtaa],
         ['PO Box:', location_pobox],
         ['Kanisa:', kanisa],
-        ['Phone:', phone_number],
-        ['Treasurer:', treasurer_name],
-        ['Amount Paid (TZS):', amount_paid],
+        ['Namba ya Simu:', phone_number],
+        ['Jina la Muhazani:', treasurer_name],
+        ['Kiasi Kilicholipwa (TZS):', amount_paid],
     ]
 
     header_table = Table(header_data, colWidths=[130, 340])
@@ -273,12 +274,12 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         story.append(reason_table)
         story.append(Spacer(1, 12))
 
-    details_data = [['#', 'Description', 'Amount (TZS)']]
+    details_data = [['#', 'Mchanganuo', 'Kiasi (TZS)']]
     for item in items:
         details_data.append([item[0], item[1], item[2]])
     if len(details_data) == 1:
-        details_data.append(['', 'No items listed', ''])
-    details_data.append(['', 'TOTAL', amount_paid])
+        details_data.append(['', 'Hakuna vitu vilivyorekodiwa', ''])
+    details_data.append(['', 'JUMLA', amount_paid])
 
     details_table = Table(details_data, colWidths=[30, 330, 110])
     details_table.setStyle(TableStyle([
@@ -298,10 +299,10 @@ def payment_voucher_pdf(request_obj, logo_path=None):
     story.append(Spacer(1, 20))
 
     sig_data = [
-        [Paragraph('REQUESTER', label_style), Paragraph('TREASURER', label_style)],
-        [Paragraph(f'Name: {requester_name}', value_style), Paragraph(f'Name: {treasurer_name}', value_style)],
-        [Paragraph('Signature: ___________________________', value_style), Paragraph('Signature: ___________________________', value_style)],
-        [Paragraph('Date: ________________________________', value_style), Paragraph('Date: ________________________________', value_style)],
+        [Paragraph('MKUU WA IDARA/KITENGO', label_style), Paragraph('MHAZINI', label_style)],
+        [Paragraph(f'Jina: {requester_name}', value_style), Paragraph(f'Jina: {treasurer_name}', value_style)],
+        [Paragraph('Sahihi: ___________________________', value_style), Paragraph('Sahihi: ___________________________', value_style)],
+        [Paragraph('Tarehe: ________________________________', value_style), Paragraph('Tarehe: ________________________________', value_style)],
     ]
     sig_table = Table(sig_data, colWidths=[235, 235], hAlign='CENTER')
     sig_table.setStyle(TableStyle([

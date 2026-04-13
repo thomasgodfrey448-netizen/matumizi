@@ -73,7 +73,7 @@ def expenses_report(request):
     # Evaluate queryset and calculate totals
     expenses_list = list(qs)
     total = sum(e.total_amount for e in expenses_list)
-    approved_count = sum(1 for e in expenses_list if e.status == 'approved')
+    approved_count = sum(1 for e in expenses_list if e.status in ['approved', 'paid'])
     pending_count = len(expenses_list) - approved_count
 
     return render(request, 'reports/expenses.html', {
@@ -147,7 +147,7 @@ def retirement_report(request):
     # Evaluate queryset and calculate totals
     retirements_list = list(qs)
     total = sum(r.total_amount for r in retirements_list)
-    approved_count = sum(1 for r in retirements_list if r.status == 'approved')
+    approved_count = sum(1 for r in retirements_list if r.status in ('approved', 'paid'))
     pending_count = len(retirements_list) - approved_count
 
     return render(request, 'reports/retirement.html', {
@@ -231,7 +231,7 @@ def download_expense_report(request):
     styles = getSampleStyleSheet()
     story = []
 
-    story.append(Paragraph("MAKONG JUU SDA CHURCH - FINANCE DEPARTMENT",
+    story.append(Paragraph("MAKONGO JUU SDA CHURCH - FINANCE DEPARTMENT",
                             ParagraphStyle('h', parent=styles['Normal'], fontSize=14,
                                            fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=4)))
     story.append(Paragraph("EXPENSE REQUESTS REPORT",
@@ -340,7 +340,7 @@ def download_retirement_report(request):
     styles = getSampleStyleSheet()
     story = []
 
-    story.append(Paragraph("MAKONG JUU SDA CHURCH - FINANCE DEPARTMENT",
+    story.append(Paragraph("MAKONGO JUU SDA CHURCH - FINANCE DEPARTMENT",
                             ParagraphStyle('h', parent=styles['Normal'], fontSize=14,
                                            fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=4)))
     story.append(Paragraph("RETIREMENT FORMS REPORT",
@@ -348,7 +348,7 @@ def download_retirement_report(request):
                                            fontName='Helvetica-Bold', alignment=TA_CENTER,
                                            textColor=colors.HexColor('#1a5276'), spaceAfter=8)))
 
-    headers = [['#', 'Form No', 'Name', 'Department', 'Date Req.', 'Date Ret.', 'Amount (TZS)', 'Remaining', 'Status']]
+    headers = [['#', 'Form No', 'Name', 'Department', 'Date Req.', 'Date Ret.', 'Remaining', 'Status']]
     rows = []
     total = 0
     for i, r in enumerate(qs):
@@ -358,14 +358,13 @@ def download_retirement_report(request):
             str(r.department or ''),
             str(r.date_of_request),
             str(r.date_of_retirement),
-            f"{r.total_amount:,.2f}",
             f"{r.remaining_amount:,.2f}",
             r.get_status_display(),
         ])
-        total += r.total_amount
-    rows.append(['', '', '', '', '', 'TOTAL', f"{total:,.2f}", '', ''])
+        total += r.remaining_amount
+    rows.append(['', '', '', '', '', 'TOTAL', f"{total:,.2f}", ''])
 
-    col_widths = [10*mm, 28*mm, 35*mm, 30*mm, 20*mm, 20*mm, 28*mm, 25*mm, 22*mm]
+    col_widths = [10*mm, 28*mm, 35*mm, 30*mm, 20*mm, 20*mm, 28*mm, 22*mm]
     table = Table(headers + rows, colWidths=col_widths)
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a5276')),

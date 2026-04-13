@@ -9,13 +9,13 @@
 
   <div class="form-header-card" style="background: linear-gradient(135deg, rgba(26,82,118,0.8), rgba(21,67,96,0.8));">
     <div style="margin-bottom:8px;">
-      <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 60px; width: auto;">
+      <img src="{% static 'images/logo_clean_plain_v2.png' %}" alt="Logo" class="logo-img">
     </div>
     <h3>Seventh-day Adventist Church</h3>
-    <p style="font-size:1rem; font-weight:700; color:var(--white);">Makongo Juu</p>
-    <p style="color:rgba(255,255,255,0.7);">Financial Department</p>
+    <p style="font-size:1rem; font-weight:700; color:var(--white);">East-Coastal Tanzania Field </p>
+    <p style="color:rgba(255,255,255,0.7);">Makongo Juu SDA Church </p>
     <div style="font-size:1rem; font-weight:800; color:var(--accent); margin-top:8px; text-transform:uppercase; letter-spacing:2px;">
-      Retirement Form
+      HATI YA MAREJESHO YA FEDHA
     </div>
     {% if form_obj %}
     <div class="form-number-badge">Form No: {{ form_obj.form_number }}</div>
@@ -27,20 +27,20 @@
 
     <div class="card">
       <div class="card-header">
-        <h5><i class="fas fa-user" style="color:var(--accent);"></i> Personal Information</h5>
+        <h5><i class="fas fa-user" style="color:var(--accent);"></i> Taarifa za Muomabji</h5>
       </div>
       <div class="card-body">
         <div class="row">
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">First Name <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Jina la Kwanza <span style="color:var(--accent);">*</span></label>
               <input type="text" name="first_name" class="form-control"
                      value="{{ form_obj.first_name|default:user.first_name }}" required placeholder="First name">
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Last Name <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Jina la Mwisho <span style="color:var(--accent);">*</span></label>
               <input type="text" name="last_name" class="form-control"
                      value="{{ form_obj.last_name|default:user.last_name }}" required placeholder="Last name">
             </div>
@@ -49,14 +49,14 @@
         <div class="row">
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Phone Number <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Namba ya Simu <span style="color:var(--accent);">*</span></label>
               <input type="text" name="phone_number" class="form-control"
                      value="{{ form_obj.phone_number|default:profile.phone_number }}" required placeholder="+255 xxx xxx xxx">
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Department <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Idara/Kitengo <span style="color:var(--accent);">*</span></label>
               {% if action == 'create' %}
                 {% if profile.department %}
                   <input type="hidden" name="department" value="{{ profile.department.id }}">
@@ -78,34 +78,34 @@
         <div class="row">
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Date of Request <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Tarehe Fedha Iliombwa <span style="color:var(--accent);">*</span></label>
               <input type="date" name="date_of_request" class="form-control"
                      value="{{ form_obj.date_of_request|date:'Y-m-d'|default:today_date }}" required>
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Date of Retirement <span style="color:var(--accent);">*</span></label>
+              <label class="form-label">Tarehe ya Marejesho <span style="color:var(--accent);">*</span></label>
               <input type="date" name="date_of_retirement" class="form-control"
                      value="{{ form_obj.date_of_retirement|date:'Y-m-d'|default:today_date }}" readonly>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Reason / Description <span style="color:var(--accent);">*</span></label>
-          <textarea name="reason" class="form-control" required placeholder="Describe the purpose of this retirement form...">{{ form_obj.reason|default:'' }}</textarea>
+          <label class="form-label">Maelezo ya Marejesho ya Fedha <span style="color:var(--accent);">*</span></label>
+          <textarea name="reason" class="form-control" required placeholder="Andika kiasi kilicho Ombwa na Kusudio lake...">{{ form_obj.reason|default:'' }}</textarea>
         </div>
         <div class="row">
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Remaining Amount (TZS)</label>
+              <label class="form-label">Kiasi Kilichobakia (TZS)</label>
               <input type="number" name="remaining_amount" class="form-control"
                      value="{{ form_obj.remaining_amount|default:'0' }}" step="0.01" min="0" placeholder="0.00">
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
-              <label class="form-label">Attach File (optional)</label>
+              <label class="form-label">Viambatanisho/risiti za malipo (Muhimu)</label>
               <input type="file" name="attachment" class="form-control" accept=".pdf,.doc,.docx,.jpg,.png">
               {% if form_obj.attachment %}
               <small style="color:var(--accent); font-size:0.78rem;">
@@ -121,7 +121,7 @@
     <!-- ITEMS TABLE -->
     <div class="card">
       <div class="card-header">
-        <h5><i class="fas fa-list" style="color:var(--accent);"></i> Description of Expenses</h5>
+        <h5><i class="fas fa-list" style="color:var(--accent);"></i> Mchanganuo wa Matumizi yaliofanyika</h5>
       </div>
       <div class="card-body">
         <div class="items-table-wrapper">
@@ -129,8 +129,8 @@
             <thead>
               <tr>
                 <th style="width:40px;">#</th>
-                <th>Description</th>
-                <th style="width:160px;">Amount (TZS)</th>
+                <th>Mchanganuo </th>
+                <th style="width:160px;">Kiasi (TZS)</th>
                 <th style="width:50px;"></th>
               </tr>
             </thead>
@@ -147,7 +147,7 @@
               {% else %}
                 <tr>
                   <td>1</td>
-                  <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="Expense description" required></td>
+                  <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="Mchanganuo wa Matumizi" required></td>
                   <td><input type="number" name="item_amount[]" class="form-control item-amount" placeholder="0.00" step="0.01" min="0" required></td>
                   <td><button type="button" class="btn-remove-row" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
                 </tr>
@@ -155,7 +155,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="2" style="text-align:right; font-weight:700; color:rgba(255,255,255,0.8);">TOTAL:</td>
+                <td colspan="2" style="text-align:right; font-weight:700; color:rgba(255,255,255,0.8);">JUMLA:</td>
                 <td style="font-weight:800; color:var(--accent);">TZS <span id="totalAmount">0.00</span></td>
                 <td></td>
               </tr>
@@ -163,7 +163,7 @@
           </table>
         </div>
         <button type="button" class="btn-add-row" id="addItemRow">
-          <i class="fas fa-plus"></i> Add Item
+          <i class="fas fa-plus"></i> Ongeza Mchangunuo
         </button>
       </div>
     </div>
@@ -171,28 +171,28 @@
     <!-- APPROVAL INFO -->
     <div class="card">
       <div class="card-header">
-        <h5><i class="fas fa-signature" style="color:var(--accent);"></i> Approval Information</h5>
+        <h5><i class="fas fa-signature" style="color:var(--accent);"></i> Uthibitisho/Idhini ya Marejesho ya Fedha</h5>
       </div>
       <div class="card-body">
         <div class="row">
           <div class="col-3">
             <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">First Approver</div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Mzee wa Idara</div>
               <div style="font-size:0.88rem; color:rgba(255,255,255,0.8);" id="firstApproverDisplay">
-                <i class="fas fa-user-check" style="color:var(--accent);"></i> Based on Department
+                <i class="fas fa-user-check" style="color:var(--accent);"></i> Idara Husika
               </div>
             </div>
           </div>
           <div class="col-3">
             <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Second Approver</div>
-              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">Okoth Oloo</div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Mzee Kiongozi</div>
+              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">{% if second_approver %}{{ second_approver.user.get_full_name }}{% else %}—{% endif %}</div>
             </div>
           </div>
           <div class="col-3">
             <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; text-align:center;">
-              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Treasurer</div>
-              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">Eric Bisanda</div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Mhazini</div>
+              <div style="font-size:0.88rem; color:rgba(255,255,255,0.9); font-weight:700;">{% if treasurer %}{{ treasurer.user.get_full_name }}{% else %}—{% endif %}</div>
               <div style="font-size:0.75rem; color:rgba(255,255,255,0.4); margin-top:4px;"></div>
             </div>
           </div>
@@ -204,7 +204,7 @@
       <a href="{% url 'retirement:dashboard' %}" class="btn btn-outline">
         <i class="fas fa-arrow-left"></i> Cancel
       </a>
-      <button type="submit" class="btn btn-accent btn-lg">
+      <button type="submit" class="btn btn-accent btn-lg" id="submitBtn" onclick="this.disabled=true; this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Saving...'; this.form.submit();">
         <i class="fas fa-save"></i>
         {% if action == 'edit' %}Update Form{% else %}Save as Draft{% endif %}
       </button>

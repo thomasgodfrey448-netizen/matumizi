@@ -2,23 +2,23 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}Retirement Forms{% endblock %}
-{% block page_title %}Retirement Forms{% endblock %}
+{% block title %}Marejesho ya Fedha{% endblock %}
+{% block page_title %}Marejesho ya Fedha{% endblock %}
 
 {% block content %}
 
 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
   <div>
     <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
-      <i class="fas fa-archive" style="color:var(--accent);"></i> Retirement Forms
+      <i class="fas fa-archive" style="color:var(--accent);"></i> Marejesho yote ya Fedha
     </h2>
     <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">
-      {% if is_admin or is_approver or is_treasurer %}All retirement forms{% else %}Your retirement forms{% endif %}
+      {% if is_admin or is_approver or is_treasurer %}Marejesho yote yaliowasilishwa{% else %}Angalia Marejesho ya Fedha Yalio wasilishwa{% endif %}
     </p>
   </div>
   {% if not is_approver and not is_treasurer %}
   <a href="{% url 'retirement:create' %}" class="btn btn-accent">
-    <i class="fas fa-plus"></i> New Retirement Form
+    <i class="fas fa-plus"></i> Fomu ya Marejesho
   </a>
   {% endif %}
 </div>
@@ -46,7 +46,7 @@
       <div class="stat-icon blue"><i class="fas fa-file"></i></div>
       <div class="stat-info">
         <div class="stat-value">{{ total }}</div>
-        <div class="stat-label">Total Forms</div>
+        <div class="stat-label">Marejesho yote ya Fedha</div>
       </div>
     </div>
   </div>
@@ -56,7 +56,7 @@
       <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
       <div class="stat-info">
         <div class="stat-value">{{ pending_count }}</div>
-        <div class="stat-label">Pending</div>
+        <div class="stat-label">Hayajafanyika</div>
       </div>
     </div>
   </div>
@@ -65,7 +65,7 @@
       <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
       <div class="stat-info">
         <div class="stat-value">{{ approved_count }}</div>
-        <div class="stat-label">Closed</div>
+        <div class="stat-label">Yamekwisha fanyika</div>
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@
 
 <div class="card">
   <div class="card-header">
-    <h5><i class="fas fa-list"></i> All Retirement Forms</h5>
+    <h5><i class="fas fa-list"></i> Marejesho ya Fedha</h5>
   </div>
   <div class="card-body" style="padding:0;">
     {% if forms %}
@@ -89,7 +89,6 @@
             <th>Date Ret.</th>
             <th>Amount (TZS)</th>
             <th>Status</th>
-            <th>Payment</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -103,7 +102,7 @@
               </a>
             </td>
             <td>{{ f.first_name }} {{ f.last_name }}</td>
-            <td>{% if f.department %}{{ f.department }}{% else %}No Department{% endif %}</td>
+            <td>{% if f.department %}{{ f.department }}{% else %}Hakuna Idara{% endif %}</td>
             <td>{{ f.date_of_request|date:"d M Y" }}</td>
             <td>{{ f.date_of_retirement|date:"d M Y" }}</td>
             <td style="font-weight:600;">{{ f.total_amount|floatformat:2|intcomma }}</td>
@@ -124,13 +123,6 @@
               <span class="badge badge-warning" style="background-color: var(--warning); color:var(--dark);"><i class="fas fa-pencil-alt"></i> Needs Editing</span>
               {% elif f.status == 'open' %}
               <span class="badge badge-submitted"><i class="fas fa-folder-open"></i> Open</span>
-              {% endif %}
-            </td>
-            <td>
-              {% if f.is_paid %}
-              <span class="badge badge-approved">Paid</span>
-              {% else %}
-              <span class="badge badge-rejected">Unpaid</span>
               {% endif %}
             </td>
             <td>
@@ -162,10 +154,10 @@
     {% else %}
     <div class="empty-state">
       <i class="fas fa-archive"></i>
-      <p>No retirement forms found.</p>
+      <p>Hakuna Marejesho yaliofanyika.</p>
       {% if not is_approver and not is_treasurer %}
       <a href="{% url 'retirement:create' %}" class="btn btn-accent" style="margin-top:12px;">
-        <i class="fas fa-plus"></i> Create First Form
+        <i class="fas fa-plus"></i> Wasilishwa Marejesho
       </a>
       {% endif %}
     </div>

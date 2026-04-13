@@ -2,8 +2,8 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}Expense Requests{% endblock %}
-{% block page_title %}Expense Requests{% endblock %}
+{% block title %}Maombi ya Fedha{% endblock %}
+{% block page_title %}Maombi ya Fedha{% endblock %}
 
 {% block content %}
 
@@ -11,15 +11,15 @@
 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
   <div>
     <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
-      <i class="fas fa-building" style="color:var(--accent);"></i> Expense Requests
+      <i class="fas fa-building" style="color:var(--accent);"></i> Maombi yote ya Fedha
     </h2>
     <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">
-      {% if is_admin or is_approver or is_treasurer %}All submitted expense requests{% else %}Your expense requests{% endif %}
+      {% if is_admin or is_approver or is_treasurer %}Maombi ya Fedha yalio Wasilishwa{% else %}Angalia Maombi yalio Wasilishwa{% endif %}
     </p>
   </div>
   {% if not is_approver and not is_treasurer %}
   <a href="{% url 'expenses:create' %}" class="btn btn-accent">
-    <i class="fas fa-plus"></i> New Request
+    <i class="fas fa-plus"></i> Fomu Mpya
   </a>
   {% endif %}
 </div>
@@ -47,7 +47,7 @@
       <div class="stat-icon blue"><i class="fas fa-file"></i></div>
       <div class="stat-info">
         <div class="stat-value">{{ total }}</div>
-        <div class="stat-label">Total Requests</div>
+        <div class="stat-label">Yalio wasilishwa</div>
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@
       <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
       <div class="stat-info">
         <div class="stat-value">{{ pending_count }}</div>
-        <div class="stat-label">Pending</div>
+        <div class="stat-label">Yanayo subiri</div>
       </div>
     </div>
   </div>
@@ -66,7 +66,7 @@
       <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
       <div class="stat-info">
         <div class="stat-value">{{ approved_count }}</div>
-        <div class="stat-label">Approved</div>
+        <div class="stat-label">Yalio idhinishwa</div>
       </div>
     </div>
   </div>
@@ -75,7 +75,7 @@
 <!-- TABLE -->
 <div class="card">
   <div class="card-header">
-    <h5><i class="fas fa-list"></i> All Requests</h5>
+    <h5><i class="fas fa-list"></i> Maombi ya Fedha</h5>
   </div>
   <div class="card-body" style="padding:0;">
     {% if requests %}
@@ -104,12 +104,12 @@
               </a>
             </td>
             <td>{{ req.first_name }} {{ req.last_name }}</td>
-            <td>{% if req.department %}{{ req.department }}{% else %}No Department{% endif %}</td>
+            <td>{% if req.department %}{{ req.department }}{% else %}Hakuna Idara Yoyote{% endif %}</td>
             <td>{{ req.date|date:"d M Y" }}</td>
             <td style="font-weight:600;">{{ req.total_amount|floatformat:2|intcomma }}</td>
             <td>
-              {% if req.is_paid or req.status == 'paid' %}
-              <span class="badge badge-second">&#10003;&#10003; Second Approved</span>
+              {% if req.status == 'approved' or req.status == 'paid' %}
+              <span class="badge badge-approved"><i class="fas fa-check-double"></i> Approved</span>
               {% elif req.status == 'draft' %}
               <span class="badge badge-draft"><i class="fas fa-pencil-alt"></i> Draft</span>
               {% elif req.status == 'submitted' %}
@@ -118,12 +118,12 @@
               <span class="badge badge-first">&#10003; First Approved</span>
               {% elif req.status == 'second_approved' %}
               <span class="badge badge-second">&#10003;&#10003; Second Approved</span>
-              {% elif req.status == 'approved' %}
-              <span class="badge badge-approved"><i class="fas fa-check-double"></i> Approved</span>
               {% elif req.status == 'rejected' %}
               <span class="badge badge-rejected"><i class="fas fa-times"></i> Rejected</span>
               {% elif req.status == 'rejected_for_editing' %}
               <span class="badge badge-warning" style="background-color: var(--warning); color:var(--dark);"><i class="fas fa-pencil-alt"></i> Needs Editing</span>
+              {% else %}
+              <span class="badge badge-approved"><i class="fas fa-check-double"></i> Approved</span>
               {% endif %}
             </td>
             <td>
@@ -162,10 +162,10 @@
     {% else %}
     <div class="empty-state">
       <i class="fas fa-building"></i>
-      <p>No expense requests found.</p>
+      <p>Hakuna Maombi ya Fedha yalio Wasilishwa.</p>
       {% if not is_approver and not is_treasurer %}
       <a href="{% url 'expenses:create' %}" class="btn btn-accent" style="margin-top:12px;">
-        <i class="fas fa-plus"></i> Create First Request
+        <i class="fas fa-plus"></i> Wasilisha Maombi ya Fedha
       </a>
       {% endif %}
     </div>
