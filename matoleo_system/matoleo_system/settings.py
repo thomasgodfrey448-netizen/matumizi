@@ -13,9 +13,7 @@ SECRET_KEY = os.environ.get(
     'django-insecure-matoleo-sda-church-finance-system-2024-secret-key'
 )
 
-RENDER_ENV = os.environ.get('RENDER', '')
-IS_RENDER = RENDER_ENV.lower() in ('1', 'true', 'yes')
-DEBUG = not IS_RENDER and os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -129,10 +127,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-if DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-else:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
