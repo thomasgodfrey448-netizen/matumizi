@@ -78,6 +78,15 @@ WSGI_APPLICATION = 'matoleo_system.wsgi.application'
 
 # Database — uses DATABASE_URL env var on Render (PostgreSQL), falls back to SQLite only in DEBUG local dev
 DATABASE_URL = os.environ.get('DATABASE_URL')
+if not DATABASE_URL:
+    pg_host = os.environ.get('PGHOST') or os.environ.get('POSTGRES_HOST')
+    pg_port = os.environ.get('PGPORT') or os.environ.get('POSTGRES_PORT') or '5432'
+    pg_name = os.environ.get('PGDATABASE') or os.environ.get('POSTGRES_DB')
+    pg_user = os.environ.get('PGUSER') or os.environ.get('POSTGRES_USER')
+    pg_password = os.environ.get('PGPASSWORD') or os.environ.get('POSTGRES_PASSWORD')
+    if pg_host and pg_name and pg_user and pg_password:
+        DATABASE_URL = f'postgresql://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_name}'
+
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
