@@ -10,8 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-matoleo-sda-church-finance-system-2024-secret-key')
 
-RENDER = bool(os.environ.get('RENDER') or os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
-DEBUG = False if RENDER else os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
+IS_RENDER = bool(os.environ.get('RENDER'))
+DEBUG = not IS_RENDER and os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
 ALLOWED_HOSTS = [
     '.onrender.com',
@@ -91,7 +91,7 @@ if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-elif DEBUG and not RENDER:
+elif DEBUG and not IS_RENDER:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
