@@ -201,7 +201,8 @@ def profile_view(request):
         logger.exception(f"Error fetching departments in profile_view: {e}")
         departments = []
     
-    if request.method == 'POST':        request.user.first_name = request.POST.get('first_name', request.user.first_name)
+    if request.method == 'POST':
+        request.user.first_name = request.POST.get('first_name', request.user.first_name)
         request.user.last_name = request.POST.get('last_name', request.user.last_name)
         request.user.save()
         profile.phone_number = request.POST.get('phone_number', profile.phone_number)
