@@ -11,9 +11,27 @@ class Command(BaseCommand):
     help = 'Ensure admin superuser and optional default login user exist with the correct password'
 
     def handle(self, *args, **options):
-        admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
-        admin_password = os.environ.get('ADMIN_PASSWORD', 'Admin123!@#')
-        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
+        admin_username = (
+            os.environ.get('ADMIN_USERNAME')
+            or os.environ.get('admin_username')
+            or os.environ.get('USERNAME')
+            or os.environ.get('username')
+            or 'admin'
+        )
+        admin_password = (
+            os.environ.get('ADMIN_PASSWORD')
+            or os.environ.get('admin_password')
+            or os.environ.get('PASSWORD')
+            or os.environ.get('password')
+            or 'Admin123!@#'
+        )
+        admin_email = (
+            os.environ.get('ADMIN_EMAIL')
+            or os.environ.get('admin_email')
+            or os.environ.get('EMAIL')
+            or os.environ.get('email')
+            or 'admin@example.com'
+        )
 
         if User.objects.filter(username=admin_username).exists():
             admin = User.objects.get(username=admin_username)
@@ -35,9 +53,15 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING(f'  Password: {admin_password}'))
         self.stdout.write(self.style.WARNING(f'  Email: {admin_email}'))
 
-        default_username = os.environ.get('DEFAULT_USER_USERNAME')
-        default_password = os.environ.get('DEFAULT_USER_PASSWORD')
-        default_email = os.environ.get('DEFAULT_USER_EMAIL', 'user@example.com')
+        default_username = os.environ.get('DEFAULT_USER_USERNAME') or os.environ.get('default_user_username')
+        default_password = os.environ.get('DEFAULT_USER_PASSWORD') or os.environ.get('default_user_password')
+        default_email = (
+            os.environ.get('DEFAULT_USER_EMAIL')
+            or os.environ.get('default_user_email')
+            or os.environ.get('EMAIL')
+            or os.environ.get('email')
+            or 'user@example.com'
+        )
         default_first_name = os.environ.get('DEFAULT_USER_FIRST_NAME', '')
         default_last_name = os.environ.get('DEFAULT_USER_LAST_NAME', '')
 
