@@ -13,26 +13,36 @@ import uuid
 
 @login_required
 def home(request):
-    all_announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
-    ticker_announcements = all_announcements
-    card_announcements = all_announcements[:3]
-    
-    # Check if user is approver or treasurer
-    is_approver = hasattr(request.user, 'approver_profile')
-    is_treasurer = hasattr(request.user, 'treasurer_profile')
-    is_admin = request.user.is_staff or request.user.is_superuser
-    
-    # Get unread notifications count
-    unread_notifications_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
-    
-    return render(request, 'core/home.html', {
-        'ticker_announcements': ticker_announcements,
-        'card_announcements': card_announcements,
-        'is_approver': is_approver,
-        'is_treasurer': is_treasurer,
-        'is_admin': is_admin,
-        'unread_notifications_count': unread_notifications_count,
-    })
+    try:
+        all_announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
+        ticker_announcements = all_announcements
+        card_announcements = all_announcements[:3]
+        
+        # Check if user is approver or treasurer
+        is_approver = hasattr(request.user, 'approver_profile')
+        is_treasurer = hasattr(request.user, 'treasurer_profile')
+        is_admin = request.user.is_staff or request.user.is_superuser
+        
+        # Get unread notifications count
+        try:
+            unread_notifications_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
+        except Exception as e:
+            import logging
+            logging.exception(f"Error fetching notifications count: {e}")
+            unread_notifications_count = 0
+        
+        return render(request, 'core/home.html', {
+            'ticker_announcements': ticker_announcements,
+            'card_announcements': card_announcements,
+            'is_approver': is_approver,
+            'is_treasurer': is_treasurer,
+            'is_admin': is_admin,
+            'unread_notifications_count': unread_notifications_count,
+        })
+    except Exception as e:
+        import logging
+        logging.exception(f"Error in home view: {e}")
+        raise
 
 
 @login_required
