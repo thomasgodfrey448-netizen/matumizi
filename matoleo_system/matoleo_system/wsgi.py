@@ -9,20 +9,8 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
 
 import os
 
-from django.core.management import call_command
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'matoleo_system.settings')
-
-# Ensure static files are collected on startup in deployed environments.
-# This is a safe fallback when the Render build/release commands do not run collectstatic.
-try:
-    call_command('collectstatic', verbosity=0, interactive=False)
-except Exception as exc:
-    import sys
-    import traceback
-
-    print('collectstatic failed in wsgi.py:', exc, file=sys.stderr)
-    traceback.print_exc(file=sys.stderr)
 
 application = get_wsgi_application()

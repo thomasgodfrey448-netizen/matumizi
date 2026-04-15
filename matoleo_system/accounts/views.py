@@ -6,6 +6,9 @@ from django.contrib import messages
 from django.db import transaction
 from django.http import JsonResponse
 from core.models import UserProfile, RegistrationCode, Department, Approver
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def _get_user_profile(user):
@@ -16,35 +19,55 @@ def _get_user_profile(user):
 
 
 def _is_user_code_department_valid(user):
-    profile = _get_user_profile(user)
-    if not profile or not profile.registration_code_used:
-        return True
     try:
-        code_obj = RegistrationCode.objects.get(code=profile.registration_code_used)
-    except RegistrationCode.DoesNotExist:
-        return False
-    if code_obj.department:
-        return profile.department is not None and code_obj.department_id == profile.department_id
-    return True
+        profile = _get_user_profile(user)
+        if not profile or not profile.registration_code_used:
+            return True
+        try:
+            code_obj = RegistrationCode.objects.get(code=profile.registration_code_used)
+        except RegistrationCode.DoesNotExist:
+            return False
+        if code_obj.department:
+            return profile.department is not None and code_obj.department_id == profile.department_id
+        return True
+    except Exception as e:
+        logger.exception(f"Error validating user code/department for user {user.id}: {e}")
+        return True  # Allow user to proceed but log the error
 
 
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('core:home')
-    if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
-        password = request.POST.get('password', '')
-        user = authenticate(request, username=username, password=password)
-        if user:
-            if not _is_user_code_department_valid(user):
-                messages.error(request, 'Your registration code does not match your selected department.')
+    try:
+        if request.user.is_authenticated:
+            return redirect('core:home')
+        if request.method == 'POST':
+            username = request.POST.get('username', '').strip()
+            password = request.POST.get('password', '')
+            try:
+                user = authenticate(request, username=username, password=password)
+            except Exception as e:
+                logger.exception(f"Error during authentication for username {username}: {e}")
+                messages.error(request, 'An error occurred during login. Please try again.')
                 return render(request, 'accounts/login.html')
-            login(request, user)
-            next_url = request.GET.get('next', '/')
-            return redirect(next_url)
-        else:
-            messages.error(request, 'Invalid username or password.')
-    return render(request, 'accounts/login.html')
+            
+            if user:
+                try:
+                    if not _is_user_code_department_valid(user):
+                        messages.error(request, 'Your registration code does not match your selected department.')
+                        return render(request, 'accounts/login.html')
+                    login(request, user)
+                    next_url = request.GET.get('next', '/')
+                    return redirect(next_url)
+                except Exception as e:
+                    logger.exception(f"Error after successful authentication for user {user.id}: {e}")
+                    messages.error(request, 'An error occurred after login. Please try again.')
+                    return render(request, 'accounts/login.html')
+            else:
+                messages.error(request, 'Invalid username or password.')
+        return render(request, 'accounts/login.html')
+    except Exception as e:
+        logger.exception(f"Unhandled error in login_view: {e}")
+        messages.error(request, 'An unexpected error occurred. Please contact administrator.')
+        return render(request, 'accounts/login.html')
 
 
 def register_view(request):
