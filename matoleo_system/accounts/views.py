@@ -72,7 +72,7 @@ def login_view(request):
 
 def register_view(request):
     try:
-        departments = Department.objects.filter(is_active=True)
+        departments = list(Department.objects.filter(is_active=True))
     except Exception as e:
         logger.exception(f"Error fetching departments in register_view: {e}")
         departments = []
@@ -196,7 +196,7 @@ def profile_view(request):
         return redirect('core:home')
     
     try:
-        departments = Department.objects.filter(is_active=True)
+        departments = list(Department.objects.filter(is_active=True))
     except Exception as e:
         logger.exception(f"Error fetching departments in profile_view: {e}")
         departments = []
