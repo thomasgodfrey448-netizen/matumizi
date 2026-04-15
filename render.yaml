@@ -3,9 +3,10 @@ services:
     name: matoleo-system
     env: python
     plan: free
-    rootDir: matoleo_system
-    buildCommand: python -m pip install -r ../requirements.txt && python manage.py collectstatic --noinput --clear && python manage.py migrate
-    startCommand: gunicorn matoleo_system.wsgi:application --bind 0.0.0.0:$PORT
+    rootDir: .
+    buildCommand: python -m pip install -r requirements.txt && python matoleo_system/manage.py collectstatic --noinput --clear
+    releaseCommand: python matoleo_system/manage.py migrate
+    startCommand: gunicorn matoleo_system.wsgi:application --chdir matoleo_system --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY
         generateValue: true
