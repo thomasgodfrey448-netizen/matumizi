@@ -18,7 +18,11 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'matoleo_system.settings')
 # This is a safe fallback when the Render build/release commands do not run collectstatic.
 try:
     call_command('collectstatic', verbosity=0, interactive=False)
-except Exception:
-    pass
+except Exception as exc:
+    import sys
+    import traceback
+
+    print('collectstatic failed in wsgi.py:', exc, file=sys.stderr)
+    traceback.print_exc(file=sys.stderr)
 
 application = get_wsgi_application()

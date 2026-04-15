@@ -8,22 +8,33 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-matoleo-sda-church-finance-system-2024-secret-key')
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-matoleo-sda-church-finance-system-2024-secret-key'
+)
 
-IS_RENDER = bool(os.environ.get('RENDER'))
+RENDER_ENV = os.environ.get('RENDER', '')
+IS_RENDER = RENDER_ENV.lower() in ('1', 'true', 'yes')
 DEBUG = not IS_RENDER and os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
 ALLOWED_HOSTS = [
-    '.onrender.com',
-    'localhost',
-    '127.0.0.1'
+    host.strip()
+    for host in os.environ.get(
+        'ALLOWED_HOSTS', '.onrender.com,localhost,127.0.0.1'
+    ).split(',')
+    if host.strip()
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.onrender.com',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
+    origin.strip()
+    for origin in os.environ.get(
+        'CSRF_TRUSTED_ORIGINS',
+        'https://*.onrender.com,http://localhost:8000,http://127.0.0.1:8000'
+    ).split(',')
+    if origin.strip()
 ]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -118,7 +129,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+if DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
