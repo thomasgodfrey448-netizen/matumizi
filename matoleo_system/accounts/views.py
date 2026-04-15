@@ -71,9 +71,14 @@ def login_view(request):
 
 
 def register_view(request):
-    departments = Department.objects.filter(is_active=True)
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name', '').strip()
+    try:
+        departments = Department.objects.filter(is_active=True)
+    except Exception as e:
+        logger.exception(f"Error fetching departments in register_view: {e}")
+        departments = []
+        messages.warning(request, 'Unable to load departments. Please try again later.')
+    
+    if request.method == 'POST':        first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
         username = request.POST.get('username', '').strip()
         phone = request.POST.get('phone_number', '').strip()
@@ -95,17 +100,25 @@ def register_view(request):
                     errors.append('Selected department does not match registration code.')
             except RegistrationCode.DoesNotExist:
                 errors.append('Invalid code.')
+            except Exception as e:
+                logger.exception(f"Error validating registration code: {e}")
+                errors.append('An error occurred validating the code. Please try again.')
         else:
             errors.append('Invalid code.')
 
-        if not all([first_name, last_name, username, phone, password, confirm_password, reg_code, department_id]):
-            errors.append('All fields are required.')
-        if password != confirm_password:
-            errors.append('Passwords do not match.')
-        if User.objects.filter(username=username).exists():
-            errors.append('Username already taken.')
-        if len(password) < 6:
-            errors.append('Password must be at least 6 characters.')
+        if not errors:  # Only check other fields if no code errors
+            if not all([first_name, last_name, username, phone, password, confirm_password, reg_code, department_id]):
+                errors.append('All fields are required.')
+            if password != confirm_password:
+                errors.append('Passwords do not match.')
+            try:
+                if User.objects.filter(username=username).exists():
+                    errors.append('Username already taken.')
+            except Exception as e:
+                logger.exception(f"Error checking username availability: {e}")
+                errors.append('An error occurred checking username. Please try again.')
+            if len(password) < 6:
+                errors.append('Password must be at least 6 characters.')
 
         if errors:
             for e in errors:
@@ -167,15 +180,27 @@ def get_department_from_code(request):
                 return JsonResponse({'department_id': code_obj.department.id, 'department_name': code_obj.department.name})
         except RegistrationCode.DoesNotExist:
             pass
+        except Exception as e:
+            logger.exception(f"Error fetching registration code: {e}")
     return JsonResponse({'department_id': None, 'department_name': None})
 
 
 @login_required
 def profile_view(request):
-    profile, _ = UserProfile.objects.get_or_create(user=request.user)
-    departments = Department.objects.filter(is_active=True)
-    if request.method == 'POST':
-        request.user.first_name = request.POST.get('first_name', request.user.first_name)
+    try:
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    except Exception as e:
+        logger.exception(f"Error getting user profile: {e}")
+        messages.error(request, 'Unable to load profile. Please try again later.')
+        return redirect('core:home')
+    
+    try:
+        departments = Department.objects.filter(is_active=True)
+    except Exception as e:
+        logger.exception(f"Error fetching departments in profile_view: {e}")
+        departments = []
+    
+    if request.method == 'POST':        request.user.first_name = request.POST.get('first_name', request.user.first_name)
         request.user.last_name = request.POST.get('last_name', request.user.last_name)
         request.user.save()
         profile.phone_number = request.POST.get('phone_number', profile.phone_number)
