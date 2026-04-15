@@ -78,7 +78,8 @@ def register_view(request):
         departments = []
         messages.warning(request, 'Unable to load departments. Please try again later.')
     
-    if request.method == 'POST':        first_name = request.POST.get('first_name', '').strip()
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
         username = request.POST.get('username', '').strip()
         phone = request.POST.get('phone_number', '').strip()
