@@ -8,7 +8,7 @@ import os
 
 
 class Command(BaseCommand):
-    help = 'Ensure admin superuser exists with the correct password'
+    help = 'Ensure admin superuser and optional default login user exist with the correct password'
 
     def handle(self, *args, **options):
         admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
@@ -34,3 +34,37 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING(f'  Username: {admin_username}'))
         self.stdout.write(self.style.WARNING(f'  Password: {admin_password}'))
         self.stdout.write(self.style.WARNING(f'  Email: {admin_email}'))
+
+        default_username = os.environ.get('DEFAULT_USER_USERNAME')
+        default_password = os.environ.get('DEFAULT_USER_PASSWORD')
+        default_email = os.environ.get('DEFAULT_USER_EMAIL', 'user@example.com')
+        default_first_name = os.environ.get('DEFAULT_USER_FIRST_NAME', '')
+        default_last_name = os.environ.get('DEFAULT_USER_LAST_NAME', '')
+
+        if default_username and default_password:
+            if User.objects.filter(username=default_username).exists():
+                user = User.objects.get(username=default_username)
+                user.set_password(default_password)
+                user.email = default_email
+                user.first_name = default_first_name
+                user.last_name = default_last_name
+                user.is_staff = False
+                user.is_superuser = False
+                user.save()
+                self.stdout.write(
+                    self.style.SUCCESS(f'✓ Default user "{default_username}" updated successfully')
+                )
+            else:
+                User.objects.create_user(
+                    default_username,
+                    default_email,
+                    default_password,
+                    first_name=default_first_name,
+                    last_name=default_last_name,
+                )
+                self.stdout.write(
+                    self.style.SUCCESS(f'✓ Default user "{default_username}" created successfully')
+                )
+            self.stdout.write(self.style.WARNING(f'  Default user: {default_username}'))
+        else:
+            self.stdout.write('No default user credentials provided; skipping default user creation.')

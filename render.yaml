@@ -4,9 +4,9 @@ services:
     env: python
     plan: free
     rootDir: .
-    buildCommand: python -m pip install -r requirements.txt && cd matoleo_system && python manage.py migrate
-    releaseCommand: cd matoleo_system && python manage.py migrate --check && python manage.py ensure_admin && python manage.py collectstatic --noinput --clear
-    startCommand: cd matoleo_system && python manage.py migrate && python manage.py ensure_admin && gunicorn matoleo_system.wsgi:application --bind 0.0.0.0:$PORT
+    buildCommand: python -m pip install -r requirements.txt && cd matoleo_system && python manage.py migrate --noinput
+    releaseCommand: cd matoleo_system && python manage.py migrate --noinput && python manage.py ensure_admin && python manage.py collectstatic --noinput --clear
+    startCommand: cd matoleo_system && python manage.py migrate --noinput && python manage.py ensure_admin && gunicorn matoleo_system.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY
         generateValue: true
