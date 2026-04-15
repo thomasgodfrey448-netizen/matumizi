@@ -20,6 +20,10 @@ def _get_user_profile(user):
 
 def _is_user_code_department_valid(user):
     try:
+        # Allow superusers/staff to login without profile validation
+        if user.is_superuser or user.is_staff:
+            return True
+        
         profile = _get_user_profile(user)
         if not profile or not profile.registration_code_used:
             return True

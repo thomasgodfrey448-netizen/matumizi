@@ -5,8 +5,8 @@ services:
     plan: free
     rootDir: .
     buildCommand: python -m pip install -r requirements.txt && cd matoleo_system && python manage.py migrate
-    releaseCommand: cd matoleo_system && python manage.py migrate --check && python manage.py collectstatic --noinput --clear
-    startCommand: cd matoleo_system && python manage.py migrate && gunicorn matoleo_system.wsgi:application --bind 0.0.0.0:$PORT
+    releaseCommand: cd matoleo_system && python manage.py migrate --check && python manage.py ensure_admin && python manage.py collectstatic --noinput --clear
+    startCommand: cd matoleo_system && python manage.py migrate && python manage.py ensure_admin && gunicorn matoleo_system.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY
         generateValue: true
@@ -30,6 +30,12 @@ services:
         sync: false
       - key: EMAIL_HOST_PASSWORD
         sync: false
+      - key: ADMIN_USERNAME
+        value: "admin"
+      - key: ADMIN_PASSWORD
+        value: "Admin123!@#"
+      - key: ADMIN_EMAIL
+        value: "admin@example.com"
 
 databases:
   - name: matoleo-db
