@@ -705,7 +705,7 @@ body {
     font-size: 1.3rem;
     margin: 0 auto;
   }
-  .stat-content {
+  .stat-info {
     text-align: center;
   }
   .stat-value {
@@ -860,7 +860,7 @@ body {
     font-size: 1.1rem;
     flex-shrink: 0;
   }
-  .stat-content {
+  .stat-info {
     flex: 1;
     min-width: 0;
   }
@@ -876,7 +876,7 @@ body {
   /* Better table handling in landscape */
   .data-table {
     font-size: 0.7rem;
-    min-width: 100%;
+    min-width: 0;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -2829,7 +2829,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
   .data-table {
     width: auto !important;
-    min-width: 780px !important;
+    min-width: 0 !important;
     table-layout: auto !important;
   }
   .data-table th,
