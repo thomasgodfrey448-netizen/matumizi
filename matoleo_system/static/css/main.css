@@ -2874,6 +2874,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     width: 100% !important;
     max-width: 100% !important;
     display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   .data-table {
     display: table !important;
@@ -2881,6 +2883,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     max-width: 100% !important;
     min-width: 100% !important;
     table-layout: fixed !important;
+    margin: 0 !important;
   }
   .data-table thead,
   .data-table tbody,
@@ -2911,6 +2914,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
   .card {
     margin-bottom: 14px !important;
+  }
+  .card-body {
+    padding: 0 !important;
   }
   .topbar,
   .header-row,
