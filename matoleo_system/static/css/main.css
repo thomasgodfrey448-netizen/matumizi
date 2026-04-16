@@ -2884,21 +2884,28 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     min-width: 100% !important;
     table-layout: fixed !important;
     margin: 0 !important;
+    border-collapse: collapse !important;
+    border: none !important;
   }
   .data-table thead,
   .data-table tbody,
   .data-table tr {
     width: 100% !important;
   }
+  .data-table th,
+  .data-table td {
+    border: none !important;
+    box-sizing: border-box !important;
+  }
   .data-table th {
     white-space: normal !important;
     word-break: break-word !important;
-    padding: 6px 2px !important;
-    font-size: 0.75rem !important;
+    padding: 4px 1px !important;
+    font-size: 0.7rem !important;
   }
   .data-table td {
     white-space: nowrap !important;
-    padding: 6px 2px !important;
+    padding: 4px 1px !important;
   }
   .data-table thead th {
     position: sticky !important;
@@ -2914,9 +2921,15 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
   .card {
     margin-bottom: 14px !important;
+    border: none !important;
   }
   .card-body {
     padding: 0 !important;
+    margin: 0 !important;
+  }
+  .card-header {
+    padding: 12px 8px !important;
+    margin: 0 !important;
   }
   .topbar,
   .header-row,
