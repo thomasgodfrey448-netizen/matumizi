@@ -3322,6 +3322,13 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .home-dashboard .stat-card .stat-label {
     font-size: 0.65rem;
   }
+  .home-dashboard > .row {
+    gap: 8px;
+  }
+  .home-dashboard > .row > .col {
+    flex: 0 0 calc(50% - 4px);
+    min-width: 100px;
+  }
   .home-dashboard .announcement-grid {
     flex-direction: column;
     gap: 12px;
@@ -3362,6 +3369,10 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 
 @media (max-width: 480px) {
+  .home-dashboard > .row > .col {
+    flex: 0 0 100%;
+    min-width: 100%;
+  }
   .home-dashboard .announcement-grid {
     flex-direction: column;
     gap: 12px;
