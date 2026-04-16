@@ -1400,12 +1400,21 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
 .announcement-img {
   width: 100%;
-  height: 110px;
+  height: 80px;
   object-fit: cover;
 }
 
+.announcement-placeholder {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
 .announcement-body {
-  padding: 16px;
+  padding: 12px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -3212,6 +3221,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .announcement-card {
   max-height: none;
   overflow: visible;
+  max-width: 160px;
 }
 .home-dashboard .announcement-card img {
   height: 60px;
