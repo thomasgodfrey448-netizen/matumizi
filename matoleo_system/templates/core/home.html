@@ -51,8 +51,8 @@
 
 <!-- QUICK STATS -->
 {% if not is_approver and not is_treasurer and not is_admin %}
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom:16px; max-width: 100%; overflow: hidden;">
-  <div>
+<div class="row" style="margin-bottom:20px;">
+  <div class="col">
     <div class="stat-card">
       <div class="stat-icon blue"><i class="fas fa-wallet"></i></div>
       <div class="stat-info">
@@ -61,7 +61,7 @@
       </div>
     </div>
   </div>
-  <div>
+  <div class="col">
     <div class="stat-card">
       <div class="stat-icon green"><i class="fas fa-archive"></i></div>
       <div class="stat-info">
@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-  <div>
+  <div class="col">
     <div class="stat-card">
       <div class="stat-icon orange"><i class="fas fa-bell"></i></div>
       <div class="stat-info">
@@ -79,7 +79,7 @@
       </div>
     </div>
   </div>
-  <div>
+  <div class="col">
     <div class="stat-card">
       <div class="stat-icon red"><i class="fas fa-check-double"></i></div>
       <div class="stat-info">
