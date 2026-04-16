@@ -1374,9 +1374,11 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   background: rgba(255,255,255,0.07);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   transition: all 0.3s;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .announcement-card:hover {
@@ -1392,7 +1394,11 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 
 .announcement-body {
-  padding: 12px;
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
 }
 
 .announcement-title {
@@ -1410,9 +1416,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 
 .announcement-text {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.65);
-  line-height: 1.5;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
   overflow: visible !important;
   display: block !important;
   white-space: normal !important;
@@ -1423,6 +1429,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   -webkit-line-clamp: unset !important;
   -webkit-box-orient: unset !important;
   max-height: none !important;
+  flex: 1;
 }
 
 .announcement-date {
