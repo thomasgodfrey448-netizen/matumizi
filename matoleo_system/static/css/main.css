@@ -3290,6 +3290,12 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .home-dashboard .announcement-grid {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
+    width: 100% !important;
+  }
+  .home-dashboard .announcement-card {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
   }
   .home-dashboard .announcement-text {
     font-size: 1rem;
@@ -3312,13 +3318,18 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .home-dashboard .announcement-grid {
     grid-template-columns: 1fr !important;
     gap: 12px !important;
+    width: 100% !important;
   }
   .home-dashboard .announcement-card {
     width: 100% !important;
     min-width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   .home-dashboard .announcement-card img {
     height: 80px !important;
+    width: 100% !important;
   }
   .home-dashboard .announcement-body {
     padding: 12px !important;
@@ -3330,6 +3341,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     font-size: 0.75rem !important;
     line-height: 1.5 !important;
     -webkit-line-clamp: unset !important;
+    overflow: visible !important;
   }
 }
 
