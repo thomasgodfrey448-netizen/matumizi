@@ -2885,7 +2885,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     table-layout: fixed !important;
     margin: 0 !important;
     border-collapse: collapse !important;
-    border: none !important;
+    font-size: 0.82rem !important;
   }
   .data-table thead,
   .data-table tbody,
@@ -2894,18 +2894,21 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
   .data-table th,
   .data-table td {
-    border: none !important;
     box-sizing: border-box !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
   }
   .data-table th {
     white-space: normal !important;
     word-break: break-word !important;
-    padding: 4px 1px !important;
-    font-size: 0.7rem !important;
+    padding: 8px 6px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    background: rgba(0,51,102,0.6) !important;
+    color: rgba(255,255,255,0.9) !important;
   }
   .data-table td {
     white-space: nowrap !important;
-    padding: 4px 1px !important;
+    padding: 7px 6px !important;
   }
   .data-table thead th {
     position: sticky !important;
@@ -2921,15 +2924,17 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
   .card {
     margin-bottom: 14px !important;
-    border: none !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 8px !important;
   }
   .card-body {
     padding: 0 !important;
     margin: 0 !important;
   }
   .card-header {
-    padding: 12px 8px !important;
+    padding: 12px 12px !important;
     margin: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
   }
   .topbar,
   .header-row,
