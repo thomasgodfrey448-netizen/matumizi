@@ -3201,7 +3201,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   font-size: 0.7rem;
 }
 .home-dashboard .announcement-grid {
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
 }
 .home-dashboard .announcement-card {
@@ -3209,7 +3209,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   overflow: visible;
 }
 .home-dashboard .announcement-card img {
-  height: 28px;
+  height: auto;
 }
 .home-dashboard .announcement-body {
   padding: 10px;
@@ -3220,10 +3220,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .announcement-text {
   font-size: 0.85rem;
   line-height: 1.45;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  overflow: visible;
+  display: block;
+  white-space: normal;
 }
 .home-dashboard .announcement-date {
   font-size: 0.62rem;
@@ -3288,6 +3287,10 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .home-dashboard .stat-card .stat-label {
     font-size: 0.65rem;
   }
+  .home-dashboard .announcement-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
   .home-dashboard .announcement-text {
     font-size: 1rem;
     line-height: 1.55;
@@ -3302,6 +3305,31 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
   .home-dashboard .announcement-body {
     padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-dashboard .announcement-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .home-dashboard .announcement-card {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  .home-dashboard .announcement-card img {
+    height: 80px !important;
+  }
+  .home-dashboard .announcement-body {
+    padding: 12px !important;
+  }
+  .home-dashboard .announcement-title {
+    font-size: 0.9rem !important;
+  }
+  .home-dashboard .announcement-text {
+    font-size: 0.75rem !important;
+    line-height: 1.5 !important;
+    -webkit-line-clamp: unset !important;
   }
 }
 
