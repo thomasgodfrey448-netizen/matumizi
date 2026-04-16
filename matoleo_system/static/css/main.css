@@ -1422,7 +1422,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 
 .announcement-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--white);
   margin-bottom: 6px;
@@ -3230,7 +3230,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   padding: 8px;
 }
 .home-dashboard .announcement-title {
-  font-size: 1.2rem !important;
+  font-size: 1.3rem !important;
   font-weight: 700 !important;
 }
 .home-dashboard .announcement-text {
@@ -3357,7 +3357,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     padding: 12px !important;
   }
   .home-dashboard .announcement-title {
-    font-size: 1.3rem !important;
+    font-size: 1.5rem !important;
     font-weight: 700 !important;
     margin-bottom: 8px !important;
   }
