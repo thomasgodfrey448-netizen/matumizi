@@ -3236,9 +3236,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 .home-dashboard .announcement-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   grid-auto-rows: minmax(min-content, auto);
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -3254,6 +3254,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   width: 100%;
   display: flex;
   flex-direction: column;
+  min-height: auto;
 }
 .home-dashboard .announcement-card img {
   height: 36px;
@@ -3267,6 +3268,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: auto;
 }
 .home-dashboard .announcement-title {
   font-size: 1rem !important;
@@ -3283,6 +3285,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   display: block;
   white-space: normal;
   word-break: break-word;
+  -webkit-line-clamp: none;
+  -webkit-box-orient: unset;
 }
 .home-dashboard .announcement-date {
   font-size: 0.55rem;
