@@ -1918,7 +1918,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   /* Announcement Grid - SINGLE COLUMN FOR ANY NUMBER */
   .announcement-grid {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 12px;
     width: 100%;
   }
 
@@ -1928,25 +1928,27 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
 
   .announcement-img {
-    height: 130px;
+    height: 80px;
   }
 
   .announcement-body {
-    padding: 8px;
+    padding: 12px;
   }
 
   .announcement-title {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     overflow: visible !important;
     display: block !important;
     white-space: normal !important;
     text-overflow: clip !important;
     -webkit-line-clamp: unset !important;
     -webkit-box-orient: unset !important;
+    margin-bottom: 6px;
   }
 
   .announcement-text {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
     overflow: visible !important;
     display: block !important;
     white-space: normal !important;
