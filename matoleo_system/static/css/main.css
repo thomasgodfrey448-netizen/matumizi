@@ -3061,6 +3061,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard > .about-section {
   margin-bottom: 0;
 }
+.home-dashboard > .row {
+  margin-bottom: 12px;
+}
 .home-dashboard .row {
   margin-left: 0;
   margin-right: 0;
@@ -3127,18 +3130,19 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 .home-dashboard .about-section {
   display: block;
-  padding: 12px;
+  padding: 16px;
   border-radius: 10px;
   margin-bottom: 0;
 }
 .home-dashboard .about-section h3 {
   font-size: 0.95rem;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .home-dashboard .about-section p {
-  font-size: 0.87rem;
-  line-height: 1.45;
+  font-size: 0.9rem;
+  line-height: 1.55;
   margin: 0;
+  color: rgba(255,255,255,0.92);
 }
 .home-dashboard .card-header,
 .home-dashboard .card-body {
