@@ -1374,7 +1374,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
 @media (max-width: 480px) {
   .announcement-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
   }
 }
 
@@ -3300,6 +3301,12 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .home-dashboard .announcement-card img {
+    width: 100% !important;
+    height: auto !important;
   }
   .home-dashboard .announcement-text {
     font-size: 1rem;
