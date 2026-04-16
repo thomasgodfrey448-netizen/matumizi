@@ -822,7 +822,28 @@ body {
     display: block;
   }
   .page-content {
-    padding: 8px;
+    padding: 8px 4px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .app-wrapper,
+  .main-content,
+  .page-content,
+  .card,
+  .announcement-ticker,
+  .about-section,
+  .announcement-grid,
+  .announcement-card,
+  .table-wrapper,
+  .table-responsive {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    overflow-x: hidden;
   }
 
   /* Enhanced stat cards for landscape */
