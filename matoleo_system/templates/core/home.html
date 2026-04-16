@@ -8,21 +8,21 @@
 
 <div class="home-dashboard">
   <!-- HEADER ROW -->
-  <div class="home-header-row" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+  <div class="home-header-row" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
   <div>
-    <h2 style="font-size:1.15rem; font-weight:800; color:var(--white); margin:0;">
+    <h2 style="font-size:1rem; font-weight:800; color:var(--white); margin:0;">
       <i class="fas fa-home" style="color:var(--accent);"></i> Home Dashboard
     </h2>
-    <p style="color:rgba(255,255,255,0.5); font-size:0.75rem; margin:2px 0 0;">
+    <p style="color:rgba(255,255,255,0.5); font-size:0.7rem; margin:1px 0 0;">
       Welcome to the Makongo Juu SDA Church Finance System
     </p>
   </div>
-  <div style="display:flex; gap:6px; flex-wrap:wrap;">
+  <div style="display:flex; gap:4px; flex-wrap:wrap;">
     {% if user_role != 'First Approver' and user_role != 'Second Approver' %}
-    <a href="{% url 'expenses:create' %}" class="btn btn-accent">
+    <a href="{% url 'expenses:create' %}" class="btn btn-accent btn-sm">
       <i class="fas fa-plus"></i> New Expense
     </a>
-    <a href="{% url 'retirement:create' %}" class="btn btn-primary">
+    <a href="{% url 'retirement:create' %}" class="btn btn-primary btn-sm">
       <i class="fas fa-plus"></i> New Retirement
     </a>
     {% endif %}
@@ -48,13 +48,13 @@
 
 <!-- QUICK STATS -->
 {% if not is_approver and not is_treasurer and not is_admin %}
-<div class="row" style="margin-bottom:12px;">
+<div class="row" style="margin-bottom:8px;">
   <div class="col">
     <div class="stat-card">
       <div class="stat-icon blue"><i class="fas fa-wallet"></i></div>
       <div class="stat-info">
-        <div class="stat-value" style="font-size: 1.6rem;">{{ user.expense_requests.count }}</div>
-        <div class="stat-label" style="font-size: 0.75rem;"> Maombi ya fedha</div>
+        <div class="stat-value" style="font-size: 1.4rem;">{{ user.expense_requests.count }}</div>
+        <div class="stat-label" style="font-size: 0.65rem;"> Maombi ya fedha</div>
       </div>
     </div>
   </div>
@@ -62,8 +62,8 @@
     <div class="stat-card">
       <div class="stat-icon green"><i class="fas fa-archive"></i></div>
       <div class="stat-info">
-        <div class="stat-value" style="font-size: 1.6rem;">{{ user.retirement_forms.count }}</div>
-        <div class="stat-label" style="font-size: 0.75rem;"> Marejesho</div>
+        <div class="stat-value" style="font-size: 1.4rem;">{{ user.retirement_forms.count }}</div>
+        <div class="stat-label" style="font-size: 0.65rem;"> Marejesho</div>
       </div>
     </div>
   </div>
@@ -71,8 +71,8 @@
     <div class="stat-card">
       <div class="stat-icon orange"><i class="fas fa-bell"></i></div>
       <div class="stat-info">
-        <div class="stat-value" style="font-size: 1.6rem;">{{ unread_notifications_count }}</div>
-        <div class="stat-label" style="font-size: 0.75rem;">Ujumbe</div>
+        <div class="stat-value" style="font-size: 1.4rem;">{{ unread_notifications_count }}</div>
+        <div class="stat-label" style="font-size: 0.65rem;">Ujumbe</div>
       </div>
     </div>
   </div>
@@ -80,8 +80,8 @@
     <div class="stat-card">
       <div class="stat-icon red"><i class="fas fa-check-double"></i></div>
       <div class="stat-info">
-        <div class="stat-value" style="font-size: 1.6rem;">{{ user.expense_requests.count|default:"—" }}</div>
-        <div class="stat-label" style="font-size: 0.75rem;">Yalio wasilishwa</div>
+        <div class="stat-value" style="font-size: 1.4rem;">{{ user.expense_requests.count|default:"—" }}</div>
+        <div class="stat-label" style="font-size: 0.65rem;">Yalio wasilishwa</div>
       </div>
     </div>
   </div>
@@ -106,13 +106,13 @@
         {% if ann.image %}
         <img src="{{ ann.image.url }}" alt="{{ ann.title }}" class="announcement-img">
         {% else %}
-        <div style="height:100px; background:linear-gradient(135deg, rgba(0,51,102,0.6), rgba(26,82,118,0.6)); display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:var(--accent);">
+        <div style="height:70px; background:linear-gradient(135deg, rgba(0,51,102,0.6), rgba(26,82,118,0.6)); display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--accent);">
           <i class="fas fa-bullhorn"></i>
         </div>
         {% endif %}
         <div class="announcement-body">
           <div class="announcement-title">{{ ann.title }}</div>
-          <div class="announcement-text">{{ ann.content }}</div>
+          <div class="announcement-text">{{ ann.content|truncatechars:80 }}</div>
           <div class="announcement-date">
             <i class="fas fa-clock"></i> {{ ann.created_at|date:"d M Y" }}
           </div>
@@ -154,25 +154,25 @@
 <!-- ABOUT SECTION -->
 <div class="about-section">
   <h3><i class="fas fa-info-circle"></i>  Taarifa Zaidi</h3>
-  <p style="font-size:0.8rem; line-height:1.3; margin:4px 0;"> 
-    Mfumo huu unawawezesha wakuu wa idara kuwasilisha maombi ya fedha pamoja na fomu za marejesho, kufuatilia hatua za maombi kwa wakati halisi.
+  <p style="font-size:0.75rem; line-height:1.2; margin:2px 0;"> 
+    Mfumo huu unawawezesha wakuu wa idara kuwasilisha maombi ya fedha na marejesho.
   </p>
-  <div style="display: grid; grid-template-columns: repeat(4, minmax(50px, 1fr)); gap: 6px; margin-top:8px; max-width: 100%;">
-    <div style="text-align:center; padding:6px; background:rgba(255,255,255,0.06); border-radius:8px; overflow: hidden;">
-      <div style="font-size:1.1rem; color:var(--accent); font-weight:700;">3</div>
-      <div style="font-size:0.6rem; color:rgba(255,255,255,0.5); margin-top:2px; word-break: break-word;">Approvals</div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(45px, 1fr)); gap: 4px; margin-top:6px; max-width: 100%;">
+    <div style="text-align:center; padding:4px; background:rgba(255,255,255,0.06); border-radius:6px; overflow: hidden;">
+      <div style="font-size:1rem; color:var(--accent); font-weight:700;">3</div>
+      <div style="font-size:0.55rem; color:rgba(255,255,255,0.5); margin-top:1px; word-break: break-word;">Approvals</div>
     </div>
-    <div style="text-align:center; padding:6px; background:rgba(255,255,255,0.06); border-radius:8px; overflow: hidden;">
-      <div style="font-size:1.1rem; color:#58d68d; font-weight:700;">PDF</div>
-      <div style="font-size:0.6rem; color:rgba(255,255,255,0.5); margin-top:2px; word-break: break-word;">Export</div>
+    <div style="text-align:center; padding:4px; background:rgba(255,255,255,0.06); border-radius:6px; overflow: hidden;">
+      <div style="font-size:1rem; color:#58d68d; font-weight:700;">PDF</div>
+      <div style="font-size:0.55rem; color:rgba(255,255,255,0.5); margin-top:1px; word-break: break-word;">Export</div>
     </div>
-    <div style="text-align:center; padding:6px; background:rgba(255,255,255,0.06); border-radius:8px; overflow: hidden;">
-      <div style="font-size:1.1rem; color:#5dade2; font-weight:700;"><i class="fas fa-bell" style="display: inline-block; font-size:0.9rem;"></i></div>
-      <div style="font-size:0.6rem; color:rgba(255,255,255,0.5); margin-top:2px; word-break: break-word;">Alerts</div>
+    <div style="text-align:center; padding:4px; background:rgba(255,255,255,0.06); border-radius:6px; overflow: hidden;">
+      <div style="font-size:1rem; color:#5dade2; font-weight:700;"><i class="fas fa-bell" style="display: inline-block; font-size:0.8rem;"></i></div>
+      <div style="font-size:0.55rem; color:rgba(255,255,255,0.5); margin-top:1px; word-break: break-word;">Alerts</div>
     </div>
-    <div style="text-align:center; padding:6px; background:rgba(255,255,255,0.06); border-radius:8px; overflow: hidden;">
-      <div style="font-size:1.1rem; color:#c39bd3; font-weight:700;"><i class="fas fa-file-import" style="display: inline-block; font-size:0.9rem;"></i></div>
-      <div style="font-size:0.6rem; color:rgba(255,255,255,0.5); margin-top:2px; word-break: break-word;">Import</div>
+    <div style="text-align:center; padding:4px; background:rgba(255,255,255,0.06); border-radius:6px; overflow: hidden;">
+      <div style="font-size:1rem; color:#c39bd3; font-weight:700;"><i class="fas fa-file-import" style="display: inline-block; font-size:0.8rem;"></i></div>
+      <div style="font-size:0.55rem; color:rgba(255,255,255,0.5); margin-top:1px; word-break: break-word;">Import</div>
     </div>
   </div>
 </div>
