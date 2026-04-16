@@ -3052,6 +3052,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   width: 100%;
   max-width: none;
   margin: 0;
+  overflow-x: hidden;
 }
 .home-dashboard > .home-header-row,
 .home-dashboard > .announcement-ticker,

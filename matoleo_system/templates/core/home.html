@@ -38,9 +38,6 @@
       {% for ann in ticker_announcements %}
         &bull; <strong>{{ ann.title }}</strong> - {{ ann.content }}
       {% endfor %}
-      {% for ann in ticker_announcements %}
-        &bull; <strong>{{ ann.title }}</strong> - {{ ann.content }}
-      {% endfor %}
     </span>
   </div>
 </div>
@@ -152,12 +149,12 @@
 {% endif %}
 
 <!-- ABOUT SECTION -->
-<div class="about-section">
+<div class="about-section" style="text-align: center;">
   <h3><i class="fas fa-info-circle"></i>  Taarifa Zaidi</h3>
   <p style="font-size:0.75rem; line-height:1.2; margin:2px 0;"> 
     Mfumo huu unawawezesha wakuu wa idara kuwasilisha maombi ya fedha na marejesho.
   </p>
-  <div style="display: grid; grid-template-columns: repeat(4, minmax(45px, 1fr)); gap: 4px; margin-top:6px; max-width: 100%;">
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(45px, 1fr)); gap: 4px; margin-top:6px; max-width: 100%; justify-content: center;">
     <div style="text-align:center; padding:4px; background:rgba(255,255,255,0.06); border-radius:6px; overflow: hidden;">
       <div style="font-size:1rem; color:var(--accent); font-weight:700;">3</div>
       <div style="font-size:0.55rem; color:rgba(255,255,255,0.5); margin-top:1px; word-break: break-word;">Approvals</div>
