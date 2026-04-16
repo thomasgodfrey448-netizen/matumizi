@@ -810,7 +810,7 @@ body {
 }
 
 /* Landscape orientation - Enhanced mobile support */
-@media (orientation: landscape) and (max-width: 768px) {
+@media (orientation: landscape) and (max-width: 1024px) {
   .sidebar {
     width: 200px;
     transform: translateX(-100%);
