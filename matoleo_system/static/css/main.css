@@ -2873,11 +2873,19 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     overflow-x: visible !important;
     width: 100% !important;
     max-width: 100% !important;
+    display: block !important;
   }
   .data-table {
+    display: table !important;
     width: 100% !important;
+    max-width: 100% !important;
     min-width: 100% !important;
     table-layout: fixed !important;
+  }
+  .data-table thead,
+  .data-table tbody,
+  .data-table tr {
+    width: 100% !important;
   }
   .data-table th {
     white-space: normal !important;
