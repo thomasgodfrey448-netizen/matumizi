@@ -257,15 +257,16 @@ def payment_voucher_pdf(request_obj, logo_path=None):
 
     if is_expense and getattr(request_obj, 'reason', None):
         reason_table = Table([
-            ['Dhumuni la Malipo ya Fedha:', request_obj.reason]
+            ['Dhumuni la Malipo:', request_obj.reason],
+            ['Exp Form No:', request_obj.form_number]
         ], colWidths=[130, 340])
         reason_table.setStyle(TableStyle([
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 0), (-1, -1), 10),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('BACKGROUND', (0, 0), (0, 0), colors.HexColor('#f2f6fb')),
-            ('BACKGROUND', (1, 0), (1, 0), colors.white),
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f2f6fb')),
+            ('BACKGROUND', (1, 0), (1, -1), colors.white),
             ('LINEABOVE', (0, 0), (-1, -1), 0.25, colors.HexColor('#d9e4f5')),
             ('LINEBELOW', (0, 0), (-1, -1), 0.25, colors.HexColor('#d9e4f5')),
             ('LEFTPADDING', (0, 0), (-1, -1), 6),
