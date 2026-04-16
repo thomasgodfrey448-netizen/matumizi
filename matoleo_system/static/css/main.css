@@ -3048,7 +3048,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 12px;
   width: 100%;
   max-width: none;
   margin: 0;
@@ -3070,63 +3070,88 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   padding: 0;
 }
 .home-dashboard .home-header-row h2 {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   margin-bottom: 0;
 }
 .home-dashboard .home-header-row p {
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   margin: 0;
 }
 .home-dashboard .home-header-row .btn {
   padding: 6px 10px;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
 }
 .home-dashboard .stat-card {
-  min-height: 60px;
-  padding: 6px;
-  gap: 8px;
+  min-height: 64px;
+  padding: 10px;
+  gap: 10px;
 }
 .home-dashboard .stat-icon {
-  width: 34px;
-  height: 34px;
-  font-size: 1rem;
-}
-.home-dashboard .stat-card .stat-value {
+  width: 38px;
+  height: 38px;
   font-size: 1.1rem;
 }
+.home-dashboard .stat-card .stat-value {
+  font-size: 1rem;
+}
 .home-dashboard .stat-card .stat-label {
-  font-size: 0.62rem;
+  font-size: 0.7rem;
 }
 .home-dashboard .announcement-grid {
-  grid-template-columns: repeat(2, minmax(110px, 1fr));
-  gap: 4px;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 10px;
 }
 .home-dashboard .announcement-card {
-  max-height: 60px;
-  overflow: hidden;
+  max-height: none;
+  overflow: visible;
 }
 .home-dashboard .announcement-card img {
-  height: 25px;
+  height: 28px;
 }
 .home-dashboard .announcement-body {
-  padding: 1px;
+  padding: 8px;
 }
 .home-dashboard .announcement-title {
-  font-size: 0.55rem;
+  font-size: 0.78rem;
 }
 .home-dashboard .announcement-text {
-  font-size: 0.45rem;
-  line-height: 1.1;
+  font-size: 0.68rem;
+  line-height: 1.35;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 .home-dashboard .announcement-date {
-  font-size: 0.45rem;
+  font-size: 0.6rem;
 }
 .home-dashboard .about-section {
-  display: none;
+  display: block;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 0;
+}
+.home-dashboard .about-section h3 {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+.home-dashboard .about-section p {
+  font-size: 0.87rem;
+  line-height: 1.45;
+  margin: 0;
+}
+.home-dashboard .card-header,
+.home-dashboard .card-body {
+  padding: 10px 10px !important;
+}
+.home-dashboard .card {
+  margin-bottom: 12px !important;
+}
+.home-dashboard .announcement-card .announcement-text {
+  min-height: 40px;
+}
+.page-content {
+  overflow-y: hidden;
 }
 .home-dashboard .card-header,
 .home-dashboard .card-body {
