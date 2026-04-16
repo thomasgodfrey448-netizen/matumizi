@@ -109,7 +109,7 @@
         {% endif %}
         <div class="announcement-body">
           <div class="announcement-title">{{ ann.title }}</div>
-          <div class="announcement-text">{{ ann.content|truncatechars:80 }}</div>
+          <div class="announcement-text">{{ ann.content }}</div>
           <div class="announcement-date">
             <i class="fas fa-clock"></i> {{ ann.created_at|date:"d M Y" }}
           </div>

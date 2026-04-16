@@ -1418,8 +1418,11 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   white-space: normal !important;
   text-overflow: clip !important;
   word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
   -webkit-line-clamp: unset !important;
   -webkit-box-orient: unset !important;
+  max-height: none !important;
 }
 
 .announcement-date {
