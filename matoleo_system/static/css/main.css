@@ -904,6 +904,71 @@ body {
     margin-bottom: 8px;
   }
 
+  /* Grid and card layout fixes for landscape */
+  .row {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .col,
+  .col-2,
+  .col-3,
+  .col-4 {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  .card,
+  .card-header,
+  .card-body {
+    min-width: 0;
+  }
+  .card-body {
+    padding: 14px;
+  }
+
+  /* Filter bar and form adjustments */
+  .filter-bar {
+    display: block;
+    padding: 12px;
+    gap: 12px;
+  }
+  .filter-bar form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .filter-bar .form-group,
+  .filter-bar > div,
+  .filter-bar .btn {
+    width: 100%;
+    min-width: 0;
+  }
+  .filter-bar .form-group {
+    margin-bottom: 12px;
+  }
+  .filter-bar .form-control,
+  .filter-bar select {
+    width: 100%;
+  }
+
+  /* Table responsiveness */
+  .table-wrapper,
+  .table-responsive {
+    overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+  .data-table {
+    width: 100%;
+    min-width: 900px;
+    table-layout: auto;
+  }
+  .data-table th,
+  .data-table td {
+    white-space: nowrap;
+    padding: 6px 8px;
+  }
+
   /* Modal and overlay improvements */
   .modal-content {
     max-height: 85vh;
