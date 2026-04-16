@@ -439,39 +439,45 @@ body {
   .home-dashboard {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 14px;
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: none;
+    margin: 0;
   }
 
   .home-dashboard .home-header-row {
-    gap: 16px;
+    gap: 12px;
     align-items: flex-start;
   }
 
   .home-dashboard .row {
-    gap: 16px;
+    gap: 12px;
   }
 
   .home-dashboard .announcement-ticker {
-    padding: 14px 16px;
-    border-radius: 16px;
+    padding: 10px 12px;
+    border-radius: 12px;
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 0;
   }
 
   .home-dashboard .about-section {
-    padding: 22px;
+    padding: 14px;
+    margin-bottom: 0;
   }
 
   .home-dashboard .stat-card {
-    min-height: 128px;
-    padding: 20px;
+    min-height: 100px;
+    padding: 14px;
   }
 
   .home-dashboard .stat-card .stat-value {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+  }
+
+  .home-dashboard .card {
+    margin-bottom: 10px;
   }
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 12px;
