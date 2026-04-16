@@ -3195,22 +3195,25 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .about-section h3 {
   font-size: 0.95rem;
   margin-bottom: 8px;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255,255,255,0.95) !important;
 }
 .home-dashboard .about-section p {
   font-size: 0.95rem;
   line-height: 1.6;
   margin: 0;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255,255,255,0.95) !important;
   white-space: normal;
   word-break: break-word;
 }
 .home-dashboard .announcement-ticker {
-  color: rgba(255,255,255,0.95);
+  color: rgba(255,255,255,0.95) !important;
 }
 .home-dashboard .announcement-ticker .ticker-label,
 .home-dashboard .announcement-ticker .ticker-text {
-  color: rgba(255,255,255,0.95);
+  color: rgba(255,255,255,0.95) !important;
+}
+.home-dashboard .announcement-ticker .ticker-label {
+  background: rgba(255,255,255,0.2) !important;
 }
 .home-dashboard .card-header,
 .home-dashboard .card-body {
