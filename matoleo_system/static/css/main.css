@@ -3174,8 +3174,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   padding: 0;
 }
 .home-dashboard .home-header-row h2 {
-  font-size: 0.95rem;
+  font-size: 1.3rem;
   margin-bottom: 0;
+  font-weight: 800;
 }
 .home-dashboard .home-header-row p {
   font-size: 0.75rem;
