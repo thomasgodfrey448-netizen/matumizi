@@ -862,13 +862,18 @@ body {
   }
 
   .topbar {
+    display: flex;
+    align-items: center;
     flex-wrap: nowrap;
     justify-content: space-between;
+    gap: 10px;
   }
   .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     flex: 1;
     min-width: 0;
-    align-items: center;
   }
   .topbar-right {
     flex: 0 0 auto;
@@ -1046,13 +1051,14 @@ body {
   }
   .data-table {
     width: 100%;
-    min-width: 900px;
+    min-width: 0;
     table-layout: auto;
   }
   .data-table th,
   .data-table td {
-    white-space: nowrap;
+    white-space: normal;
     padding: 6px 8px;
+    word-break: break-word;
   }
 
   /* Modal and overlay improvements */
