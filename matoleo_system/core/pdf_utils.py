@@ -226,7 +226,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
 
     header_data = [
         ['Payment Form No:', payment_form_number],
-        ['Tarehe ya Maombi ya Fedha:', request_date],
+        ['Tarehe kuomba pesa:', request_date],
         ['Tarehe ya kuidhinisha:', final_approval_date],
         ['Tarehe ya Malipo:', payment_date],
         ['Mkuu wa Idara:', requester_name],
@@ -235,7 +235,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         ['PO Box:', location_pobox],
         ['Kanisa:', kanisa],
         ['Namba ya Simu:', phone_number],
-        ['Jina la Muhazani:', treasurer_name],
+        ['Jina la Mhazini:', treasurer_name],
         ['Kiasi Kilicholipwa (TZS):', amount_paid],
     ]
 
@@ -257,7 +257,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
 
     if is_expense and getattr(request_obj, 'reason', None):
         reason_table = Table([
-            ['Reason for Payment:', request_obj.reason]
+            ['Dhumuni la Malipo ya Fedha:', request_obj.reason]
         ], colWidths=[130, 340])
         reason_table.setStyle(TableStyle([
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
