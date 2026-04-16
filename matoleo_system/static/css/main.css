@@ -2920,6 +2920,18 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
   .topbar {
     flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+  }
+  .topbar-left,
+  .topbar-right {
+    width: auto !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .topbar-right {
+    margin-left: auto !important;
+    justify-content: flex-end !important;
   }
   .page-title {
     font-size: 1rem !important;
