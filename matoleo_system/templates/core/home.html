@@ -6,6 +6,28 @@
 
 {% block content %}
 
+<!-- HEADER ROW -->
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+  <div>
+    <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
+      <i class="fas fa-home" style="color:var(--accent);"></i> Home Dashboard
+    </h2>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">
+      Welcome to the Makongo Juu SDA Church Finance System
+    </p>
+  </div>
+  <div style="display:flex; gap:6px; flex-wrap:wrap;">
+    {% if user_role != 'First Approver' and user_role != 'Second Approver' %}
+    <a href="{% url 'expenses:create' %}" class="btn btn-accent">
+      <i class="fas fa-plus"></i> New Expense
+    </a>
+    <a href="{% url 'retirement:create' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> New Retirement
+    </a>
+    {% endif %}
+  </div>
+</div>
+
 <!-- ANNOUNCEMENT TICKER -->
 {% if ticker_announcements %}
 <div class="announcement-ticker" style="overflow-x: hidden; max-width: 100%; word-wrap: break-word;">
@@ -22,32 +44,6 @@
   </div>
 </div>
 {% endif %}
-
-<!-- WELCOME BANNER -->
-<div style="background: linear-gradient(135deg, rgba(0,51,102,0.7), rgba(26,82,118,0.7)); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 16px; margin-bottom: 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; min-height: auto; overflow: hidden;">
-  <img src="{% static 'images/logo_clean_plain_v2.png' %}" alt="SDA Church Logo" style="width: 80px; height: 80px; min-width: 80px; min-height: 80px; object-fit: contain; flex-shrink: 0; background: transparent; border-radius: 50%; padding: 0; display: block; margin: 0; border: none;">
-  <div style="flex: 1; min-width: 150px; overflow: hidden;">
-    <h1 style="font-size:1.1rem; font-weight:800; color:var(--white); margin-bottom:2px; word-break: break-word; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-      Welcome, {{ user.first_name|default:"User"|truncatewords:2 }}!
-    </h1>
-    <p style="color:rgba(255,255,255,0.7); font-size:0.8rem; margin:0; line-height:1.3; overflow: hidden; text-overflow: ellipsis;">
-      Makongo Juu SDA Church, Financial Department Expenses&Retirement Management System
-    </p>
-    <p style="color:rgba(255,255,255,0.5); font-size:0.7rem; margin-top:2px;">
-      <i class="fas fa-calendar-alt"></i> {% now "d M Y" %}
-    </p>
-  </div>
-  <div style="display:flex; gap:6px; flex-wrap:wrap; flex-shrink: 0;">
-    {% if user_role != 'First Approver' and user_role != 'Second Approver' %}
-    <a href="{% url 'expenses:create' %}" class="btn btn-accent btn-sm" style="padding: 6px 10px; font-size: 0.75rem;">
-      <i class="fas fa-plus"></i>
-    </a>
-    <a href="{% url 'retirement:create' %}" class="btn btn-primary btn-sm" style="padding: 6px 10px; font-size: 0.75rem;">
-      <i class="fas fa-plus"></i>
-    </a>
-    {% endif %}
-  </div>
-</div>
 
 <!-- QUICK STATS -->
 {% if not is_approver and not is_treasurer and not is_admin %}
