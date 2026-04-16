@@ -2870,20 +2870,23 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
   .table-wrapper,
   .table-responsive {
-    overflow-x: auto !important;
+    overflow-x: visible !important;
     width: 100% !important;
     max-width: 100% !important;
-    -webkit-overflow-scrolling: touch;
   }
   .data-table {
-    width: auto !important;
-    min-width: 0 !important;
-    table-layout: auto !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    table-layout: fixed !important;
   }
-  .data-table th,
+  .data-table th {
+    white-space: normal !important;
+    word-break: break-word !important;
+    padding: 8px 4px !important;
+  }
   .data-table td {
     white-space: nowrap !important;
-    padding: 8px 10px !important;
+    padding: 8px 4px !important;
   }
   .data-table thead th {
     position: sticky !important;
@@ -2905,6 +2908,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .card-header {
     flex-wrap: wrap !important;
     gap: 10px !important;
+  }
+  .topbar {
+    flex-wrap: nowrap !important;
   }
   .page-title {
     font-size: 1rem !important;
