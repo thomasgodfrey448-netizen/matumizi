@@ -566,8 +566,8 @@ body {
   }
 
   .home-dashboard .announcement-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 4px;
     width: 100%;
     max-width: 100%;
@@ -3380,6 +3380,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     min-height: auto;
     overflow: visible !important;
     max-height: none !important;
+}
 .page-content {
   overflow-y: auto;
   overflow-x: hidden;
@@ -3410,7 +3411,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     min-width: 100px;
   }
   .home-dashboard .announcement-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     width: 100%;
     margin: 0;
@@ -3452,7 +3454,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     min-width: 100%;
   }
   .home-dashboard .announcement-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     width: 100%;
     margin: 0;
