@@ -4146,15 +4146,18 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     gap: 2px !important;
   }
   .home-dashboard > .row {
-    margin: 0 0 2px 0 !important;
+    margin: 0 0 1px 0 !important;
   }
   .home-dashboard > .row > .col {
-    margin-bottom: 2px !important;
+    margin-bottom: 1px !important;
   }
   .home-dashboard .card,
   .home-dashboard .announcement-card,
   .home-dashboard .about-section {
-    margin-bottom: 2px !important;
+    margin-bottom: 1px !important;
+  }
+  .home-dashboard .announcement-ticker {
+    margin: 4px 0 1px 0 !important;
   }
   .home-dashboard .card-header,
   .home-dashboard .card-body {
