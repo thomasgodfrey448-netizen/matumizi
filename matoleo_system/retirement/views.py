@@ -708,7 +708,7 @@ def download_retirement_pdf(request, pk):
         ['PO Box', '33516'],
         ['Kanisa', 'Makongo Juu SDA Church'],
         [f'Retirement Form No: {form.form_number}', f'Tarehe kuomba pesa: {form.date_of_request}'],
-        [f'Exp Form No: {form.exp_request_form_no or "N/A"}', ''],
+        [f'Expenses Form No: {form.exp_request_form_no or "N/A"}', ''],
         [f'Idara/Kitengo: {form.department}', f'Namba ya Simu: {form.phone_number}'],
         [f'Jina la Mkuu wa Idara/Kitengo: {form.first_name} {form.last_name}', f'Status: {form.get_status_display()}'],
         [f'Tarehe ya Marejesho: {form.date_of_retirement}', ''],

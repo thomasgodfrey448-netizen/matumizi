@@ -234,7 +234,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         ['Kanisa:', kanisa],
         ['PO Box:', location_pobox],
         [form_no_label, payment_form_number],
-        ['Exp Form No:', exp_form_no],
+        ['Expenses Form No:', exp_form_no],
         ['Tarehe ya kuomba pesa:', request_date],
         ['Tarehe ya kuidhinisha:', final_approval_date],
         ['Tarehe ya Malipo:', payment_date],
