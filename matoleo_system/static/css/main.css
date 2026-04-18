@@ -3580,23 +3580,55 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   padding: 10px !important;
 }
 .home-dashboard .announcement-ticker .ticker-text {
-    white-space: nowrap !important;
-    display: inline-block !important;
-    animation: ticker 20s linear infinite !important;
+  white-space: nowrap !important;
+  display: inline-block !important;
+  animation: ticker 20s linear infinite !important;
 }
 .home-dashboard .home-header-row {
   gap: 6px !important;
 }
 
-/ *   M o b i l e   p h o n e   v i e w   -   f o r c e   v e r t i c a l   a n n o u n c e m e n t   l a y o u t   * / 
- @ m e d i a   ( m a x - w i d t h :   4 8 0 p x )   { 
-     . h o m e - d a s h b o a r d   . a n n o u n c e m e n t - g r i d   { 
-         d i s p l a y :   f l e x   ! i m p o r t a n t ; 
-         f l e x - d i r e c t i o n :   c o l u m n   ! i m p o r t a n t ; 
-         g r i d - t e m p l a t e - c o l u m n s :   u n s e t   ! i m p o r t a n t ; 
-         g a p :   1 2 p x   ! i m p o r t a n t ; 
-     } 
- } 
- 
- 
+@media (max-width: 640px) {
+  .home-dashboard .announcement-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+  }
+  .home-dashboard .announcement-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: visible !important;
+  }
+  .home-dashboard .announcement-card img {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  .home-dashboard .announcement-body {
+    padding: 12px !important;
+  }
+  .home-dashboard .announcement-title,
+  .home-dashboard .announcement-text,
+  .home-dashboard .announcement-date {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: block !important;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 768px) {
+  .home-dashboard .announcement-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
 
