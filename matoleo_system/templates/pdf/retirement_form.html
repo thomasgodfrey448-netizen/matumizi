@@ -178,6 +178,12 @@
             <td class="label">Tarehe ya Marejesho:</td>
             <td>{{ form.date_of_retirement|date:"d/m/Y" }}</td>
         </tr>
+        <tr>
+            <td class="label">Retirement Form No:</td>
+            <td>{{ form.form_number }}</td>
+            <td class="label">Exp Form No:</td>
+            <td>{{ form.exp_request_form_no|default:"N/A" }}</td>
+        </tr>
     </table>
 
     <div class="details-section">
