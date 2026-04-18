@@ -688,15 +688,14 @@ def download_retirement_pdf(request, pk):
             pass
 
     header_style = ParagraphStyle('header', parent=styles['Normal'], fontSize=16,
-                                   fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=3)
+                                   fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=6)
     sub_style = ParagraphStyle('sub', parent=styles['Normal'], fontSize=12,
-                                fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=2)
+                                fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=6)
 
     story.append(Paragraph("SEVENTH-DAY ADVENTIST CHURCH", header_style))
     story.append(Paragraph("EAST-COASTAL TANZANIA FIELD", sub_style))
-    story.append(Paragraph("PO BOX 105", ParagraphStyle('po', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER, spaceAfter=1)))
-    story.append(Paragraph("Bagamoyo", ParagraphStyle('mtaa', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER, spaceAfter=4)))
-    story.append(Spacer(1, 6*mm))
+    story.append(Paragraph("PO BOX 105, Bagamoyo", ParagraphStyle('po', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER, spaceAfter=8)))
+    story.append(Spacer(1, 8*mm))
     story.append(Paragraph("HATI YA MAREJESHO YA FEDHA", ParagraphStyle('title', parent=styles['Normal'],
                             fontSize=13, fontName='Helvetica-Bold', alignment=TA_CENTER,
                             textColor=colors.HexColor('#003366'), spaceAfter=4)))
