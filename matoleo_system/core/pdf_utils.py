@@ -27,7 +27,7 @@ def generate_pdf_with_logo(filename, title, data_list, logo_path=None):
             logo_table = Table([[logo]], colWidths=[7.5*inch])
             logo_table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER')]))
             elements.append(logo_table)
-            elements.append(Spacer(1, 0.2*inch))
+            elements.append(Spacer(1, 6))
         except:
             pass
     
@@ -37,12 +37,12 @@ def generate_pdf_with_logo(filename, title, data_list, logo_path=None):
         parent=styles['Heading1'],
         fontSize=16,
         textColor=colors.HexColor('#003366'),
-        spaceAfter=12,
+        spaceAfter=6,
         alignment=TA_CENTER,
         fontName='Helvetica-Bold'
     )
     elements.append(Paragraph(title, title_style))
-    elements.append(Spacer(1, 0.3*inch))
+    elements.append(Spacer(1, 6))
     
     # Add data table
     table_data = data_list
