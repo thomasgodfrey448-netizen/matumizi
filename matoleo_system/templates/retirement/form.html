@@ -95,6 +95,10 @@
           <label class="form-label">Maelezo ya Marejesho ya Fedha <span style="color:var(--accent);">*</span></label>
           <textarea name="reason" class="form-control" required placeholder="Andika kiasi kilicho Ombwa na Kusudio lake...">{{ form_obj.reason|default:'' }}</textarea>
         </div>
+        <div class="form-group">
+          <label class="form-label">Exp Request Form No</label>
+          <input type="text" name="exp_request_form_no" class="form-control" value="{{ form_obj.exp_request_form_no|default:'' }}" placeholder="Enter form number">
+        </div>
         <div class="row">
           <div class="col-2">
             <div class="form-group">

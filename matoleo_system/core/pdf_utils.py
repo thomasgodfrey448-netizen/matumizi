@@ -132,6 +132,7 @@ def retirement_to_pdf(retirement_form, logo_path=None):
         ['Service Years', str(retirement_form.years_of_service)],
         ['Date Submitted', str(retirement_form.created_at.date())],
         ['Status', retirement_form.get_status_display()],
+        ['Exp Request Form No', retirement_form.exp_request_form_no or 'N/A'],
         ['', ''],
         ['First Approver', retirement_form.first_approver_name or 'TBD'],
         ['First Approver Phone', retirement_form.first_approver_phone or 'TBD'],

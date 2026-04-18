@@ -138,6 +138,7 @@ def create_retirement(request):
         date_request = request.POST.get('date_of_request')
         date_retirement = request.POST.get('date_of_retirement')
         reason = request.POST.get('reason', '').strip()
+        exp_request_form_no = request.POST.get('exp_request_form_no', '').strip()
         remaining = request.POST.get('remaining_amount', '0')
         attachment = request.FILES.get('attachment')
         descriptions = request.POST.getlist('item_description[]')
@@ -238,6 +239,7 @@ def create_retirement(request):
                 date_of_request=date_request,
                 date_of_retirement=date_retirement,
                 reason=reason,
+                exp_request_form_no=exp_request_form_no,
                 total_amount=total,
                 remaining_amount=remaining_val,
                 attachment=attachment,
@@ -291,6 +293,7 @@ def edit_retirement(request, pk):
         date_request = request.POST.get('date_of_request')
         date_retirement = request.POST.get('date_of_retirement')
         reason = request.POST.get('reason', '').strip()
+        exp_request_form_no = request.POST.get('exp_request_form_no', '').strip()
         remaining = request.POST.get('remaining_amount', '0')
         attachment = request.FILES.get('attachment')
         descriptions = request.POST.getlist('item_description[]')
@@ -333,6 +336,7 @@ def edit_retirement(request, pk):
             form.date_of_request = date_request
             form.date_of_retirement = date_retirement
             form.reason = reason
+            form.exp_request_form_no = exp_request_form_no
             form.total_amount = total
             form.remaining_amount = remaining_val
             if attachment:

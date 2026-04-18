@@ -348,12 +348,12 @@ def download_retirement_report(request):
                                            fontName='Helvetica-Bold', alignment=TA_CENTER,
                                            textColor=colors.HexColor('#1a5276'), spaceAfter=8)))
 
-    headers = [['#', 'Form No', 'Name', 'Department', 'Date Req.', 'Date Ret.', 'Remaining', 'Status']]
+    headers = [['#', 'Form No', 'Exp Req No', 'Name', 'Department', 'Date Req.', 'Date Ret.', 'Remaining', 'Status']]
     rows = []
     total = 0
     for i, r in enumerate(qs):
         rows.append([
-            str(i+1), r.form_number,
+            str(i+1), r.form_number, r.exp_request_form_no or '',
             f"{r.first_name} {r.last_name}",
             str(r.department or ''),
             str(r.date_of_request),
@@ -362,16 +362,16 @@ def download_retirement_report(request):
             r.get_status_display(),
         ])
         total += r.remaining_amount
-    rows.append(['', '', '', '', '', 'TOTAL', f"{total:,.2f}", ''])
+    rows.append(['', '', '', '', '', '', 'TOTAL', f"{total:,.2f}", ''])
 
-    col_widths = [10*mm, 28*mm, 35*mm, 30*mm, 20*mm, 20*mm, 28*mm, 22*mm]
+    col_widths = [10*mm, 28*mm, 25*mm, 35*mm, 30*mm, 20*mm, 20*mm, 28*mm, 22*mm]
     table = Table(headers + rows, colWidths=col_widths)
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a5276')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, -1), 8),
-        ('ALIGN', (6, 0), (7, -1), 'RIGHT'),
+        ('ALIGN', (7, 0), (8, -1), 'RIGHT'),
         ('GRID', (0, 0), (-1, -1), 0.3, colors.grey),
         ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#d6eaf8')),
         ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
