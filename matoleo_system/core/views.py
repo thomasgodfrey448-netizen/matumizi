@@ -334,7 +334,9 @@ def delete_reg_code(request, pk):
 
 @login_required
 def add_announcement(request):
-    is_treasurer = hasattr(request.user, 'treasurer_profile')
+    is_treasurer = hasattr(request.user, 'treasurer_profile') or (
+        hasattr(request.user, 'profile') and getattr(request.user.profile, 'role', None) == 'Treasurer'
+    )
     if not (request.user.is_staff or is_treasurer):
         messages.error(request, 'You do not have permission to add announcements.')
         return redirect('core:home')
@@ -356,7 +358,9 @@ def add_announcement(request):
 
 @login_required
 def delete_announcement(request, pk):
-    is_treasurer = hasattr(request.user, 'treasurer_profile')
+    is_treasurer = hasattr(request.user, 'treasurer_profile') or (
+        hasattr(request.user, 'profile') and getattr(request.user.profile, 'role', None) == 'Treasurer'
+    )
     if not (request.user.is_staff or is_treasurer):
         messages.error(request, 'You do not have permission to delete announcements.')
         return redirect('core:home')
