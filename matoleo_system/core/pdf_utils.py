@@ -178,6 +178,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         items = [[str(i+1), item.description, f"{item.amount:,.2f}"] for i, item in enumerate(request_obj.items.all())]
         phone_number = getattr(request_obj, 'phone_number', 'N/A') or 'N/A'
         exp_form_no = request_obj.form_number  # Use expense request form number
+        form_no_label = 'Payment Form No:'
     else:  # RetirementForm
         request_date = request_obj.date_of_request.strftime('%Y-%m-%d') if request_obj.date_of_request else 'N/A'
         final_approval_date = request_obj.admin_approved_at.strftime('%Y-%m-%d') if request_obj.admin_approved_at else (request_obj.paid_at.strftime('%Y-%m-%d') if request_obj.paid_at else 'N/A')
@@ -186,11 +187,12 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         treasurer_name = request_obj.treasurer_name or 'N/A'
         treasurer_phone = request_obj.treasurer_phone or 'N/A'
         department = str(request_obj.department) if request_obj.department else 'N/A'
-        payment_form_number = request_obj.form_number.replace('RET-', 'PAY-') if request_obj.form_number.startswith('RET-') else f'PAY-{request_obj.form_number}'
+        payment_form_number = request_obj.form_number  # Use actual retirement form number
         amount_paid = f"TZS {request_obj.total_amount:,.2f}"
         items = [[str(i+1), item.description, f"{item.amount:,.2f}"] for i, item in enumerate(request_obj.items.all())]
         phone_number = getattr(request_obj, 'phone_number', 'N/A') or 'N/A'
         exp_form_no = request_obj.exp_request_form_no or 'N/A'
+        form_no_label = 'Retirement Form No:'
 
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=20, bottomMargin=20, leftMargin=20, rightMargin=20)
@@ -231,7 +233,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         ['Mtaa:', location_mtaa],
         ['Kanisa:', kanisa],
         ['PO Box:', location_pobox],
-        ['Payment Form No:', payment_form_number],
+        [form_no_label, payment_form_number],
         ['Exp Form No:', exp_form_no],
         ['Tarehe ya kuomba pesa:', request_date],
         ['Tarehe ya kuidhinisha:', final_approval_date],
