@@ -4140,3 +4140,31 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     padding: 12px !important;
   }
 }
+
+@media (max-width: 540px) {
+  .home-dashboard {
+    gap: 4px !important;
+  }
+  .home-dashboard > .row {
+    margin: 0 0 4px 0 !important;
+  }
+  .home-dashboard > .row > .col {
+    margin-bottom: 4px !important;
+  }
+  .home-dashboard .card,
+  .home-dashboard .announcement-card,
+  .home-dashboard .about-section {
+    margin-bottom: 4px !important;
+  }
+  .home-dashboard .card-header,
+  .home-dashboard .card-body {
+    padding: 8px 10px !important;
+  }
+  .home-dashboard .stat-card {
+    padding: 8px 10px !important;
+    gap: 2px !important;
+  }
+  .home-dashboard .announcement-grid {
+    gap: 4px !important;
+  }
+}
