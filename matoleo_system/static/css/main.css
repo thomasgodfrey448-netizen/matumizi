@@ -3580,9 +3580,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   padding: 10px !important;
 }
 .home-dashboard .announcement-ticker .ticker-text {
-  white-space: normal !important;
-  display: block !important;
-}
+    white-space: nowrap !important;
+    display: inline-block !important;
+    animation: ticker 20s linear infinite !important;
 .home-dashboard .home-header-row {
   gap: 6px !important;
 }
