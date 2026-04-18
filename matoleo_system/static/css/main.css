@@ -3361,11 +3361,11 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   width: 100%;
 }
 .home-dashboard .ticker-text {
-  display: block;
-  white-space: normal;
-  animation: none;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  display: inline-block;
+  white-space: nowrap;
+  animation: ticker 20s linear infinite;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .home-dashboard .card-header,
 .home-dashboard .card-body {
