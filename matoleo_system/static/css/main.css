@@ -3013,7 +3013,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   margin-bottom: 0;
 }
 .home-dashboard > .row {
-  margin: 16px 0;
+  margin: 2px 0;
 }
 .home-dashboard .row {
   margin-left: 0;
@@ -3021,7 +3021,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 .home-dashboard .card-header,
 .home-dashboard .card-body {
-  padding: 14px 14px !important;
+  padding: 4px 6px !important;
 }
 .home-dashboard .card {
   margin-bottom: 16px !important;
