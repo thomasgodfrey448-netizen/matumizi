@@ -177,6 +177,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         amount_paid = f"TZS {request_obj.total_amount:,.2f}"
         items = [[str(i+1), item.description, f"{item.amount:,.2f}"] for i, item in enumerate(request_obj.items.all())]
         phone_number = getattr(request_obj, 'phone_number', 'N/A') or 'N/A'
+        exp_form_no = 'N/A'  # Not applicable for expenses
     else:  # RetirementForm
         request_date = request_obj.date_of_request.strftime('%Y-%m-%d') if request_obj.date_of_request else 'N/A'
         final_approval_date = request_obj.admin_approved_at.strftime('%Y-%m-%d') if request_obj.admin_approved_at else (request_obj.paid_at.strftime('%Y-%m-%d') if request_obj.paid_at else 'N/A')
@@ -189,6 +190,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         amount_paid = f"TZS {request_obj.total_amount:,.2f}"
         items = [[str(i+1), item.description, f"{item.amount:,.2f}"] for i, item in enumerate(request_obj.items.all())]
         phone_number = getattr(request_obj, 'phone_number', 'N/A') or 'N/A'
+        exp_form_no = request_obj.exp_request_form_no or 'N/A'
 
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=20, bottomMargin=20, leftMargin=20, rightMargin=20)
@@ -226,18 +228,19 @@ def payment_voucher_pdf(request_obj, logo_path=None):
     story.append(Spacer(1, 12))
 
     header_data = [
+        ['Mtaa:', location_mtaa],
+        ['Kanisa:', kanisa],
+        ['PO Box:', location_pobox],
         ['Payment Form No:', payment_form_number],
-        ['Tarehe kuomba pesa:', request_date],
+        ['Exp Form No:', exp_form_no],
+        ['Tarehe ya kuomba pesa:', request_date],
         ['Tarehe ya kuidhinisha:', final_approval_date],
         ['Tarehe ya Malipo:', payment_date],
-        ['Mkuu wa Idara:', requester_name],
         ['Idara/Kitengo:', department],
-        ['Mtaa:', location_mtaa],
-        ['PO Box:', location_pobox],
-        ['Kanisa:', kanisa],
+        ['Mkuu wa Idara:', requester_name],
         ['Namba ya Simu:', phone_number],
         ['Jina la Mhazini:', treasurer_name],
-        ['Kiasi Kilicholipwa (TZS):', amount_paid],
+        ['Kiasi kilicholipwa:', amount_paid],
     ]
 
     header_table = Table(header_data, colWidths=[130, 340])
