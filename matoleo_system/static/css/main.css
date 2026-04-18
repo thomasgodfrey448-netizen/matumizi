@@ -3587,12 +3587,13 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   gap: 6px !important;
 }
 
-/* Mobile phone view - force vertical announcement layout */
-@media (max-width: 480px) {
-  .home-dashboard .announcement-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    grid-template-columns: unset !important;
-    gap: 12px !important;
-  }
-}
+/ *   M o b i l e   p h o n e   v i e w   -   f o r c e   v e r t i c a l   a n n o u n c e m e n t   l a y o u t   * / 
+ @ m e d i a   ( m a x - w i d t h :   4 8 0 p x )   { 
+     . h o m e - d a s h b o a r d   . a n n o u n c e m e n t - g r i d   { 
+         d i s p l a y :   f l e x   ! i m p o r t a n t ; 
+         f l e x - d i r e c t i o n :   c o l u m n   ! i m p o r t a n t ; 
+         g r i d - t e m p l a t e - c o l u m n s :   u n s e t   ! i m p o r t a n t ; 
+         g a p :   1 2 p x   ! i m p o r t a n t ; 
+     } 
+ }  
+ 
