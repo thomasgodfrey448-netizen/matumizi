@@ -3583,6 +3583,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     white-space: nowrap !important;
     display: inline-block !important;
     animation: ticker 20s linear infinite !important;
+}
 .home-dashboard .home-header-row {
   gap: 6px !important;
 }
@@ -3595,5 +3596,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
          g r i d - t e m p l a t e - c o l u m n s :   u n s e t   ! i m p o r t a n t ; 
          g a p :   1 2 p x   ! i m p o r t a n t ; 
      } 
- }  
+ } 
  
+ 
+
