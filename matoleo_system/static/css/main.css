@@ -531,45 +531,44 @@ body {
   }
 
   .home-dashboard .stat-card {
-    min-height: 40px;
-    padding: 4px;
-    gap: 6px;
+    padding: 20px;
+    gap: 10px;
   }
 
   .home-dashboard .stat-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 0.8rem;
+    width: 56px;
+    height: 56px;
+    font-size: 1.2rem;
   }
 
   .home-dashboard .stat-card .stat-value {
-    font-size: 0.75rem;
+    font-size: 1.2rem;
   }
 
   .home-dashboard .stat-card .stat-label {
-    font-size: 0.4rem;
+    font-size: 0.85rem;
   }
 
   .home-dashboard .card {
-    margin-bottom: 1px;
+    margin-bottom: 16px;
   }
 
   .home-dashboard .card-header {
-    padding: 4px 6px;
+    padding: 20px 24px;
   }
 
   .home-dashboard .card-header h5 {
-    font-size: 0.75rem;
+    font-size: 1rem;
   }
 
   .home-dashboard .card-body {
-    padding: 4px;
+    padding: 20px;
   }
 
   .home-dashboard .announcement-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -3237,20 +3236,19 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   font-size: 0.65rem;
 }
 .home-dashboard .stat-card {
-  min-height: 35px;
-  padding: 4px;
-  gap: 6px;
+  padding: 20px;
+  gap: 10px;
 }
 .home-dashboard .stat-icon {
-  width: 32px;
-  height: 32px;
-  font-size: 0.95rem;
+  width: 56px;
+  height: 56px;
+  font-size: 1.2rem;
 }
 .home-dashboard .stat-card .stat-value {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
 }
 .home-dashboard .stat-card .stat-label {
-  font-size: 0.65rem;
+  font-size: 0.85rem;
 }
 .home-dashboard > .row {
   width: 100%;
@@ -3258,14 +3256,13 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   overflow-x: hidden;
 }
 .home-dashboard > .row > .col {
-  flex: 0 0 calc(25% - 9px);
-  min-width: 80px;
-  max-width: calc(25% - 9px);
+  flex: 1;
+  min-width: 200px;
 }
 .home-dashboard .announcement-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 4px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -3412,13 +3409,13 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     gap: 8px;
   }
   .home-dashboard > .row > .col {
-    flex: 0 0 calc(50% - 4px);
-    min-width: 100px;
+    flex: 1;
+    min-width: 150px;
   }
   .home-dashboard .announcement-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(180px, 1fr));
-    gap: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
     width: 100%;
     margin: 0;
     padding: 0;
