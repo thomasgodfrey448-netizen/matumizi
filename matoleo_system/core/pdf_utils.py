@@ -320,8 +320,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
     ]))
     story.append(sig_table)
     story.append(Spacer(1, 18))
-    story.append(Paragraph('This payment form is valid only when signed and dated by the treasurer.', note_style))
-    story.append(Paragraph('Thank you for your cooperation and faithful stewardship.', note_style))
+    story.append(Paragraph('Fomu hii ya malipo itakuwa halali tu ikiwa imesainiwa na kuwekewa tarehe na Mhazini.', note_style))
 
     doc.build(story)
     buffer.seek(0)
