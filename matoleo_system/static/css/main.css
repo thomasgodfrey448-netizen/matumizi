@@ -3499,6 +3499,14 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
 }
 
+@media (orientation: landscape) and (max-width: 768px) {
+  .home-dashboard .announcement-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
 .page-content {
   overflow-y: auto;
   overflow-x: hidden;
