@@ -3703,11 +3703,11 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   line-height: 1.2 !important;
 }
 .home-dashboard .card {
-  margin-bottom: 8px !important;
+  margin-bottom: 6px !important;
 }
 .home-dashboard .card-header,
 .home-dashboard .card-body {
-  padding: 5px 6px !important;
+  padding: 4px 5px !important;
 }
 .home-dashboard .about-section {
   padding: 12px !important;
@@ -3819,7 +3819,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
 /* Home page one-screen fit override */
 .home-dashboard {
-  gap: 6px !important;
+  gap: 4px !important;
   padding-bottom: 0 !important;
   min-height: 0 !important;
 }
@@ -3835,9 +3835,6 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .home-header-row {
   gap: 4px !important;
 }
-.home-dashboard .home-header-row h2 {
-  font-size: 0.95rem !important;
-}
 .home-dashboard .home-header-row p {
   font-size: 0.65rem !important;
 }
@@ -3846,7 +3843,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   font-size: 0.75rem !important;
 }
 .home-dashboard > .row {
-  margin: 2px 0 !important;
+  margin: 1px 0 !important;
 }
 .home-dashboard > .row > .col {
   flex: 1 1 150px !important;
@@ -3858,35 +3855,35 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   min-height: 0 !important;
 }
 .home-dashboard .stat-icon {
-  width: 38px !important;
-  height: 38px !important;
+  width: 36px !important;
+  height: 36px !important;
   font-size: 1rem !important;
 }
 .home-dashboard .stat-card .stat-value {
-  font-size: 0.9rem !important;
+  font-size: 0.85rem !important;
 }
 .home-dashboard .stat-card .stat-label {
   font-size: 0.65rem !important;
 }
 .home-dashboard .announcement-grid {
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
-  gap: 6px !important;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+  gap: 4px !important;
 }
 .home-dashboard .announcement-card {
   margin-bottom: 4px !important;
 }
 .home-dashboard .announcement-card img {
-  height: 18px !important;
+  height: 16px !important;
 }
 .home-dashboard .announcement-body {
   padding: 4px 5px !important;
 }
 .home-dashboard .announcement-title {
-  font-size: 0.75rem !important;
+  font-size: 0.7rem !important;
   line-height: 1.1 !important;
 }
 .home-dashboard .announcement-text {
-  font-size: 0.72rem !important;
+  font-size: 0.68rem !important;
   line-height: 1.1 !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 1 !important;
@@ -3897,32 +3894,29 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   font-size: 0.55rem !important;
 }
 .home-dashboard .about-section {
-  padding: 8px !important;
+  padding: 6px !important;
 }
 .home-dashboard .about-section p {
-  font-size: 0.72rem !important;
   line-height: 1.2 !important;
 }
 @media (max-height: 900px) {
   .home-dashboard {
-    gap: 4px !important;
+    gap: 2px !important;
   }
   .home-dashboard .announcement-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
-    gap: 5px !important;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+    gap: 3px !important;
   }
   .home-dashboard .announcement-card img {
-    height: 16px !important;
+    height: 14px !important;
   }
   .home-dashboard .about-section {
     padding: 4px !important;
   }
   .home-dashboard .about-section h3 {
-    font-size: 0.8rem !important;
     margin-bottom: 4px !important;
   }
   .home-dashboard .about-section p {
-    font-size: 0.65rem !important;
     line-height: 1.1 !important;
   }
   .home-dashboard .about-section div[style*="grid-template-columns"] {
