@@ -4163,6 +4163,14 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .home-dashboard .stat-card {
     padding: 6px 8px !important;
     gap: 1px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .home-dashboard .stat-card .stat-value,
+  .home-dashboard .stat-card .stat-label {
+    text-align: center !important;
+    width: 100% !important;
   }
   .home-dashboard .announcement-grid {
     gap: 2px !important;
