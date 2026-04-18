@@ -3488,7 +3488,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .home-dashboard .announcement-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -3499,6 +3499,13 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     display: flex;
     flex-direction: column;
     overflow: visible;
+    margin-bottom: 6px !important;
+  }
+  .home-dashboard .card {
+    margin-bottom: 6px !important;
+  }
+  .home-dashboard > .row {
+    margin-bottom: 6px !important;
   }
   .home-dashboard .announcement-card img {
     height: 60px;
