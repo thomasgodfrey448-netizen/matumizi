@@ -3257,16 +3257,14 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   min-width: 80px;
   max-width: calc(25% - 9px);
 }
-.home-dashboard .announcement-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+..home-dashboard .announcement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
   width: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: visible;
   max-width: 100%;
   min-width: 0;
 }
@@ -3277,7 +3275,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   width: 100%;
   display: flex;
   flex-direction: column;
-  min-height: auto;
+  min-height: 0;
+  height: auto;
 }
 .home-dashboard .announcement-card img {
   height: 36px;
@@ -3366,12 +3365,12 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .card {
   margin-bottom: 12px !important;
   width: 100%;
-  overflow-x: hidden;
+  overflow: visible;
   box-sizing: border-box;
 }
 .home-dashboard .card-body {
   padding: 10px !important;
-  overflow-x: hidden;
+  overflow: visible;
   box-sizing: border-box;
   width: 100%;
 }
