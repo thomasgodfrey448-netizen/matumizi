@@ -177,7 +177,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
         amount_paid = f"TZS {request_obj.total_amount:,.2f}"
         items = [[str(i+1), item.description, f"{item.amount:,.2f}"] for i, item in enumerate(request_obj.items.all())]
         phone_number = getattr(request_obj, 'phone_number', 'N/A') or 'N/A'
-        exp_form_no = 'N/A'  # Not applicable for expenses
+        exp_form_no = request_obj.form_number  # Use expense request form number
     else:  # RetirementForm
         request_date = request_obj.date_of_request.strftime('%Y-%m-%d') if request_obj.date_of_request else 'N/A'
         final_approval_date = request_obj.admin_approved_at.strftime('%Y-%m-%d') if request_obj.admin_approved_at else (request_obj.paid_at.strftime('%Y-%m-%d') if request_obj.paid_at else 'N/A')
@@ -261,8 +261,7 @@ def payment_voucher_pdf(request_obj, logo_path=None):
 
     if is_expense and getattr(request_obj, 'reason', None):
         reason_table = Table([
-            ['Dhumuni la Malipo:', request_obj.reason],
-            ['Exp Form No:', request_obj.form_number]
+            ['Dhumuni la Malipo:', request_obj.reason]
         ], colWidths=[130, 340])
         reason_table.setStyle(TableStyle([
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
