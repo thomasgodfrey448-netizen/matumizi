@@ -567,8 +567,8 @@ body {
 
   .home-dashboard .announcement-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -578,7 +578,7 @@ body {
   }
 
   .home-dashboard .announcement-card {
-    overflow: hidden;
+    overflow: visible;
     box-sizing: border-box;
     min-width: 0;
     width: 100%;
@@ -586,41 +586,37 @@ body {
     flex-direction: column;
     min-height: auto;
     height: auto;
-    max-height: 180px;
   }
 
   .home-dashboard .announcement-card img {
     width: 100%;
-    height: 35px;
+    height: 100px;
     object-fit: cover;
     flex-shrink: 0;
   }
 
   .home-dashboard .announcement-body {
-    padding: 4px;
+    padding: 8px;
     word-break: break-word;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     min-width: 0;
     min-height: auto;
-    flex: 1;
   }
 
   .home-dashboard .announcement-title {
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    line-height: 1.1;
-    margin-bottom: 2px;
+    line-height: 1.2;
+    margin-bottom: 4px;
   }
 
   .home-dashboard .announcement-text {
-    font-size: 0.7rem;
-    line-height: 1.25;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    overflow: visible;
+    display: block;
     word-break: break-word;
   }
 
@@ -3265,8 +3261,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 .home-dashboard .announcement-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -3275,7 +3271,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   min-width: 0;
 }
 .home-dashboard .announcement-card {
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
   min-width: 0;
   width: 100%;
@@ -3283,40 +3279,36 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   flex-direction: column;
   min-height: 0;
   height: auto;
-  max-height: 180px;
 }
 .home-dashboard .announcement-card img {
-  height: 35px;
+  height: 100px;
   width: 100%;
   object-fit: cover;
   flex-shrink: 0;
 }
 .home-dashboard .announcement-body {
-  padding: 4px;
+  padding: 8px;
   word-break: break-word;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: auto;
-  flex: 1;
 }
 .home-dashboard .announcement-title {
-  font-size: 0.8rem !important;
+  font-size: 0.95rem !important;
   font-weight: 700 !important;
-  margin-bottom: 2px !important;
+  margin-bottom: 4px !important;
   word-break: break-word;
   overflow: visible;
   white-space: normal;
-  line-height: 1.1;
+  line-height: 1.2;
 }
 .home-dashboard .announcement-text {
-  font-size: 0.7rem;
-  line-height: 1.2;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  overflow: visible;
+  display: block;
   word-break: break-word;
 }
 .home-dashboard .announcement-date {
@@ -3419,8 +3411,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
   .home-dashboard .announcement-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    gap: 12px;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -3431,32 +3423,29 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     width: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    max-height: 180px;
+    overflow: visible;
   }
   .home-dashboard .announcement-card img {
     width: 100%;
-    height: 40px;
+    height: 80px;
     object-fit: cover;
     flex-shrink: 0;
   }
   .home-dashboard .announcement-text {
-    font-size: 0.75rem;
-    line-height: 1.2;
-    overflow: hidden;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    display: -webkit-box;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    overflow: visible;
+    display: block;
   }
   .home-dashboard .about-section {
-    padding: 12px;
+    padding: 14px;
   }
   .home-dashboard .about-section p {
-    font-size: 0.85rem;
-    line-height: 1.4;
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
   .home-dashboard .announcement-body {
-    padding: 4px;
+    padding: 8px;
   }
 }
 
