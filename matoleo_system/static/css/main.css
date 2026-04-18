@@ -3648,6 +3648,91 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
 }
 
+/* Final compact home dashboard fit override */
+.home-dashboard {
+  gap: 6px !important;
+}
+.home-dashboard > .home-header-row,
+.home-dashboard > .announcement-ticker,
+.home-dashboard > .row,
+.home-dashboard > .card,
+.home-dashboard > .about-section {
+  margin-bottom: 0 !important;
+}
+.home-dashboard > .row {
+  margin: 4px 0 !important;
+}
+.home-dashboard .home-header-row {
+  gap: 2px !important;
+}
+.home-dashboard .home-header-row h2 {
+  font-size: 0.85rem !important;
+}
+.home-dashboard .home-header-row p {
+  font-size: 0.55rem !important;
+}
+.home-dashboard .home-header-row .btn {
+  padding: 2px 6px !important;
+  font-size: 0.62rem !important;
+}
+.home-dashboard .announcement-ticker {
+  padding: 4px 8px !important;
+  min-height: 26px !important;
+}
+.home-dashboard .announcement-ticker .ticker-text {
+  font-size: 0.75rem !important;
+  line-height: 1.1 !important;
+}
+.home-dashboard .stat-card {
+  padding: 3px 6px !important;
+  gap: 2px !important;
+  min-height: 0 !important;
+}
+.home-dashboard .stat-icon {
+  width: 40px !important;
+  height: 40px !important;
+}
+.home-dashboard .stat-card .stat-value {
+  font-size: 0.98rem !important;
+}
+.home-dashboard .stat-card .stat-label {
+  font-size: 0.7rem !important;
+}
+.home-dashboard .announcement-grid {
+  gap: 6px !important;
+}
+.home-dashboard .announcement-card {
+  margin-bottom: 4px !important;
+}
+.home-dashboard .announcement-card img {
+  height: 20px !important;
+}
+.home-dashboard .announcement-body {
+  padding: 4px 6px !important;
+}
+.home-dashboard .announcement-title {
+  font-size: 0.65rem !important;
+  margin-bottom: 1px !important;
+}
+.home-dashboard .announcement-text {
+  font-size: 0.68rem !important;
+  line-height: 1.1 !important;
+  -webkit-line-clamp: 1 !important;
+}
+.home-dashboard .announcement-date {
+  font-size: 0.54rem !important;
+}
+.home-dashboard .card {
+  margin-bottom: 6px !important;
+}
+.home-dashboard .card-header,
+.home-dashboard .card-body {
+  padding: 5px 6px !important;
+}
+.home-dashboard .about-section {
+  padding: 10px !important;
+}
+
 /* Home dashboard final compact override */
 .home-dashboard {
   gap: 8px !important;
