@@ -3545,3 +3545,44 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     font-size: 1rem !important;
   }
 }
+
+/* Final home dashboard fit override */
+.home-dashboard > .row > .col {
+  flex: 1 1 150px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+.home-dashboard .stat-card {
+  padding: 10px !important;
+  gap: 8px !important;
+}
+.home-dashboard .stat-card .stat-value {
+  font-size: 1rem !important;
+}
+.home-dashboard .stat-card .stat-label {
+  font-size: 0.75rem !important;
+}
+.home-dashboard .announcement-grid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+  gap: 10px !important;
+}
+.home-dashboard .announcement-card {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+.home-dashboard .announcement-card img {
+  height: 32px !important;
+}
+.home-dashboard .card-header {
+  padding: 8px 10px !important;
+}
+.home-dashboard .card-body {
+  padding: 10px !important;
+}
+.home-dashboard .announcement-ticker .ticker-text {
+  white-space: normal !important;
+  display: block !important;
+}
+.home-dashboard .home-header-row {
+  gap: 6px !important;
+}
