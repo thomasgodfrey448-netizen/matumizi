@@ -3648,3 +3648,76 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
 }
 
+/* Home dashboard final compact override */
+.home-dashboard {
+  gap: 8px !important;
+}
+.home-dashboard .home-header-row {
+  gap: 4px !important;
+}
+.home-dashboard .home-header-row h2 {
+  font-size: 0.88rem !important;
+}
+.home-dashboard .home-header-row p {
+  font-size: 0.58rem !important;
+}
+.home-dashboard .home-header-row .btn {
+  padding: 2px 6px !important;
+  font-size: 0.62rem !important;
+}
+.home-dashboard .announcement-ticker {
+  padding: 4px 8px !important;
+  gap: 4px !important;
+}
+.home-dashboard .announcement-ticker .ticker-text {
+  font-size: 0.78rem !important;
+}
+.home-dashboard .stat-card {
+  padding: 4px 6px !important;
+  gap: 4px !important;
+}
+.home-dashboard .stat-icon {
+  width: 42px !important;
+  height: 42px !important;
+}
+.home-dashboard .stat-card .stat-value {
+  font-size: 1rem !important;
+}
+.home-dashboard .stat-card .stat-label {
+  font-size: 0.72rem !important;
+}
+.home-dashboard .announcement-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  gap: 8px !important;
+}
+.home-dashboard .announcement-card {
+  margin-bottom: 6px !important;
+}
+.home-dashboard .announcement-card img {
+  height: 24px !important;
+}
+.home-dashboard .announcement-body {
+  padding: 6px !important;
+}
+.home-dashboard .announcement-title {
+  font-size: 0.72rem !important;
+  margin-bottom: 2px !important;
+}
+.home-dashboard .announcement-text {
+  font-size: 0.72rem !important;
+  line-height: 1.2 !important;
+}
+.home-dashboard .announcement-date {
+  font-size: 0.56rem !important;
+}
+.home-dashboard .card-header,
+.home-dashboard .card-body {
+  padding: 5px 6px !important;
+}
+.home-dashboard .card {
+  margin-bottom: 8px !important;
+}
+.home-dashboard .about-section {
+  padding: 12px !important;
+}
+
