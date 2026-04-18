@@ -332,8 +332,14 @@ def delete_reg_code(request, pk):
     return redirect('core:admin_dashboard')
 
 
-@staff_member_required
+@login_required
 def add_announcement(request):
+    user_role = getattr(request.user.profile, 'role', None)
+    is_treasurer = user_role == 'Treasurer'
+    if not (request.user.is_staff or is_treasurer):
+        messages.error(request, 'You do not have permission to add announcements.')
+        return redirect('core:home')
+    
     if request.method == 'POST':
         title = request.POST.get('title', '').strip()
         content = request.POST.get('content', '').strip()
@@ -346,15 +352,21 @@ def add_announcement(request):
             messages.success(request, 'Announcement added.')
         else:
             messages.error(request, 'Title and content are required.')
-    return redirect('core:admin_dashboard')
+    return redirect('core:treasurer_dashboard' if is_treasurer else 'core:admin_dashboard')
 
 
-@staff_member_required
+@login_required
 def delete_announcement(request, pk):
+    user_role = getattr(request.user.profile, 'role', None)
+    is_treasurer = user_role == 'Treasurer'
+    if not (request.user.is_staff or is_treasurer):
+        messages.error(request, 'You do not have permission to delete announcements.')
+        return redirect('core:home')
+    
     ann = get_object_or_404(Announcement, pk=pk)
     ann.delete()
     messages.success(request, 'Announcement deleted.')
-    return redirect('core:admin_dashboard')
+    return redirect('core:treasurer_dashboard' if is_treasurer else 'core:admin_dashboard')
 
 
 @staff_member_required
