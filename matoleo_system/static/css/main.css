@@ -3116,6 +3116,11 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     gap: 14px !important;
   }
 
+  .home-dashboard .announcement-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr)) !important;
+    gap: 16px !important;
+  }
+
   .table-wrapper,
   .table-responsive {
     overflow-x: visible !important;
