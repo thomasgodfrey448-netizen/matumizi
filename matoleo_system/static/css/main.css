@@ -1496,18 +1496,24 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   font-size: 0.8rem;
   color: rgba(255,255,255,0.8);
   line-height: 1.5;
-  overflow: visible !important;
-  display: block !important;
-  white-space: normal !important;
-  text-overflow: clip !important;
+  overflow: hidden;
+  display: block;
+  white-space: normal;
+  text-overflow: clip;
   word-wrap: break-word;
   word-break: break-word;
-  overflow-wrap: break-word;
-  -webkit-line-clamp: unset !important;
-  -webkit-box-orient: unset !important;
-  max-height: none !important;
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+  max-height: none;
   flex: 1;
 }
+
+.announcement-title,
+.announcement-text {
+  min-width: 0;
+}
+
 
 .announcement-date {
   font-size: 0.7rem;
