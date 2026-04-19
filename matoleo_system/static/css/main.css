@@ -3245,24 +3245,24 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   font-size: 0.65rem;
 }
 .home-dashboard .stat-card {
-  padding: 12px;
-  gap: 6px;
+  padding: 8px 10px;
+  gap: 10px;
 }
 .home-dashboard .stat-icon {
-  width: 52px;
-  height: 52px;
-  font-size: 1.1rem;
+  width: 42px;
+  height: 42px;
+  font-size: 1rem;
 }
 .home-dashboard .stat-card .stat-value {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 .home-dashboard .stat-card .stat-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 .home-dashboard .row {
   margin-left: 0;
   margin-right: 0;
-  gap: 8px;
+  gap: 18px;
 }
 .home-dashboard > .row {
   width: 100%;
