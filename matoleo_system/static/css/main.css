@@ -4184,8 +4184,11 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     width: 100% !important;
     margin: 0 !important;
   }
+  .home-dashboard .card {
+    margin-bottom: 0 !important;
+  }
   .home-dashboard .about-section {
-    margin-top: 16px !important;
+    margin-top: 32px !important;
   }
 }
 @media (max-height: 900px) {
