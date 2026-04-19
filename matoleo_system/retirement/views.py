@@ -12,6 +12,7 @@ import calendar
 import logging
 from datetime import datetime, date
 from .models import RetirementForm, RetirementItem
+from expenses.models import ExpenseRequest
 from core.models import Department, Approver, Treasurer, Notification, UserProfile
 from core.pdf_utils import retirement_to_pdf, payment_voucher_pdf
 
@@ -229,6 +230,31 @@ def create_retirement(request):
         except ValueError:
             remaining_val = 0
 
+        # Validate total amount against expense form if selected
+        if exp_request_form_no:
+            try:
+                expense_form = ExpenseRequest.objects.get(form_number=exp_request_form_no, department=dept, status='paid')
+                if total > expense_form.total_amount:
+                    messages.error(request, 'The total retirement amount cannot exceed the total expense amount.')
+                    return render(request, 'retirement/form.html', {
+                        'departments': departments,
+                        'profile': profile,
+                        'action': 'create',
+                        'today_date': date.today().isoformat(),
+                        'second_approver': second_approver,
+                        'treasurer': treasurer,
+                    })
+            except ExpenseRequest.DoesNotExist:
+                messages.error(request, 'Selected expense form is not valid or not paid.')
+                return render(request, 'retirement/form.html', {
+                    'departments': departments,
+                    'profile': profile,
+                    'action': 'create',
+                    'today_date': date.today().isoformat(),
+                    'second_approver': second_approver,
+                    'treasurer': treasurer,
+                })
+
         with transaction.atomic():
             form = RetirementForm.objects.create(
                 submitted_by=request.user,
@@ -256,6 +282,16 @@ def create_retirement(request):
     today_date = date.today().isoformat()
     second_approver = Approver.objects.filter(level='second', is_active=True).select_related('user').first()
     treasurer = Treasurer.objects.filter(is_active=True).select_related('user').first()
+    
+    # Get available expense forms for the department
+    available_expense_forms = []
+    if profile.department:
+        used_form_numbers = RetirementForm.objects.exclude(exp_request_form_no__isnull=True).exclude(exp_request_form_no='').values_list('exp_request_form_no', flat=True)
+        available_expense_forms = ExpenseRequest.objects.filter(
+            department=profile.department,
+            status='paid'
+        ).exclude(form_number__in=used_form_numbers).values_list('form_number', flat=True)
+    
     return render(request, 'retirement/form.html', {
         'departments': departments,
         'profile': profile,
@@ -263,6 +299,7 @@ def create_retirement(request):
         'today_date': today_date,
         'second_approver': second_approver,
         'treasurer': treasurer,
+        'available_expense_forms': available_expense_forms,
     })
 
 
@@ -328,6 +365,21 @@ def edit_retirement(request, pk):
         except ValueError:
             remaining_val = 0
 
+        # Validate total amount against expense form if selected
+        if exp_request_form_no:
+            try:
+                expense_form = ExpenseRequest.objects.get(form_number=exp_request_form_no, department=dept, status='paid')
+                if total > expense_form.total_amount:
+                    messages.error(request, 'The total retirement amount cannot exceed the total expense amount.')
+                    return render(request, 'retirement/form.html', {
+                        'departments': departments, 'form_obj': form, 'profile': profile, 'action': 'edit'
+                    })
+            except ExpenseRequest.DoesNotExist:
+                messages.error(request, 'Selected expense form is not valid or not paid.')
+                return render(request, 'retirement/form.html', {
+                    'departments': departments, 'form_obj': form, 'profile': profile, 'action': 'edit'
+                })
+
         with transaction.atomic():
             form.first_name = first_name
             form.last_name = last_name
@@ -353,9 +405,20 @@ def edit_retirement(request, pk):
 
     second_approver = Approver.objects.filter(level='second', is_active=True).select_related('user').first()
     treasurer = Treasurer.objects.filter(is_active=True).select_related('user').first()
+    
+    # Get available expense forms for the department
+    available_expense_forms = []
+    if form.department:
+        used_form_numbers = RetirementForm.objects.exclude(exp_request_form_no__isnull=True).exclude(exp_request_form_no='').exclude(pk=form.pk).values_list('exp_request_form_no', flat=True)
+        available_expense_forms = ExpenseRequest.objects.filter(
+            department=form.department,
+            status='paid'
+        ).exclude(form_number__in=used_form_numbers).values_list('form_number', flat=True)
+    
     return render(request, 'retirement/form.html', {
         'departments': departments, 'form_obj': form, 'profile': profile, 'action': 'edit',
         'today_date': date.today().isoformat(), 'second_approver': second_approver, 'treasurer': treasurer,
+        'available_expense_forms': available_expense_forms,
     })
 
 
