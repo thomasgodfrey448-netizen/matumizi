@@ -3694,7 +3694,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 .home-dashboard .announcement-ticker {
   margin-top: 6px !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 12px !important;
   padding: 4px 8px !important;
   min-height: 26px !important;
 }
@@ -3729,7 +3729,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   line-height: 1.2 !important;
 }
 .home-dashboard .card {
-  margin-bottom: 2px !important;
+  margin-bottom: 1px !important;
 }
 .home-dashboard .card-header,
 .home-dashboard .card-body {
