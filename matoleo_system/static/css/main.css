@@ -4173,6 +4173,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     padding: 6px 8px !important;
     gap: 0 !important;
     flex-direction: column !important;
+    margin-bottom: 4px; /* reduce this value */
     align-items: center !important;
     justify-content: center !important;
   }
@@ -4183,6 +4184,6 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     margin: 0 !important;
   }
   .home-dashboard .announcement-grid {
-    gap: 4px !important;
+    gap: 6px !important;
   }
 }
