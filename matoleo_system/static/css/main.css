@@ -3944,6 +3944,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 .home-dashboard .about-section {
   padding: 6px !important;
+  margin-top: 10px !important;
 }
 .home-dashboard .about-section p {
   line-height: 1.2 !important;
@@ -4000,10 +4001,10 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   min-height: 0 !important;
 }
 .home-dashboard > .row {
-  margin: 0 0 4px 0 !important;
+  margin: 0 0 1px 0 !important;
 }
 .home-dashboard .row {
-  gap: 4px !important;
+  gap: 0 !important;
 }
 .home-dashboard .home-header-row {
   flex-wrap: wrap !important;
