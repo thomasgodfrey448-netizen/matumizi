@@ -651,7 +651,7 @@ def download_expense_pdf(request, pk):
         [f'Form No: {expense.form_number}', f'Tarehe: {expense.date}'],
         [f'Idara/Kitengo: {expense.department}', f'Namba ya Simu: {expense.phone_number}'],
         [f'Jina la Mkuu wa Idara/Kitengo: {expense.first_name} {expense.last_name}', f'Status: {expense.get_status_display()}'],
-        ['Tarehe ya Kuidhinisha Mwisho:', final_approval_date],
+        ['Tarehe ya Kuidhinisha', final_approval_date],
     ]
     info_table = Table(info_data, colWidths=[90*mm, 80*mm])
     info_table.setStyle(TableStyle([
