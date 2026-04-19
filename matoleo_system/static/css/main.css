@@ -3696,6 +3696,22 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .home-header-row {
   gap: 4px !important;
 }
+@media (max-width: 768px) {
+  .home-dashboard {
+    gap: 2px !important;
+  }
+  .home-dashboard > .row {
+    margin: 0 !important;
+  }
+  .home-dashboard .row {
+    gap: 2px !important;
+  }
+  .home-dashboard > .row > .col {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
 .home-dashboard .home-header-row .btn {
   padding: 2px 6px !important;
 }
