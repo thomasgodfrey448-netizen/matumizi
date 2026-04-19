@@ -131,6 +131,27 @@ def create_retirement(request):
             profile.department_id = None
             profile.save()
 
+    second_approver = Approver.objects.filter(level='second', is_active=True).select_related('user').first()
+    treasurer = Treasurer.objects.filter(is_active=True).select_related('user').first()
+
+    available_expense_forms = []
+    if profile.department:
+        used_form_numbers = RetirementForm.objects.exclude(exp_request_form_no__isnull=True).exclude(exp_request_form_no='').values_list('exp_request_form_no', flat=True)
+        available_expense_forms = ExpenseRequest.objects.filter(
+            department=profile.department,
+            status='paid'
+        ).exclude(form_number__in=used_form_numbers).values_list('form_number', flat=True)
+
+    form_context = {
+        'departments': departments,
+        'profile': profile,
+        'action': 'create',
+        'today_date': date.today().isoformat(),
+        'second_approver': second_approver,
+        'treasurer': treasurer,
+        'available_expense_forms': available_expense_forms,
+    }
+
     if request.method == 'POST':
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
@@ -147,12 +168,7 @@ def create_retirement(request):
 
         if not all([first_name, last_name, phone, dept_id, date_request, date_retirement, reason]):
             messages.error(request, 'Please fill all required fields.')
-            return render(request, 'retirement/form.html', {
-                'departments': departments,
-                'profile': profile,
-                'action': 'create',
-                'today_date': date.today().isoformat(),
-            })
+            return render(request, 'retirement/form.html', form_context)
 
         # Validate dates
         try:
@@ -161,20 +177,10 @@ def create_retirement(request):
             parsed_retirement = datetime.strptime(date_retirement, '%Y-%m-%d').date()
             if parsed_retirement < parsed_request:
                 messages.error(request, 'Retirement date cannot be before the request date.')
-                return render(request, 'retirement/form.html', {
-                    'departments': departments,
-                    'profile': profile,
-                    'action': 'create',
-                    'today_date': date.today().isoformat(),
-                })
+                return render(request, 'retirement/form.html', form_context)
         except ValueError:
             messages.error(request, 'Invalid date format. Please use the date picker.')
-            return render(request, 'retirement/form.html', {
-                'departments': departments,
-                'profile': profile,
-                'action': 'create',
-                'today_date': date.today().isoformat(),
-            })
+            return render(request, 'retirement/form.html', form_context)
 
         # Validate file attachment
         if attachment:
@@ -183,31 +189,16 @@ def create_retirement(request):
             ext = os.path.splitext(attachment.name)[1].lower()
             if ext not in allowed_extensions:
                 messages.error(request, 'Only PDF, JPG, and PNG files are allowed.')
-                return render(request, 'retirement/form.html', {
-                    'departments': departments,
-                    'profile': profile,
-                    'action': 'create',
-                    'today_date': date.today().isoformat(),
-                })
+                return render(request, 'retirement/form.html', form_context)
             if attachment.size > max_size_mb * 1024 * 1024:
                 messages.error(request, f'File size must not exceed {max_size_mb}MB.')
-                return render(request, 'retirement/form.html', {
-                    'departments': departments,
-                    'profile': profile,
-                    'action': 'create',
-                    'today_date': date.today().isoformat(),
-                })
+                return render(request, 'retirement/form.html', form_context)
 
         try:
             dept = Department.objects.get(id=dept_id)
         except Department.DoesNotExist:
             messages.error(request, 'Invalid department.')
-            return render(request, 'retirement/form.html', {
-                'departments': departments,
-                'profile': profile,
-                'action': 'create',
-                'today_date': date.today().isoformat(),
-            })
+            return render(request, 'retirement/form.html', form_context)
 
         total = 0
         items_data = []
@@ -236,24 +227,10 @@ def create_retirement(request):
                 expense_form = ExpenseRequest.objects.get(form_number=exp_request_form_no, department=dept, status='paid')
                 if total > expense_form.total_amount:
                     messages.error(request, 'The total retirement amount cannot exceed the total expense amount.')
-                    return render(request, 'retirement/form.html', {
-                        'departments': departments,
-                        'profile': profile,
-                        'action': 'create',
-                        'today_date': date.today().isoformat(),
-                        'second_approver': second_approver,
-                        'treasurer': treasurer,
-                    })
+                    return render(request, 'retirement/form.html', form_context)
             except ExpenseRequest.DoesNotExist:
                 messages.error(request, 'Selected expense form is not valid or not paid.')
-                return render(request, 'retirement/form.html', {
-                    'departments': departments,
-                    'profile': profile,
-                    'action': 'create',
-                    'today_date': date.today().isoformat(),
-                    'second_approver': second_approver,
-                    'treasurer': treasurer,
-                })
+                return render(request, 'retirement/form.html', form_context)
 
         with transaction.atomic():
             form = RetirementForm.objects.create(
