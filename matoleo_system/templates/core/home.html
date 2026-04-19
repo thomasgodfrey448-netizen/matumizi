@@ -9,7 +9,7 @@
 <div class="home-dashboard">
   <!-- HEADER ROW -->
   <div class="home-header-row" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:nowrap; gap:2px;">
-  <div style="flex-shrink:1; max-width: 60%;">
+  <div style="flex-shrink:1; max-width: 50%;">
     <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
       <i class="fas fa-home" style="color:var(--accent);"></i> Welcome, {{ user.username }}
     </h2>
@@ -17,7 +17,7 @@
       Makongo Juu SDA Church Expense and Retirement Management System
     </p>
   </div>
-  <div style="display:flex; gap:4px; flex-wrap:nowrap;">
+  <div style="display:flex; gap:4px; flex-wrap:nowrap; flex-shrink:0;">
     {% if user_role != 'First Approver' and user_role != 'Second Approver' %}
     <a href="{% url 'expenses:create' %}" class="btn btn-accent btn-sm">
       <i class="fas fa-plus"></i> New Expense
