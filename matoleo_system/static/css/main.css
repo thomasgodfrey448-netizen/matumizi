@@ -3247,6 +3247,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .stat-card {
   padding: 8px 10px;
   gap: 10px;
+  max-width: 100%;
 }
 .home-dashboard .stat-icon {
   width: 42px;
@@ -3262,7 +3263,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .row {
   margin-left: 0;
   margin-right: 0;
-  gap: 18px;
+  gap: 24px;
 }
 .home-dashboard > .row {
   width: 100%;
@@ -3270,8 +3271,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   overflow-x: hidden;
 }
 .home-dashboard > .row > .col {
-  flex: 1;
+  flex: 1 1 220px;
   min-width: 200px;
+  max-width: 260px;
 }
 .home-dashboard .announcement-grid {
   display: grid;
