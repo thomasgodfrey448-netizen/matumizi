@@ -637,6 +637,12 @@ def download_expense_pdf(request, pk):
                             textColor=colors.HexColor('#003366'), spaceAfter=4)))
     story.append(Spacer(1, 4*mm))
 
+    final_approval_date = 'N/A'
+    if expense.admin_approved_at:
+        final_approval_date = expense.admin_approved_at.strftime('%d %b %Y')
+    elif expense.treasurer_approved_at:
+        final_approval_date = expense.treasurer_approved_at.strftime('%d %b %Y')
+
     # Form number and date
     info_data = [
         ['Mtaa', 'Makongo Juu'],
@@ -645,6 +651,7 @@ def download_expense_pdf(request, pk):
         [f'Form No: {expense.form_number}', f'Tarehe: {expense.date}'],
         [f'Idara/Kitengo: {expense.department}', f'Namba ya Simu: {expense.phone_number}'],
         [f'Jina la Mkuu wa Idara/Kitengo: {expense.first_name} {expense.last_name}', f'Status: {expense.get_status_display()}'],
+        ['Tarehe ya Kuidhinisha Mwisho:', final_approval_date],
     ]
     info_table = Table(info_data, colWidths=[90*mm, 80*mm])
     info_table.setStyle(TableStyle([

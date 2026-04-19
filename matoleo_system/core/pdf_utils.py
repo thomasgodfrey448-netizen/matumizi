@@ -96,6 +96,12 @@ def expense_to_pdf(expense_request, logo_path=None):
     """
     Convert expense request to PDF
     """
+    final_approval_date = 'N/A'
+    if expense_request.admin_approved_at:
+        final_approval_date = expense_request.admin_approved_at.strftime('%Y-%m-%d')
+    elif expense_request.treasurer_approved_at:
+        final_approval_date = expense_request.treasurer_approved_at.strftime('%Y-%m-%d')
+
     data = [
         ['Field', 'Value'],
         ['Employee Name', str(expense_request.user)],
@@ -103,6 +109,7 @@ def expense_to_pdf(expense_request, logo_path=None):
         ['Purpose', expense_request.purpose],
         ['Amount', f'${expense_request.amount}'],
         ['Date Submitted', str(expense_request.created_at.date())],
+        ['Final Approval Date', final_approval_date],
         ['Status', expense_request.get_status_display()],
         ['', ''],
         ['First Approver', expense_request.first_approver_name or 'TBD'],
