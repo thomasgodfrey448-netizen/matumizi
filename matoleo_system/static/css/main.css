@@ -4006,7 +4006,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   margin: 0 0 1px 0 !important;
 }
 .home-dashboard .row {
-  gap: 0 !important;
+  gap: 32px !important;
 }
 .home-dashboard .home-header-row {
   flex-wrap: wrap !important;
@@ -4042,25 +4042,25 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   font-size: 0.72rem !important;
 }
 .home-dashboard .stat-card {
-  padding: 8px !important;
-  gap: 6px !important;
+  padding: 10px 12px !important;
+  gap: 10px !important;
   min-height: 0 !important;
 }
 .home-dashboard .stat-icon {
-  width: 36px !important;
-  height: 36px !important;
-  font-size: 0.95rem !important;
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 1rem !important;
 }
 .home-dashboard .stat-card .stat-value {
-  font-size: 0.95rem !important;
+  font-size: 1rem !important;
 }
 .home-dashboard .stat-card .stat-label {
-  font-size: 0.65rem !important;
+  font-size: 0.75rem !important;
 }
 .home-dashboard .announcement-grid {
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
-  gap: 6px !important;
+  gap: 12px !important;
 }
 .home-dashboard .announcement-card {
   display: flex !important;
