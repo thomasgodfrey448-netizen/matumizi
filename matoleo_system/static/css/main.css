@@ -3232,7 +3232,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   flex-wrap: wrap;
 }
 .home-dashboard .home-header-row h2 {
-  font-size: 0.95rem;
+  font-size: 1.3rem;
   margin-bottom: 0;
   font-weight: 800;
 }
@@ -3773,7 +3773,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     gap: 2px !important;
   }
   .home-dashboard .home-header-row h2 {
-    font-size: 0.95rem !important;
+    font-size: 1.3rem !important;
   }
   .home-dashboard .home-header-row p {
     font-size: 0.62rem !important;
@@ -4014,7 +4014,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   margin-bottom: 0 !important;
 }
 .home-dashboard .home-header-row h2 {
-  font-size: 1.05rem !important;
+  font-size: 1.3rem !important;
   font-weight: 800 !important;
   margin: 0 !important;
 }
