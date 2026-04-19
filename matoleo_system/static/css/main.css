@@ -3229,6 +3229,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .home-dashboard .home-header-row {
   align-items: center;
   padding: 0;
+  flex-wrap: wrap;
 }
 .home-dashboard .home-header-row h2 {
   font-size: 0.95rem;
@@ -3244,19 +3245,24 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   font-size: 0.65rem;
 }
 .home-dashboard .stat-card {
-  padding: 20px;
-  gap: 10px;
+  padding: 12px;
+  gap: 6px;
 }
 .home-dashboard .stat-icon {
-  width: 56px;
-  height: 56px;
-  font-size: 1.2rem;
+  width: 52px;
+  height: 52px;
+  font-size: 1.1rem;
 }
 .home-dashboard .stat-card .stat-value {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 .home-dashboard .stat-card .stat-label {
   font-size: 0.85rem;
+}
+.home-dashboard .row {
+  margin-left: 0;
+  margin-right: 0;
+  gap: 8px;
 }
 .home-dashboard > .row {
   width: 100%;
@@ -3332,6 +3338,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   display: block;
   padding: 14px;
   border-radius: 10px;
+  margin-top: 10px;
   margin-bottom: 0;
 }
 .home-dashboard .about-section h3 {
