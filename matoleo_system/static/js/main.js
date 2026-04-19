@@ -57,11 +57,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function addItemRow() {
     if (!itemsBody) return;
+    const placeholderText = itemsBody.dataset.descriptionPlaceholder || 'Description';
     const rowCount = itemsBody.querySelectorAll('tr').length;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${rowCount + 1}</td>
-      <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="Description" required></td>
+      <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="${placeholderText}" required></td>
       <td><input type="number" name="item_amount[]" class="form-control item-amount" placeholder="0.00" step="0.01" min="0" required></td>
       <td><button type="button" class="btn-remove-row" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
     `;

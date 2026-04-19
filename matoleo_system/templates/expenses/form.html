@@ -107,7 +107,7 @@
                 <th style="width:50px;"></th>
               </tr>
             </thead>
-            <tbody id="itemsBody">
+            <tbody id="itemsBody" data-description-placeholder="Mchanganuo wa Maombi ya Fedha">
               {% if expense and expense.items.all %}
                 {% for item in expense.items.all %}
                 <tr>
@@ -120,7 +120,7 @@
               {% else %}
                 <tr>
                   <td>1</td>
-                  <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="Mchanganuo wa maombi ya fedha" required></td>
+                  <td><input type="text" name="item_description[]" class="form-control item-desc" placeholder="Mchanganuo wa Maombi ya Fedha" required></td>
                   <td><input type="number" name="item_amount[]" class="form-control item-amount" placeholder="0.00" step="0.01" min="0" required></td>
                   <td><button type="button" class="btn-remove-row" onclick="removeRow(this)"><i class="fas fa-times"></i></button></td>
                 </tr>
