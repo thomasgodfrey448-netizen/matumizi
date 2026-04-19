@@ -696,7 +696,7 @@ def download_retirement_pdf(request, pk):
 
     # If paid, download payment voucher
     if form.is_paid:
-        logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
+        logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'clean_logo.png')
         pdf_buffer = payment_voucher_pdf(form, logo_path)
         response = HttpResponse(pdf_buffer, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="payment_voucher_{form.form_number}.pdf"'
@@ -717,7 +717,7 @@ def download_retirement_pdf(request, pk):
     story = []
 
     # Add the church logo from static files
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'clean_logo.png')
     if os.path.exists(logo_path):
         try:
             img = Image(logo_path, width=40*mm, height=40*mm)
@@ -827,7 +827,7 @@ def download_payment_pdf_retirement(request, pk):
         messages.error(request, 'Payment form is available only after the form is marked as paid.')
         return redirect('retirement:detail', pk=pk)
 
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'clean_logo.png')
     pdf_buffer = payment_voucher_pdf(form, logo_path)
     response = HttpResponse(pdf_buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="payment_voucher_{form.form_number}.pdf"'

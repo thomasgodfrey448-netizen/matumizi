@@ -611,7 +611,7 @@ def download_expense_pdf(request, pk):
     story = []
 
     # Try to add church logo if it exists
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'clean_logo.png')
     if os.path.exists(logo_path):
         try:
             img = Image(logo_path, width=40*mm, height=40*mm)
@@ -735,7 +735,7 @@ def download_payment_pdf(request, pk):
         messages.error(request, 'Payment form is available only after the request is marked as paid.')
         return redirect('expenses:detail', pk=pk)
 
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_clean_plain_v2.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'clean_logo.png')
     pdf_buffer = payment_voucher_pdf(expense, logo_path)
     response = HttpResponse(pdf_buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="payment_voucher_{expense.form_number}.pdf"'
