@@ -231,7 +231,7 @@ def download_expense_report(request):
     styles = getSampleStyleSheet()
     story = []
 
-    story.append(Paragraph("MAKONGO JUU SDA CHURCH - FINANCE DEPARTMENT",
+    story.append(Paragraph("MAKONGO JUU SDA CHURCH - TREASURY DEPARTMENT",
                             ParagraphStyle('h', parent=styles['Normal'], fontSize=14,
                                            fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=4)))
     story.append(Paragraph("EXPENSE REQUESTS REPORT",
@@ -340,7 +340,7 @@ def download_retirement_report(request):
     styles = getSampleStyleSheet()
     story = []
 
-    story.append(Paragraph("MAKONGO JUU SDA CHURCH - FINANCE DEPARTMENT",
+    story.append(Paragraph("MAKONGO JUU SDA CHURCH - TREASURY DEPARTMENT",
                             ParagraphStyle('h', parent=styles['Normal'], fontSize=14,
                                            fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=4)))
     story.append(Paragraph("RETIREMENT FORMS REPORT",
