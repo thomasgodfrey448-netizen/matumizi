@@ -4143,19 +4143,24 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
 @media (max-width: 540px) {
   .home-dashboard {
-    gap: 1px !important;
+    gap: 0 !important;
   }
   .home-dashboard > .row {
-    margin: 0 0 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    row-gap: 0 !important;
   }
   .home-dashboard > .row > .col {
     margin-bottom: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
   .home-dashboard .card,
   .home-dashboard .announcement-card,
   .home-dashboard .about-section,
   .home-dashboard .stat-card {
     margin-bottom: 0 !important;
+    margin: 0 !important;
   }
   .home-dashboard .announcement-ticker {
     margin: 4px 0 2px 0 !important;
@@ -4175,6 +4180,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .home-dashboard .stat-card .stat-label {
     text-align: center !important;
     width: 100% !important;
+    margin: 0 !important;
   }
   .home-dashboard .announcement-grid {
     gap: 4px !important;
