@@ -4131,13 +4131,19 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 @media (max-width: 768px) {
   .home-dashboard {
-    gap: 4px !important;
+    gap: 10px !important;
   }
   .home-dashboard > .row {
     margin: 0 !important;
+    gap: 10px !important;
+    row-gap: 10px !important;
   }
   .home-dashboard .row {
-    gap: 0 !important;
+    gap: 10px !important;
+  }
+  .home-dashboard > .row > .col {
+    width: 100% !important;
+    min-width: 0 !important;
   }
   .home-dashboard .home-header-row {
     flex-direction: column !important;
@@ -4152,11 +4158,31 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     height: 60px !important;
   }
   .home-dashboard .stat-card {
-    padding: 4px 6px !important;
-    gap: 2px !important;
-    flex-direction: row !important;
+    padding: 10px 14px !important;
+    gap: 10px !important;
+    flex-direction: column !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: center !important;
+    width: 100% !important;
+    border-radius: 16px !important;
+  }
+  .home-dashboard .stat-card .stat-icon {
+    margin-bottom: 10px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .home-dashboard .stat-card .stat-info {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  .home-dashboard .stat-card .stat-value,
+  .home-dashboard .stat-card .stat-label {
+    width: 100% !important;
+    margin: 0 !important;
   }
   .home-dashboard .about-section {
     margin-top: 16px !important;
@@ -4183,17 +4209,18 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
 @media (max-width: 540px) {
   .home-dashboard {
-    gap: 0 !important;
+    gap: 10px !important;
   }
   .home-dashboard > .row {
     margin: 0 !important;
-    gap: 0 !important;
-    row-gap: 0 !important;
+    gap: 10px !important;
+    row-gap: 10px !important;
   }
   .home-dashboard > .row > .col {
     margin-bottom: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
+    width: 100% !important;
   }
   .home-dashboard .card,
   .home-dashboard .announcement-card,
@@ -4207,34 +4234,48 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
   .home-dashboard .card-header,
   .home-dashboard .card-body {
-    padding: 4px 6px !important;
+    padding: 6px 10px !important;
   }
   .home-dashboard .stat-card {
-    padding: 6px 8px !important;
-    gap: 0 !important;
+    padding: 12px 14px !important;
+    gap: 10px !important;
     flex-direction: column !important;
-    margin-bottom: 0 !important;
     align-items: center !important;
     justify-content: center !important;
+    width: 100% !important;
+    border-radius: 16px !important;
+  }
+  .home-dashboard .stat-card .stat-icon {
+    margin-bottom: 10px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .home-dashboard .stat-card .stat-info {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
   }
   .home-dashboard .stat-card .stat-value,
   .home-dashboard .stat-card .stat-label {
-    text-align: center !important;
     width: 100% !important;
     margin: 0 !important;
   }
   .home-dashboard .announcement-grid {
-    gap: 6px !important;
+    gap: 8px !important;
   }
 }
 
 @media (max-width: 820px) {
   .home-dashboard > .row {
     margin: 0 !important;
-    gap: 4px !important;
+    gap: 10px !important;
+    row-gap: 10px !important;
   }
   .home-dashboard .row {
-    gap: 4px !important;
+    gap: 10px !important;
   }
   .home-dashboard > .row > .col {
     margin: 0 !important;
@@ -4243,18 +4284,31 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     min-width: 0 !important;
   }
   .home-dashboard .stat-card {
-    padding: 8px 10px !important;
-    gap: 4px !important;
+    padding: 10px 14px !important;
+    gap: 10px !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
-    margin-bottom: 4px !important;
+    border-radius: 16px !important;
+    margin-bottom: 0 !important;
+  }
+  .home-dashboard .stat-card .stat-icon {
+    margin-bottom: 10px !important;
+    width: 42px !important;
+    height: 42px !important;
+  }
+  .home-dashboard .stat-card .stat-info {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
   }
   .home-dashboard .stat-card .stat-value,
   .home-dashboard .stat-card .stat-label {
-    text-align: center !important;
-    width: auto !important;
+    width: 100% !important;
     margin: 0 !important;
   }
   .home-dashboard .stat-card .stat-label {
