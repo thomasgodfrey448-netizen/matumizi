@@ -4131,7 +4131,13 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 @media (max-width: 768px) {
   .home-dashboard {
-    gap: 12px !important;
+    gap: 4px !important;
+  }
+  .home-dashboard > .row {
+    margin: 0 !important;
+  }
+  .home-dashboard .row {
+    gap: 0 !important;
   }
   .home-dashboard .home-header-row {
     flex-direction: column !important;
@@ -4139,13 +4145,15 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   }
   .home-dashboard .announcement-grid {
     grid-template-columns: 1fr !important;
-    gap: 12px !important;
+    gap: 8px !important;
   }
   .home-dashboard .announcement-card img,
   .home-dashboard .announcement-placeholder {
     height: 60px !important;
   }
   .home-dashboard .stat-card {
+    padding: 4px 6px !important;
+    gap: 2px !important;
     flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
