@@ -879,8 +879,7 @@ body {
   .data-table {
     font-size: 0.75rem;
     min-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    table-layout: auto;
   }
   .data-table thead th,
   .data-table tbody td {
@@ -1080,8 +1079,6 @@ body {
   .data-table {
     font-size: 0.7rem;
     min-width: 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     table-layout: auto;
   }
   .data-table thead th,
