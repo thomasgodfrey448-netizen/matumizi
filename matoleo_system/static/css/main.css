@@ -872,6 +872,10 @@ body {
   }
 
   /* Better table handling in portrait */
+  .table-wrapper {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .data-table {
     font-size: 0.75rem;
     min-width: 100%;
@@ -1073,6 +1077,10 @@ body {
   }
 
   /* Better table handling in landscape */
+  .table-wrapper {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .data-table {
     font-size: 0.7rem;
     min-width: 0;
