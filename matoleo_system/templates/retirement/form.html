@@ -92,8 +92,8 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Exp Request Form No</label>
-          <select name="exp_request_form_no" class="form-control">
+          <label class="form-label">Exp Request Form No <span class="text-danger">*</span></label>
+          <select name="exp_request_form_no" class="form-control" required>
             <option value="">-- Chagua Fomu ya Maombi ya Fedha --</option>
             {% for form_no in available_expense_forms %}
             <option value="{{ form_no }}" {% if form_obj.exp_request_form_no == form_no %}selected{% endif %}>{{ form_no }}</option>
