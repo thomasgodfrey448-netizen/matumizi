@@ -23,11 +23,13 @@ def generate_pdf_with_logo(filename, title, data_list, logo_path=None):
     # Add logo if provided
     if logo_path and os.path.exists(logo_path):
         try:
-            logo = Image(logo_path, width=1*inch, height=1*inch)
+            logo = Image(logo_path)
+            logo._restrictSize(1.1*inch, 1.1*inch)
+            logo.hAlign = 'CENTER'
             logo_table = Table([[logo]], colWidths=[7.5*inch])
             logo_table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER')]))
             elements.append(logo_table)
-            elements.append(Spacer(1, 6))
+            elements.append(Spacer(1, 8))
         except:
             pass
     
@@ -221,10 +223,11 @@ def payment_voucher_pdf(request_obj, logo_path=None):
 
     if logo_path and os.path.exists(logo_path):
         try:
-            img = Image(logo_path, width=70, height=70)
+            img = Image(logo_path)
+            img._restrictSize(1.1*inch, 1.1*inch)
             img.hAlign = 'CENTER'
             story.append(img)
-            story.append(Spacer(1, 6))
+            story.append(Spacer(1, 10))
         except:
             pass
 
