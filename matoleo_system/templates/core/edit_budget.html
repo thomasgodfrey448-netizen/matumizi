@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Budget{% endblock %}
+{% block page_title %}Edit Budget{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+  <div class="form-container">
+    <div class="form-header">
+      <h3><i class="fas fa-edit" style="color:var(--accent);"></i> Edit Budget for {{ budget.department.name }}</h3>
+      <p>Update budget configuration</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label class="form-label">Church Budget Amount (TZS)</label>
+        <input type="number" name="church_budget" class="form-control" step="0.01" min="0" value="{{ budget.church_budget }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contribution 1 Name</label>
+        <input type="text" name="contribution1_name" class="form-control" value="{{ budget.contribution1_name }}" placeholder="e.g., Youth Fund">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contribution 1 Amount (TZS)</label>
+        <input type="number" name="contribution1_amount" class="form-control" step="0.01" min="0" value="{{ budget.contribution1_amount }}" placeholder="0.00">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contribution 2 Name</label>
+        <input type="text" name="contribution2_name" class="form-control" value="{{ budget.contribution2_name }}" placeholder="e.g., Building Fund">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contribution 2 Amount (TZS)</label>
+        <input type="number" name="contribution2_amount" class="form-control" step="0.01" min="0" value="{{ budget.contribution2_amount }}" placeholder="0.00">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-accent">
+          <i class="fas fa-save"></i> Update Budget
+        </button>
+        <a href="{% url 'core:budget_management' %}" class="btn btn-outline">
+          <i class="fas fa-times"></i> Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

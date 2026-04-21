@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Budget{% endblock %}
+{% block page_title %}Add Budget{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+  <div class="form-container">
+    <div class="form-header">
+      <h3><i class="fas fa-plus" style="color:var(--accent);"></i> Add New Budget</h3>
+      <p>Configure budget for a department</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label class="form-label">Department <span style="color:var(--accent);">*</span></label>
+        <select name="department" class="form-control" required>
+          <option value="">-- Select Department --</option>
+          {% for dept in departments %}
+          <option value="{{ dept.id }}">{{ dept.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Church Budget Amount (TZS)</label>
+        <input type="number" name="church_budget" class="form-control" step="0.01" min="0" placeholder="0.00">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contribution 1 Name</label>
+        <input type="text" name="contribution1_name" class="form-control" placeholder="e.g., Youth Fund">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contribution 1 Amount (TZS)</label>
+        <input type="number" name="contribution1_amount" class="form-control" step="0.01" min="0" placeholder="0.00">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contribution 2 Name</label>
+        <input type="text" name="contribution2_name" class="form-control" placeholder="e.g., Building Fund">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contribution 2 Amount (TZS)</label>
+        <input type="number" name="contribution2_amount" class="form-control" step="0.01" min="0" placeholder="0.00">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-accent">
+          <i class="fas fa-save"></i> Add Budget
+        </button>
+        <a href="{% url 'core:budget_management' %}" class="btn btn-outline">
+          <i class="fas fa-times"></i> Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

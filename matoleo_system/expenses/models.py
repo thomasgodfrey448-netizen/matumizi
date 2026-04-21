@@ -19,6 +19,10 @@ class Budget(models.Model):
     def __str__(self):
         return f"Budget for {self.department.name}"
 
+    @property
+    def total_budget(self):
+        return self.church_budget + self.contribution1_amount + self.contribution2_amount
+
 
 class ExpenseRequest(models.Model):
     STATUS_CHOICES = [

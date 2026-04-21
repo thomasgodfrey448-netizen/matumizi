@@ -7,6 +7,7 @@ from django.db import models
 from django.urls import resolve, Resolver404
 from urllib.parse import urlparse
 from .models import Announcement, Department, Approver, Treasurer, UserProfile, RegistrationCode, Notification
+from expenses.models import Budget
 from django.contrib.auth.models import User
 import uuid
 
@@ -400,4 +401,123 @@ def get_approver_info(request):
         data = [{'name': a.user.get_full_name(), 'phone': a.phone_number} for a in approvers]
         return JsonResponse({'approvers': data})
     return JsonResponse({'approvers': []})
+
+
+@login_required
+def budget_management(request):
+    # Allow admin or treasurer
+    is_admin = request.user.is_staff or request.user.is_superuser
+    is_treasurer = hasattr(request.user, 'treasurer_profile')
+    if not (is_admin or is_treasurer):
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    budgets = Budget.objects.select_related('department').order_by('department__name')
+    departments = Department.objects.filter(is_active=True).order_by('name')
+    
+    return render(request, 'core/budget_management.html', {
+        'budgets': budgets,
+        'departments': departments,
+        'is_admin': is_admin,
+        'is_treasurer': is_treasurer,
+    })
+
+
+@login_required
+def add_budget(request):
+    is_admin = request.user.is_staff or request.user.is_superuser
+    is_treasurer = hasattr(request.user, 'treasurer_profile')
+    if not (is_admin or is_treasurer):
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    if request.method == 'POST':
+        dept_id = request.POST.get('department')
+        church_budget = request.POST.get('church_budget', 0)
+        contribution1_name = request.POST.get('contribution1_name', '').strip()
+        contribution1_amount = request.POST.get('contribution1_amount', 0)
+        contribution2_name = request.POST.get('contribution2_name', '').strip()
+        contribution2_amount = request.POST.get('contribution2_amount', 0)
+        
+        try:
+            dept = Department.objects.get(id=dept_id)
+            if Budget.objects.filter(department=dept).exists():
+                messages.error(request, 'Budget already exists for this department.')
+                return redirect('core:budget_management')
+            
+            Budget.objects.create(
+                department=dept,
+                church_budget=church_budget or 0,
+                contribution1_name=contribution1_name,
+                contribution1_amount=contribution1_amount or 0,
+                contribution2_name=contribution2_name,
+                contribution2_amount=contribution2_amount or 0,
+            )
+            messages.success(request, 'Budget added successfully.')
+            return redirect('core:budget_management')
+        except Department.DoesNotExist:
+            messages.error(request, 'Invalid department.')
+    
+    departments = Department.objects.filter(is_active=True).order_by('name')
+    return render(request, 'core/add_budget.html', {
+        'departments': departments,
+        'is_admin': is_admin,
+        'is_treasurer': is_treasurer,
+    })
+
+
+@login_required
+def edit_budget(request, pk):
+    is_admin = request.user.is_staff or request.user.is_superuser
+    is_treasurer = hasattr(request.user, 'treasurer_profile')
+    if not (is_admin or is_treasurer):
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    budget = get_object_or_404(Budget, pk=pk)
+    
+    if request.method == 'POST':
+        church_budget = request.POST.get('church_budget', 0)
+        contribution1_name = request.POST.get('contribution1_name', '').strip()
+        contribution1_amount = request.POST.get('contribution1_amount', 0)
+        contribution2_name = request.POST.get('contribution2_name', '').strip()
+        contribution2_amount = request.POST.get('contribution2_amount', 0)
+        
+        budget.church_budget = church_budget or 0
+        budget.contribution1_name = contribution1_name
+        budget.contribution1_amount = contribution1_amount or 0
+        budget.contribution2_name = contribution2_name
+        budget.contribution2_amount = contribution2_amount or 0
+        budget.save()
+        
+        messages.success(request, 'Budget updated successfully.')
+        return redirect('core:budget_management')
+    
+    return render(request, 'core/edit_budget.html', {
+        'budget': budget,
+        'is_admin': is_admin,
+        'is_treasurer': is_treasurer,
+    })
+
+
+@login_required
+def delete_budget(request, pk):
+    is_admin = request.user.is_staff or request.user.is_superuser
+    is_treasurer = hasattr(request.user, 'treasurer_profile')
+    if not (is_admin or is_treasurer):
+        messages.error(request, 'Access denied.')
+        return redirect('core:home')
+    
+    budget = get_object_or_404(Budget, pk=pk)
+    
+    if request.method == 'POST':
+        budget.delete()
+        messages.success(request, 'Budget deleted successfully.')
+        return redirect('core:budget_management')
+    
+    return render(request, 'core/delete_budget.html', {
+        'budget': budget,
+        'is_admin': is_admin,
+        'is_treasurer': is_treasurer,
+    })
 

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Budget Management{% endblock %}
+{% block page_title %}Budget Management{% endblock %}
+
+{% block content %}
+
+<!-- HEADER ROW -->
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+  <div>
+    <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
+      <i class="fas fa-wallet" style="color:var(--accent);"></i> Budget Management
+    </h2>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">
+      Manage department budgets
+    </p>
+  </div>
+  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <a href="{% url 'core:add_budget' %}" class="btn btn-accent">
+      <i class="fas fa-plus"></i> Add Budget
+    </a>
+    <a href="{% url 'core:home' %}" class="btn btn-outline">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+  </div>
+</div>
+
+<!-- BUDGET TABLE -->
+<div class="card">
+  <div class="card-header">
+    <h5><i class="fas fa-table" style="color:var(--accent);"></i> Department Budgets</h5>
+  </div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Church Budget</th>
+            <th>Contribution 1</th>
+            <th>Contribution 2</th>
+            <th>Total Budget</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for budget in budgets %}
+          <tr>
+            <td>{{ budget.department.name }}</td>
+            <td>TZS {{ budget.church_budget|intcomma }}</td>
+            <td>
+              {% if budget.contribution1_name %}
+                {{ budget.contribution1_name }}: TZS {{ budget.contribution1_amount|intcomma }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if budget.contribution2_name %}
+                {{ budget.contribution2_name }}: TZS {{ budget.contribution2_amount|intcomma }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>TZS {{ budget.total_budget|intcomma }}</td>
+            <td>
+              <a href="{% url 'core:edit_budget' budget.pk %}" class="btn btn-sm btn-primary">
+                <i class="fas fa-edit"></i> Edit
+              </a>
+              <a href="{% url 'core:delete_budget' budget.pk %}" class="btn btn-sm btn-danger">
+                <i class="fas fa-trash"></i> Delete
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" style="text-align:center; color:rgba(255,255,255,0.5);">
+              No budgets configured yet.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

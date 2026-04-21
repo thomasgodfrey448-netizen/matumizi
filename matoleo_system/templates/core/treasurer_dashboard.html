@@ -24,6 +24,19 @@
   </div>
 </div>
 
+<!-- NAVIGATION -->
+<div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+  <a href="{% url 'core:treasurer_dashboard' %}" class="btn btn-outline">
+    <i class="fas fa-tachometer-alt"></i> Dashboard
+  </a>
+  <a href="{% url 'core:budget_management' %}" class="btn btn-outline">
+    <i class="fas fa-wallet"></i> Budget Management
+  </a>
+  <a href="{% url 'core:home' %}" class="btn btn-outline">
+    <i class="fas fa-home"></i> Home
+  </a>
+</div>
+
 <!-- QUICK STATS -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:16px; max-width: 100%; overflow: hidden;">
   <div>
