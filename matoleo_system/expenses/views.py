@@ -65,24 +65,23 @@ def get_first_approver(request, department_id):
 def get_budget_options(request, department_id):
     """API endpoint to get available budget options for a department"""
     try:
-        budget = Budget.objects.filter(department_id=department_id).first()
-        if budget:
-            options = [
-                {'value': 'church_budget', 'label': 'Church Budget'}
-            ]
-            if budget.contribution1_name and budget.contribution1_amount > 0:
-                options.append({'value': 'contribution1', 'label': budget.contribution1_name})
-            if budget.contribution2_name and budget.contribution2_amount > 0:
-                options.append({'value': 'contribution2', 'label': budget.contribution2_name})
-            options.append({'value': 'mk', 'label': 'MK'})
-        else:
-            options = [
-                {'value': 'church_budget', 'label': 'Church Budget'},
-                {'value': 'mk', 'label': 'MK'}
-            ]
+        options = build_budget_options_for_department(department_id)
         return JsonResponse({'success': True, 'options': options})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
+
+def build_budget_options_for_department(department):
+    budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}]
+    budget = Budget.objects.filter(department=department).first() if department else None
+
+    if budget:
+        if budget.contribution1_name and budget.contribution1_amount > 0:
+            budget_options.append({'value': 'contribution1', 'label': budget.contribution1_name})
+        if budget.contribution2_name and budget.contribution2_amount > 0:
+            budget_options.append({'value': 'contribution2', 'label': budget.contribution2_name})
+    budget_options.append({'value': 'mk', 'label': 'MK'})
+    return budget_options
 
 
 @login_required
@@ -291,20 +290,7 @@ def create_expense(request):
             profile.save()
 
     # Get initial budget options
-    budget_options = []
-    if profile.department:
-        budget = Budget.objects.filter(department=profile.department).first()
-        if budget:
-            budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}]
-            if budget.contribution1_name and budget.contribution1_amount > 0:
-                budget_options.append({'value': 'contribution1', 'label': budget.contribution1_name})
-            if budget.contribution2_name and budget.contribution2_amount > 0:
-                budget_options.append({'value': 'contribution2', 'label': budget.contribution2_name})
-            budget_options.append({'value': 'mk', 'label': 'MK'})
-        else:
-            budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
-    else:
-        budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
+    budget_options = build_budget_options_for_department(profile.department)
 
     if request.method == 'POST':
         first_name = request.POST.get('first_name', '').strip()
@@ -331,6 +317,17 @@ def create_expense(request):
             dept = Department.objects.get(id=dept_id)
         except Department.DoesNotExist:
             messages.error(request, 'Invalid department.')
+            return render(request, 'expenses/form.html', {
+                'departments': departments,
+                'profile': profile,
+                'action': 'create',
+                'today_date': date.today().isoformat(),
+                'budget_options': budget_options,
+            })
+
+        allowed_budgets = [opt['value'] for opt in budget_options]
+        if budget_choice not in allowed_budgets:
+            messages.error(request, 'Invalid budget choice for this department.')
             return render(request, 'expenses/form.html', {
                 'departments': departments,
                 'profile': profile,
@@ -454,20 +451,7 @@ def edit_expense(request, pk):
             profile.save()
 
     # Get budget options for the expense's department
-    budget_options = []
-    if expense.department:
-        budget = Budget.objects.filter(department=expense.department).first()
-        if budget:
-            budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}]
-            if budget.contribution1_name and budget.contribution1_amount > 0:
-                budget_options.append({'value': 'contribution1', 'label': budget.contribution1_name})
-            if budget.contribution2_name and budget.contribution2_amount > 0:
-                budget_options.append({'value': 'contribution2', 'label': budget.contribution2_name})
-            budget_options.append({'value': 'mk', 'label': 'MK'})
-        else:
-            budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
-    else:
-        budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
+    budget_options = build_budget_options_for_department(expense.department)
 
     if request.method == 'POST':
         first_name = request.POST.get('first_name', '').strip()

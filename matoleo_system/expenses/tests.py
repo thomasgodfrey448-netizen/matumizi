@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import date
 from core.models import Department, Approver, UserProfile
-from .models import ExpenseRequest
+from .models import ExpenseRequest, Budget
 
 
 class DashboardFilteringTests(TestCase):
@@ -104,3 +104,42 @@ class DashboardFilteringTests(TestCase):
         # Should contain both expenses since they were created by this user
         self.assertContains(response, 'John Doe')
         self.assertContains(response, 'Jane Smith')
+
+
+class ExpenseDraftBudgetSelectionTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.department = Department.objects.create(name='Budget Dept', is_active=True)
+        self.user = User.objects.create_user(username='budgetuser', password='budgetpass')
+        profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        profile.department = self.department
+        profile.is_approved = True
+        profile.save()
+        Budget.objects.create(
+            department=self.department,
+            church_budget=10000.00,
+            contribution1_name='Fund A',
+            contribution1_amount=3000.00,
+            contribution2_name='Fund B',
+            contribution2_amount=2000.00,
+        )
+
+    def test_save_draft_with_each_budget_option(self):
+        self.client.login(username='budgetuser', password='budgetpass')
+        for budget_choice in ['church_budget', 'contribution1', 'contribution2', 'mk']:
+            response = self.client.post('/expenses/new/', {
+                'first_name': 'Test',
+                'last_name': 'User',
+                'phone_number': '+255000000000',
+                'department': str(self.department.id),
+                'date': date.today().isoformat(),
+                'reason': 'Budget draft test',
+                'budget_choice': budget_choice,
+                'item_description[]': ['Test item'],
+                'item_amount[]': ['100'],
+            })
+            self.assertEqual(response.status_code, 302)
+            self.assertTrue(
+                ExpenseRequest.objects.filter(submitted_by=self.user, budget_choice=budget_choice).exists(),
+                f"Expense draft not created for budget_choice={budget_choice}"
+            )
