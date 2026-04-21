@@ -293,15 +293,15 @@ def create_expense(request):
     # Get initial budget options
     budget_options = []
     if profile.department:
-        try:
-            budget = Budget.objects.get(department=profile.department)
+        budget = Budget.objects.filter(department=profile.department).first()
+        if budget:
             budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}]
             if budget.contribution1_name and budget.contribution1_amount > 0:
                 budget_options.append({'value': 'contribution1', 'label': budget.contribution1_name})
             if budget.contribution2_name and budget.contribution2_amount > 0:
                 budget_options.append({'value': 'contribution2', 'label': budget.contribution2_name})
             budget_options.append({'value': 'mk', 'label': 'MK'})
-        except Budget.DoesNotExist:
+        else:
             budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
     else:
         budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
@@ -456,15 +456,15 @@ def edit_expense(request, pk):
     # Get budget options for the expense's department
     budget_options = []
     if expense.department:
-        try:
-            budget = Budget.objects.get(department=expense.department)
+        budget = Budget.objects.filter(department=expense.department).first()
+        if budget:
             budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}]
             if budget.contribution1_name and budget.contribution1_amount > 0:
                 budget_options.append({'value': 'contribution1', 'label': budget.contribution1_name})
             if budget.contribution2_name and budget.contribution2_amount > 0:
                 budget_options.append({'value': 'contribution2', 'label': budget.contribution2_name})
             budget_options.append({'value': 'mk', 'label': 'MK'})
-        except Budget.DoesNotExist:
+        else:
             budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
     else:
         budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
