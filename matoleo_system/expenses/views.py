@@ -62,6 +62,30 @@ def get_first_approver(request, department_id):
 
 
 @login_required
+def get_budget_options(request, department_id):
+    """API endpoint to get available budget options for a department"""
+    try:
+        budget = Budget.objects.get(department_id=department_id)
+        options = [
+            {'value': 'church_budget', 'label': 'Church Budget'}
+        ]
+        if budget.contribution1_name and budget.contribution1_amount > 0:
+            options.append({'value': 'contribution1', 'label': budget.contribution1_name})
+        if budget.contribution2_name and budget.contribution2_amount > 0:
+            options.append({'value': 'contribution2', 'label': budget.contribution2_name})
+        options.append({'value': 'mk', 'label': 'MK'})
+        return JsonResponse({'success': True, 'options': options})
+    except Budget.DoesNotExist:
+        options = [
+            {'value': 'church_budget', 'label': 'Church Budget'},
+            {'value': 'mk', 'label': 'MK'}
+        ]
+        return JsonResponse({'success': True, 'options': options})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
+@login_required
 def expense_dashboard(request):
     user = request.user
     is_approver = hasattr(user, 'approver_profile')
@@ -266,6 +290,22 @@ def create_expense(request):
             profile.department_id = None
             profile.save()
 
+    # Get initial budget options
+    budget_options = []
+    if profile.department:
+        try:
+            budget = Budget.objects.get(department=profile.department)
+            budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}]
+            if budget.contribution1_name and budget.contribution1_amount > 0:
+                budget_options.append({'value': 'contribution1', 'label': budget.contribution1_name})
+            if budget.contribution2_name and budget.contribution2_amount > 0:
+                budget_options.append({'value': 'contribution2', 'label': budget.contribution2_name})
+            budget_options.append({'value': 'mk', 'label': 'MK'})
+        except Budget.DoesNotExist:
+            budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
+    else:
+        budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
+
     if request.method == 'POST':
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
@@ -284,6 +324,7 @@ def create_expense(request):
                 'profile': profile,
                 'action': 'create',
                 'today_date': date.today().isoformat(),
+                'budget_options': budget_options,
             })
 
         try:
@@ -295,6 +336,7 @@ def create_expense(request):
                 'profile': profile,
                 'action': 'create',
                 'today_date': date.today().isoformat(),
+                'budget_options': budget_options,
             })
 
         # Validate budget choice and balance
@@ -324,6 +366,7 @@ def create_expense(request):
                         'profile': profile,
                         'action': 'create',
                         'today_date': date.today().isoformat(),
+                        'budget_options': budget_options,
                     })
             except Budget.DoesNotExist:
                 messages.error(request, 'No budget configured for this department.')
@@ -332,6 +375,7 @@ def create_expense(request):
                     'profile': profile,
                     'action': 'create',
                     'today_date': date.today().isoformat(),
+                    'budget_options': budget_options,
                 })
 
         total = 0
@@ -384,6 +428,7 @@ def create_expense(request):
         'today_date': today_date,
         'second_approver': second_approver,
         'treasurer': treasurer,
+        'budget_options': budget_options,
     })
 
 
@@ -408,6 +453,22 @@ def edit_expense(request, pk):
             profile.department_id = None
             profile.save()
 
+    # Get budget options for the expense's department
+    budget_options = []
+    if expense.department:
+        try:
+            budget = Budget.objects.get(department=expense.department)
+            budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}]
+            if budget.contribution1_name and budget.contribution1_amount > 0:
+                budget_options.append({'value': 'contribution1', 'label': budget.contribution1_name})
+            if budget.contribution2_name and budget.contribution2_amount > 0:
+                budget_options.append({'value': 'contribution2', 'label': budget.contribution2_name})
+            budget_options.append({'value': 'mk', 'label': 'MK'})
+        except Budget.DoesNotExist:
+            budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
+    else:
+        budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}, {'value': 'mk', 'label': 'MK'}]
+
     if request.method == 'POST':
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
@@ -423,14 +484,18 @@ def edit_expense(request, pk):
             messages.error(request, 'Please fill all required fields.')
             return render(request, 'expenses/form.html', {
                 'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                'budget_options': budget_options,
             })
 
-        try:
-            dept = Department.objects.get(id=dept_id)
-        except Department.DoesNotExist:
-            messages.error(request, 'Invalid department.')
+        dept = expense.department  # Department is fixed for edit
+
+        # Validate budget choice
+        allowed_budgets = [opt['value'] for opt in budget_options]
+        if budget_choice not in allowed_budgets:
+            messages.error(request, 'Invalid budget choice for this department.')
             return render(request, 'expenses/form.html', {
                 'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                'budget_options': budget_options,
             })
 
         # Validate budget choice and balance
@@ -457,11 +522,13 @@ def edit_expense(request, pk):
                     messages.error(request, f'Insufficient budget balance for {budget_choice}. Available: {available - used_amount}')
                     return render(request, 'expenses/form.html', {
                         'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                        'budget_options': budget_options,
                     })
             except Budget.DoesNotExist:
                 messages.error(request, 'No budget configured for this department.')
                 return render(request, 'expenses/form.html', {
                     'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                    'budget_options': budget_options,
                 })
 
         total = 0
@@ -504,6 +571,7 @@ def edit_expense(request, pk):
     return render(request, 'expenses/form.html', {
         'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit',
         'today_date': date.today().isoformat(), 'second_approver': second_approver, 'treasurer': treasurer,
+        'budget_options': budget_options,
     })
 
 

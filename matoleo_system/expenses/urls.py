@@ -8,6 +8,7 @@ urlpatterns = [
     path('budget/', views.budget_view, name='budget'),
     path('new/', views.create_expense, name='create'),
     path('api/approver/<int:department_id>/', views.get_first_approver, name='get_approver'),
+    path('api/budget/<int:department_id>/', views.get_budget_options, name='get_budget_options'),
     path('<int:pk>/', views.expense_detail, name='detail'),
     path('<int:pk>/edit/', views.edit_expense, name='edit'),
     path('<int:pk>/delete/', views.delete_expense, name='delete'),
