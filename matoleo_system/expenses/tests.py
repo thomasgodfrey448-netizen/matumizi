@@ -126,7 +126,7 @@ class ExpenseDraftBudgetSelectionTests(TestCase):
 
     def test_save_draft_with_each_budget_option(self):
         self.client.login(username='budgetuser', password='budgetpass')
-        for budget_choice in ['church_budget', 'contribution1', 'contribution2', 'mk']:
+        for budget_choice in ['church_budget', 'contribution1', 'contribution2', 'mk', 'department']:
             response = self.client.post('/expenses/new/', {
                 'first_name': 'Test',
                 'last_name': 'User',
@@ -139,7 +139,8 @@ class ExpenseDraftBudgetSelectionTests(TestCase):
                 'item_amount[]': ['100'],
             })
             self.assertEqual(response.status_code, 302)
+            expected_choice = 'church_budget' if budget_choice == 'department' else budget_choice
             self.assertTrue(
-                ExpenseRequest.objects.filter(submitted_by=self.user, budget_choice=budget_choice).exists(),
+                ExpenseRequest.objects.filter(submitted_by=self.user, budget_choice=expected_choice).exists(),
                 f"Expense draft not created for budget_choice={budget_choice}"
             )

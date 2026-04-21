@@ -71,6 +71,15 @@ def get_budget_options(request, department_id):
         return JsonResponse({'success': False, 'message': str(e)})
 
 
+def normalize_budget_choice(choice):
+    if not choice:
+        return choice
+    normalized = choice.strip().lower()
+    if normalized == 'department':
+        return 'church_budget'
+    return normalized
+
+
 def build_budget_options_for_department(department):
     budget_options = [{'value': 'church_budget', 'label': 'Church Budget'}]
     budget = Budget.objects.filter(department=department).first() if department else None
@@ -299,7 +308,7 @@ def create_expense(request):
         dept_id = request.POST.get('department')
         request_date = request.POST.get('date')
         reason = request.POST.get('reason', '').strip()
-        budget_choice = request.POST.get('budget_choice', '').strip()
+        budget_choice = normalize_budget_choice(request.POST.get('budget_choice', ''))
         descriptions = request.POST.getlist('item_description[]')
         amounts = request.POST.getlist('item_amount[]')
 
@@ -460,7 +469,7 @@ def edit_expense(request, pk):
         dept_id = request.POST.get('department')
         request_date = request.POST.get('date')
         reason = request.POST.get('reason', '').strip()
-        budget_choice = request.POST.get('budget_choice', '').strip()
+        budget_choice = normalize_budget_choice(request.POST.get('budget_choice', ''))
         descriptions = request.POST.getlist('item_description[]')
         amounts = request.POST.getlist('item_amount[]')
 
