@@ -2,8 +2,8 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}{% if not is_admin and not is_treasurer and budget_data %}Bajeti ya Idara ya {{ budget_data.0.department.name }}{% else %}Budget Management{% endif %}{% endblock %}
-{% block page_title %}{% if not is_admin and not is_treasurer and budget_data %}Bajeti ya Idara ya {{ budget_data.0.department.name }}{% else %}Budget Management{% endif %}{% endblock %}
+{% block title %}Budget Management{% endblock %}
+{% block page_title %}Budget Management{% endblock %}
 
 {% block content %}
 
@@ -11,7 +11,7 @@
 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
   <div>
     <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
-      <i class="fas fa-chart-pie" style="color:var(--accent);"></i> {% if not is_admin and not is_treasurer and budget_data %}Bajeti ya Idara ya {{ budget_data.0.department.name }}{% else %}Budget Management{% endif %}
+      <i class="fas fa-chart-pie" style="color:var(--accent);"></i> Budget Management
     </h2>
     <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">
       Angalia bajeti iliyotengwa, matumizi yaliyofanyika, na salio lililobaki katika idara.
