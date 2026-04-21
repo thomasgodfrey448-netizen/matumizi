@@ -2,8 +2,8 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}Budget Management{% endblock %}
-{% block page_title %}Budget Management{% endblock %}
+{% block title %}{% if not is_admin and not is_treasurer and budget_data %}Bajeti ya Idara ya {{ budget_data.0.department.name }}{% else %}Budget Management{% endif %}{% endblock %}
+{% block page_title %}{% if not is_admin and not is_treasurer and budget_data %}Bajeti ya Idara ya {{ budget_data.0.department.name }}{% else %}Budget Management{% endif %}{% endblock %}
 
 {% block content %}
 
@@ -11,10 +11,10 @@
 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
   <div>
     <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
-      <i class="fas fa-chart-pie" style="color:var(--accent);"></i> Budget Management
+      <i class="fas fa-chart-pie" style="color:var(--accent);"></i> {% if not is_admin and not is_treasurer and budget_data %}Bajeti ya Idara ya {{ budget_data.0.department.name }}{% else %}Budget Management{% endif %}
     </h2>
     <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">
-      Track budget allocations and expenses
+      Angalia bajeti iliyotengwa, matumizi yaliyofanyika, na salio lililobaki katika idara.
     </p>
   </div>
 </div>
@@ -26,7 +26,7 @@
       <div class="stat-icon blue"><i class="fas fa-wallet"></i></div>
       <div class="stat-info">
         <div class="stat-value">TZS {{ total_budget|intcomma }}</div>
-        <div class="stat-label">Total Budget</div>
+        <div class="stat-label">Jumla ya Bajeti</div>
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@
       <div class="stat-icon orange"><i class="fas fa-file-invoice-dollar"></i></div>
       <div class="stat-info">
         <div class="stat-value">TZS {{ total_expenses|intcomma }}</div>
-        <div class="stat-label">Total Expenses</div>
+        <div class="stat-label">Jumla ya Matumizi</div>
       </div>
     </div>
   </div>
@@ -44,7 +44,7 @@
       <div class="stat-icon green"><i class="fas fa-balance-scale"></i></div>
       <div class="stat-info">
         <div class="stat-value">TZS {{ total_balance|intcomma }}</div>
-        <div class="stat-label">Remaining Balance</div>
+        <div class="stat-label">Salio</div>
       </div>
     </div>
   </div>
@@ -78,12 +78,26 @@
 <!-- BUDGET DETAILS -->
 {% for budget_item in budget_data %}
 <div class="card" style="margin-bottom:20px;">
-  <div class="card-header">
-    <h5><i class="fas fa-building" style="color:var(--accent);"></i> {{ budget_item.department.name }}</h5>
-    <div style="font-size:0.9rem; color:rgba(255,255,255,0.7);">
-      Total Budget: TZS {{ budget_item.total_budget|intcomma }} | 
-      Total Expenses: TZS {{ budget_item.total_expenses|intcomma }} | 
-      Balance: TZS {{ budget_item.total_balance|intcomma }}
+  <div class="card-header" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+    <div style="min-width:240px;">
+      <h5 style="margin:0;"><i class="fas fa-building" style="color:var(--accent);"></i> {{ budget_item.department.name }}</h5>
+      <div style="font-size:0.9rem; color:rgba(255,255,255,0.75); margin-top:4px;">
+        Bajeti ya idara hii na matumizi yake
+      </div>
+    </div>
+    <div style="display:flex; gap:14px; flex-wrap:wrap; font-size:0.9rem; color:rgba(255,255,255,0.85);">
+      <div style="min-width:140px;">
+        <div style="font-weight:700;">Jumla ya Bajeti</div>
+        <div>TSh {{ budget_item.total_budget|intcomma }}</div>
+      </div>
+      <div style="min-width:140px;">
+        <div style="font-weight:700;">Jumla ya Matumizi</div>
+        <div>TSh {{ budget_item.total_expenses|intcomma }}</div>
+      </div>
+      <div style="min-width:140px;">
+        <div style="font-weight:700;">Salio</div>
+        <div>TSh {{ budget_item.total_balance|intcomma }}</div>
+      </div>
     </div>
   </div>
   <div class="card-body">
@@ -92,11 +106,11 @@
       <div class="col-md-6" style="margin-bottom:20px;">
         <div class="budget-card">
           <div class="budget-header">
-            <h6>Church Budget</h6>
+            <h6>Bajeti ya Kanisa</h6>
             <div class="budget-amounts">
               <span class="allocated">TZS {{ budget_item.data.church_budget.allocated|intcomma }}</span>
-              <span class="used">Used: TZS {{ budget_item.data.church_budget.used|intcomma }}</span>
-              <span class="balance">Balance: TZS {{ budget_item.data.church_budget.balance|intcomma }}</span>
+              <span class="used">Iliotumika: TZS {{ budget_item.data.church_budget.used|intcomma }}</span>
+              <span class="balance">Salio: TZS {{ budget_item.data.church_budget.balance|intcomma }}</span>
             </div>
           </div>
           {% if budget_item.data.church_budget.forms %}
@@ -104,9 +118,9 @@
             <table class="table table-sm">
               <thead>
                 <tr>
-                  <th>Form #</th>
-                  <th>Amount</th>
-                  <th>Date</th>
+                  <th>Form No#</th>
+                  <th>Kiasi</th>
+                  <th>Tarehe</th>
                 </tr>
               </thead>
               <tbody>
@@ -121,7 +135,7 @@
             </table>
           </div>
           {% else %}
-          <div class="no-forms">No paid forms</div>
+          <div class="no-forms">Hakuna fomu iliolipwa</div>
           {% endif %}
         </div>
       </div>
@@ -130,11 +144,11 @@
       <div class="col-md-6" style="margin-bottom:20px;">
         <div class="budget-card">
           <div class="budget-header">
-            <h6>{{ budget_item.data.contribution1.name|default:"Contribution 1" }}</h6>
+            <h6>{{ budget_item.data.contribution1.name|default:"Michango Mingine" }}</h6>
             <div class="budget-amounts">
               <span class="allocated">TZS {{ budget_item.data.contribution1.allocated|intcomma }}</span>
-              <span class="used">Used: TZS {{ budget_item.data.contribution1.used|intcomma }}</span>
-              <span class="balance">Balance: TZS {{ budget_item.data.contribution1.balance|intcomma }}</span>
+              <span class="used">Iliotumika: TZS {{ budget_item.data.contribution1.used|intcomma }}</span>
+              <span class="balance">Salio: TZS {{ budget_item.data.contribution1.balance|intcomma }}</span>
             </div>
           </div>
           {% if budget_item.data.contribution1.forms %}
@@ -142,9 +156,9 @@
             <table class="table table-sm">
               <thead>
                 <tr>
-                  <th>Form #</th>
-                  <th>Amount</th>
-                  <th>Date</th>
+                  <th>Form No#</th>
+                  <th>Kiasi</th>
+                  <th>Tarehe</th>
                 </tr>
               </thead>
               <tbody>
@@ -159,7 +173,7 @@
             </table>
           </div>
           {% else %}
-          <div class="no-forms">No paid forms</div>
+          <div class="no-forms">Hakuna fomu iliolipwa</div>
           {% endif %}
         </div>
       </div>
@@ -168,11 +182,11 @@
       <div class="col-md-6" style="margin-bottom:20px;">
         <div class="budget-card">
           <div class="budget-header">
-            <h6>{{ budget_item.data.contribution2.name|default:"Contribution 2" }}</h6>
+            <h6>{{ budget_item.data.contribution2.name|default:"Michango Mingine 2" }}</h6>
             <div class="budget-amounts">
               <span class="allocated">TZS {{ budget_item.data.contribution2.allocated|intcomma }}</span>
-              <span class="used">Used: TZS {{ budget_item.data.contribution2.used|intcomma }}</span>
-              <span class="balance">Balance: TZS {{ budget_item.data.contribution2.balance|intcomma }}</span>
+              <span class="used">Iliotumika: TZS {{ budget_item.data.contribution2.used|intcomma }}</span>
+              <span class="balance">Salio: TZS {{ budget_item.data.contribution2.balance|intcomma }}</span>
             </div>
           </div>
           {% if budget_item.data.contribution2.forms %}
@@ -180,9 +194,9 @@
             <table class="table table-sm">
               <thead>
                 <tr>
-                  <th>Form #</th>
-                  <th>Amount</th>
-                  <th>Date</th>
+                  <th>Form No#</th>
+                  <th>Kiasi</th>
+                  <th>Tarehe</th>
                 </tr>
               </thead>
               <tbody>
@@ -197,7 +211,7 @@
             </table>
           </div>
           {% else %}
-          <div class="no-forms">No paid forms</div>
+          <div class="no-forms">Hakuna fomu iliolipwa</div>
           {% endif %}
         </div>
       </div>
@@ -217,9 +231,9 @@
             <table class="table table-sm">
               <thead>
                 <tr>
-                  <th>Form #</th>
-                  <th>Amount</th>
-                  <th>Date</th>
+                  <th>Form No#</th>
+                  <th>Kiasi</th>
+                  <th>Tarehe</th>
                 </tr>
               </thead>
               <tbody>
@@ -234,7 +248,7 @@
             </table>
           </div>
           {% else %}
-          <div class="no-forms">No paid forms</div>
+          <div class="no-forms">Hakuna fomu iliolipwa</div>
           {% endif %}
         </div>
       </div>
@@ -244,7 +258,7 @@
 {% empty %}
 <div class="card">
   <div class="card-body text-center">
-    <p>No budgets configured or you don't have access to view budgets.</p>
+    <p>Hakuna bajeti iliopangwa</p>
   </div>
 </div>
 {% endfor %}
