@@ -308,6 +308,13 @@
 .budget-forms {
   max-height: 200px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 767px) {
+  .budget-forms {
+    max-height: 220px;
+  }
 }
 
 .budget-forms table {
