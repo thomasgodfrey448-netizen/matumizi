@@ -65,21 +65,21 @@ def get_first_approver(request, department_id):
 def get_budget_options(request, department_id):
     """API endpoint to get available budget options for a department"""
     try:
-        budget = Budget.objects.get(department_id=department_id)
-        options = [
-            {'value': 'church_budget', 'label': 'Church Budget'}
-        ]
-        if budget.contribution1_name and budget.contribution1_amount > 0:
-            options.append({'value': 'contribution1', 'label': budget.contribution1_name})
-        if budget.contribution2_name and budget.contribution2_amount > 0:
-            options.append({'value': 'contribution2', 'label': budget.contribution2_name})
-        options.append({'value': 'mk', 'label': 'MK'})
-        return JsonResponse({'success': True, 'options': options})
-    except Budget.DoesNotExist:
-        options = [
-            {'value': 'church_budget', 'label': 'Church Budget'},
-            {'value': 'mk', 'label': 'MK'}
-        ]
+        budget = Budget.objects.filter(department_id=department_id).first()
+        if budget:
+            options = [
+                {'value': 'church_budget', 'label': 'Church Budget'}
+            ]
+            if budget.contribution1_name and budget.contribution1_amount > 0:
+                options.append({'value': 'contribution1', 'label': budget.contribution1_name})
+            if budget.contribution2_name and budget.contribution2_amount > 0:
+                options.append({'value': 'contribution2', 'label': budget.contribution2_name})
+            options.append({'value': 'mk', 'label': 'MK'})
+        else:
+            options = [
+                {'value': 'church_budget', 'label': 'Church Budget'},
+                {'value': 'mk', 'label': 'MK'}
+            ]
         return JsonResponse({'success': True, 'options': options})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
@@ -358,34 +358,34 @@ def create_expense(request):
         # Validate budget choice and balance
         if budget_choice != 'mk':
             selected_budget_label = next((opt['label'] for opt in budget_options if opt['value'] == budget_choice), budget_choice.replace('_', ' ').title())
-            try:
-                budget = Budget.objects.get(department=dept)
-                if budget_choice == 'church_budget':
-                    available = budget.church_budget
-                elif budget_choice == 'contribution1':
-                    available = budget.contribution1_amount
-                elif budget_choice == 'contribution2':
-                    available = budget.contribution2_amount
-                else:
-                    available = 0
-                
-                used_amount = ExpenseRequest.objects.filter(
-                    department=dept,
-                    budget_choice=budget_choice,
-                    status__in=['approved', 'paid']
-                ).aggregate(total=models.Sum('total_amount'))['total'] or 0
-                
-                if total > (available - used_amount):
-                    messages.error(request, f'Insufficient balance in {selected_budget_label}.')
-                    return render(request, 'expenses/form.html', {
-                        'departments': departments,
-                        'profile': profile,
-                        'action': 'create',
-                        'today_date': date.today().isoformat(),
-                        'budget_options': budget_options,
-                    })
-            except Budget.DoesNotExist:
+            budget = Budget.objects.filter(department=dept).first()
+            if not budget:
                 messages.error(request, 'No budget configured for this department.')
+                return render(request, 'expenses/form.html', {
+                    'departments': departments,
+                    'profile': profile,
+                    'action': 'create',
+                    'today_date': date.today().isoformat(),
+                    'budget_options': budget_options,
+                })
+
+            if budget_choice == 'church_budget':
+                available = budget.church_budget
+            elif budget_choice == 'contribution1':
+                available = budget.contribution1_amount
+            elif budget_choice == 'contribution2':
+                available = budget.contribution2_amount
+            else:
+                available = 0
+            
+            used_amount = ExpenseRequest.objects.filter(
+                department=dept,
+                budget_choice=budget_choice,
+                status__in=['approved', 'paid']
+            ).aggregate(total=models.Sum('total_amount'))['total'] or 0
+            
+            if total > (available - used_amount):
+                messages.error(request, f'Insufficient balance in {selected_budget_label}.')
                 return render(request, 'expenses/form.html', {
                     'departments': departments,
                     'profile': profile,
@@ -517,31 +517,31 @@ def edit_expense(request, pk):
         # Validate budget choice and balance
         if budget_choice != 'mk':
             selected_budget_label = next((opt['label'] for opt in budget_options if opt['value'] == budget_choice), budget_choice.replace('_', ' ').title())
-            try:
-                budget = Budget.objects.get(department=dept)
-                if budget_choice == 'church_budget':
-                    available = budget.church_budget
-                elif budget_choice == 'contribution1':
-                    available = budget.contribution1_amount
-                elif budget_choice == 'contribution2':
-                    available = budget.contribution2_amount
-                else:
-                    available = 0
-                
-                used_amount = ExpenseRequest.objects.filter(
-                    department=dept,
-                    budget_choice=budget_choice,
-                    status__in=['approved', 'paid']
-                ).exclude(pk=expense.pk).aggregate(total=models.Sum('total_amount'))['total'] or 0
-                
-                if total > (available - used_amount):
-                    messages.error(request, f'Insufficient balance in {selected_budget_label}.')
-                    return render(request, 'expenses/form.html', {
-                        'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
-                        'budget_options': budget_options,
-                    })
-            except Budget.DoesNotExist:
+            budget = Budget.objects.filter(department=dept).first()
+            if not budget:
                 messages.error(request, 'No budget configured for this department.')
+                return render(request, 'expenses/form.html', {
+                    'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                    'budget_options': budget_options,
+                })
+
+            if budget_choice == 'church_budget':
+                available = budget.church_budget
+            elif budget_choice == 'contribution1':
+                available = budget.contribution1_amount
+            elif budget_choice == 'contribution2':
+                available = budget.contribution2_amount
+            else:
+                available = 0
+            
+            used_amount = ExpenseRequest.objects.filter(
+                department=dept,
+                budget_choice=budget_choice,
+                status__in=['approved', 'paid']
+            ).exclude(pk=expense.pk).aggregate(total=models.Sum('total_amount'))['total'] or 0
+            
+            if total > (available - used_amount):
+                messages.error(request, f'Insufficient balance in {selected_budget_label}.')
                 return render(request, 'expenses/form.html', {
                     'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
                     'budget_options': budget_options,
