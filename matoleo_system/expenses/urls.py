@@ -5,6 +5,7 @@ app_name = 'expenses'
 
 urlpatterns = [
     path('', views.expense_dashboard, name='dashboard'),
+    path('budget/', views.budget_view, name='budget'),
     path('new/', views.create_expense, name='create'),
     path('api/approver/<int:department_id>/', views.get_first_approver, name='get_approver'),
     path('<int:pk>/', views.expense_detail, name='detail'),

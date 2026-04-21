@@ -25,7 +25,7 @@ class RetirementForm(models.Model):
     date_of_request = models.DateField()
     date_of_retirement = models.DateField()
     reason = models.TextField()
-    exp_request_form_no = models.CharField(max_length=100, blank=True, null=True)
+    exp_request_form_no = models.CharField(max_length=100, default='N/A')
     total_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     remaining_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')

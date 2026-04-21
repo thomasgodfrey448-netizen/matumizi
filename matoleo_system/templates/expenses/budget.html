@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Budget Management{% endblock %}
+{% block page_title %}Budget Management{% endblock %}
+
+{% block content %}
+
+<!-- HEADER ROW -->
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+  <div>
+    <h2 style="font-size:1.3rem; font-weight:800; color:var(--white); margin:0;">
+      <i class="fas fa-chart-pie" style="color:var(--accent);"></i> Budget Management
+    </h2>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin:4px 0 0;">
+      Track budget allocations and expenses
+    </p>
+  </div>
+</div>
+
+<!-- SUMMARY CARDS -->
+<div class="row" style="margin-bottom:20px;">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fas fa-wallet"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">TZS {{ total_budget|intcomma }}</div>
+        <div class="stat-label">Total Budget</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon orange"><i class="fas fa-money-bill-wave"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">TZS {{ total_expenses|intcomma }}</div>
+        <div class="stat-label">Total Expenses</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fas fa-balance-scale"></i></div>
+      <div class="stat-info">
+        <div class="stat-value">TZS {{ total_balance|intcomma }}</div>
+        <div class="stat-label">Remaining Balance</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-bar">
+  <form method="get" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+    <div class="form-group" style="margin-bottom:0;">
+      <label class="form-label">Month</label>
+      <input type="month" name="month" class="form-control" value="{{ selected_month }}">
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <label class="form-label">Show All</label>
+      <input type="checkbox" name="all" value="true" {% if show_all %}checked{% endif %} onchange="this.form.submit()">
+    </div>
+    <button type="submit" class="btn btn-accent" style="margin-top:20px;">Apply</button>
+    <a href="{% url 'expenses:budget' %}" class="btn btn-outline" style="margin-top:20px;">Clear</a>
+    {% if date_from and date_to %}
+    <div style="margin-left:auto; color:rgba(255,255,255,0.75); font-size:0.85rem;">
+      Showing: {{ date_from|date:"d M Y" }} - {{ date_to|date:"d M Y" }}
+    </div>
+    {% elif show_all %}
+    <div style="margin-left:auto; color:rgba(255,255,255,0.75); font-size:0.85rem;">
+      Showing: All time
+    </div>
+    {% endif %}
+  </form>
+</div>
+
+<!-- BUDGET DETAILS -->
+{% for budget_item in budget_data %}
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-header">
+    <h5><i class="fas fa-building" style="color:var(--accent);"></i> {{ budget_item.department.name }}</h5>
+    <div style="font-size:0.9rem; color:rgba(255,255,255,0.7);">
+      Total Budget: TZS {{ budget_item.total_budget|intcomma }} | 
+      Total Expenses: TZS {{ budget_item.total_expenses|intcomma }} | 
+      Balance: TZS {{ budget_item.total_balance|intcomma }}
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <!-- Church Budget -->
+      <div class="col-md-6" style="margin-bottom:20px;">
+        <div class="budget-card">
+          <div class="budget-header">
+            <h6>Church Budget</h6>
+            <div class="budget-amounts">
+              <span class="allocated">TZS {{ budget_item.data.church_budget.allocated|intcomma }}</span>
+              <span class="used">Used: TZS {{ budget_item.data.church_budget.used|intcomma }}</span>
+              <span class="balance">Balance: TZS {{ budget_item.data.church_budget.balance|intcomma }}</span>
+            </div>
+          </div>
+          {% if budget_item.data.church_budget.forms %}
+          <div class="budget-forms">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Form #</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for form in budget_item.data.church_budget.forms %}
+                <tr>
+                  <td><a href="{% url 'expenses:detail' form.pk %}">{{ form.form_number }}</a></td>
+                  <td>TZS {{ form.total_amount|intcomma }}</td>
+                  <td>{{ form.paid_at|date:"d M Y" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="no-forms">No paid forms</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Contribution 1 -->
+      <div class="col-md-6" style="margin-bottom:20px;">
+        <div class="budget-card">
+          <div class="budget-header">
+            <h6>{{ budget_item.data.contribution1.name|default:"Contribution 1" }}</h6>
+            <div class="budget-amounts">
+              <span class="allocated">TZS {{ budget_item.data.contribution1.allocated|intcomma }}</span>
+              <span class="used">Used: TZS {{ budget_item.data.contribution1.used|intcomma }}</span>
+              <span class="balance">Balance: TZS {{ budget_item.data.contribution1.balance|intcomma }}</span>
+            </div>
+          </div>
+          {% if budget_item.data.contribution1.forms %}
+          <div class="budget-forms">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Form #</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for form in budget_item.data.contribution1.forms %}
+                <tr>
+                  <td><a href="{% url 'expenses:detail' form.pk %}">{{ form.form_number }}</a></td>
+                  <td>TZS {{ form.total_amount|intcomma }}</td>
+                  <td>{{ form.paid_at|date:"d M Y" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="no-forms">No paid forms</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Contribution 2 -->
+      <div class="col-md-6" style="margin-bottom:20px;">
+        <div class="budget-card">
+          <div class="budget-header">
+            <h6>{{ budget_item.data.contribution2.name|default:"Contribution 2" }}</h6>
+            <div class="budget-amounts">
+              <span class="allocated">TZS {{ budget_item.data.contribution2.allocated|intcomma }}</span>
+              <span class="used">Used: TZS {{ budget_item.data.contribution2.used|intcomma }}</span>
+              <span class="balance">Balance: TZS {{ budget_item.data.contribution2.balance|intcomma }}</span>
+            </div>
+          </div>
+          {% if budget_item.data.contribution2.forms %}
+          <div class="budget-forms">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Form #</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for form in budget_item.data.contribution2.forms %}
+                <tr>
+                  <td><a href="{% url 'expenses:detail' form.pk %}">{{ form.form_number }}</a></td>
+                  <td>TZS {{ form.total_amount|intcomma }}</td>
+                  <td>{{ form.paid_at|date:"d M Y" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="no-forms">No paid forms</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- MK -->
+      <div class="col-md-6" style="margin-bottom:20px;">
+        <div class="budget-card">
+          <div class="budget-header">
+            <h6>MK</h6>
+            <div class="budget-amounts">
+              <span class="allocated">No Limit</span>
+              <span class="used">Used: TZS {{ budget_item.data.mk.used|intcomma }}</span>
+            </div>
+          </div>
+          {% if budget_item.data.mk.forms %}
+          <div class="budget-forms">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Form #</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for form in budget_item.data.mk.forms %}
+                <tr>
+                  <td><a href="{% url 'expenses:detail' form.pk %}">{{ form.form_number }}</a></td>
+                  <td>TZS {{ form.total_amount|intcomma }}</td>
+                  <td>{{ form.paid_at|date:"d M Y" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="no-forms">No paid forms</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="card">
+  <div class="card-body text-center">
+    <p>No budgets configured or you don't have access to view budgets.</p>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.budget-card {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 15px;
+  background: rgba(255,255,255,0.02);
+}
+
+.budget-header {
+  margin-bottom: 10px;
+}
+
+.budget-header h6 {
+  color: var(--accent);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.budget-amounts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.85rem;
+}
+
+.budget-amounts .allocated {
+  color: var(--white);
+  font-weight: 500;
+}
+
+.budget-amounts .used {
+  color: #ffa726;
+}
+
+.budget-amounts .balance {
+  color: #66bb6a;
+  font-weight: 500;
+}
+
+.budget-forms {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.budget-forms table {
+  font-size: 0.8rem;
+}
+
+.budget-forms table th {
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.8);
+  padding: 8px;
+}
+
+.budget-forms table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.budget-forms table a {
+  color: var(--accent);
+}
+
+.no-forms {
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+  padding: 20px;
+}
+</style>
+{% endblock %}

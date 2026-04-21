@@ -88,6 +88,16 @@
           <label class="form-label">Kusudi la Maombi ya Fedha <span style="color:var(--accent);">*</span></label>
           <textarea name="reason" class="form-control" required placeholder="Andika kusudi la maombi ya fedha...">{{ expense.reason|default:'' }}</textarea>
         </div>
+        <div class="form-group">
+          <label class="form-label">Chanzo cha Fedha <span style="color:var(--accent);">*</span></label>
+          <select name="budget_choice" class="form-control" required>
+            <option value="">-- Chagua Chanzo cha Fedha --</option>
+            <option value="church_budget" {% if expense.budget_choice == 'church_budget' %}selected{% endif %}>Church Budget</option>
+            <option value="contribution1" {% if expense.budget_choice == 'contribution1' %}selected{% endif %}>Contribution 1</option>
+            <option value="contribution2" {% if expense.budget_choice == 'contribution2' %}selected{% endif %}>Contribution 2</option>
+            <option value="mk" {% if expense.budget_choice == 'mk' %}selected{% endif %}>MK</option>
+          </select>
+        </div>
       </div>
     </div>
 

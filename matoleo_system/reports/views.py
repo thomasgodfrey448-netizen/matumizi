@@ -30,6 +30,7 @@ def expenses_report(request):
     status_filter = request.GET.get('status', '')
     department_id = request.GET.get('department', '')
     payment_filter = request.GET.get('payment', '').strip()
+    budget_filter = request.GET.get('budget', '').strip()
 
     # Set default date range to current month only when no filters are applied.
     today = timezone.localdate()
@@ -69,6 +70,8 @@ def expenses_report(request):
         qs = qs.filter(is_paid=False)
     if department_id and (is_admin or is_treasurer):
         qs = qs.filter(department_id=department_id)
+    if budget_filter:
+        qs = qs.filter(budget_choice=budget_filter)
 
     # Evaluate queryset and calculate totals
     expenses_list = list(qs)
@@ -87,6 +90,7 @@ def expenses_report(request):
         'status_filter': status_filter,
         'department_id': department_id,
         'payment_filter': payment_filter,
+        'budget_filter': budget_filter,
         'is_admin': is_admin,
         'is_approver': is_approver,
         'is_treasurer': is_treasurer,

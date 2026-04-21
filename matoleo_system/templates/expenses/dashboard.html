@@ -18,9 +18,14 @@
     </p>
   </div>
   {% if not is_approver and not is_treasurer %}
-  <a href="{% url 'expenses:create' %}" class="btn btn-accent">
-    <i class="fas fa-plus"></i> Fomu Mpya
-  </a>
+  <div style="display:flex; gap:10px;">
+    <a href="{% url 'expenses:create' %}" class="btn btn-accent">
+      <i class="fas fa-plus"></i> Fomu Mpya
+    </a>
+    <a href="{% url 'expenses:budget' %}" class="btn btn-outline">
+      <i class="fas fa-chart-pie"></i> Budget
+    </a>
+  </div>
   {% endif %}
 </div>
 

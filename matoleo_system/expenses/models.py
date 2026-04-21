@@ -3,6 +3,23 @@ from django.contrib.auth.models import User
 from core.models import Department
 
 
+class Budget(models.Model):
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    church_budget = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    contribution1_name = models.CharField(max_length=100, blank=True)
+    contribution1_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    contribution2_name = models.CharField(max_length=100, blank=True)
+    contribution2_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['department']
+
+    def __str__(self):
+        return f"Budget for {self.department.name}"
+
+
 class ExpenseRequest(models.Model):
     STATUS_CHOICES = [
         ('draft', 'Draft'),
@@ -15,6 +32,13 @@ class ExpenseRequest(models.Model):
         ('rejected_for_editing', 'Rejected for Editing'),
     ]
 
+    BUDGET_CHOICES = [
+        ('church_budget', 'Church Budget'),
+        ('contribution1', 'Contribution 1'),
+        ('contribution2', 'Contribution 2'),
+        ('mk', 'MK'),
+    ]
+
     form_number = models.CharField(max_length=30, unique=True, blank=True)
     submitted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense_requests')
     first_name = models.CharField(max_length=100)
@@ -24,7 +48,18 @@ class ExpenseRequest(models.Model):
     date = models.DateField()
     reason = models.TextField()
     total_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    budget_choice = models.CharField(max_length=20, choices=BUDGET_CHOICES, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+
+    form_number = models.CharField(max_length=30, unique=True, blank=True)
+    submitted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense_requests')
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=20)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
+    date = models.DateField()
+    reason = models.TextField()
+    total_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0)
 
     # Approval tracking
     first_approver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,

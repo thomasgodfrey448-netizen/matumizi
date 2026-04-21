@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
-from django.db import transaction
+from django.db import transaction, models
 from django.contrib.auth.models import User
-from .models import ExpenseRequest, ExpenseItem
+from .models import ExpenseRequest, ExpenseItem, Budget
 import calendar
 import logging
 from datetime import datetime, date
@@ -121,6 +121,137 @@ def expense_dashboard(request):
 
 
 @login_required
+def budget_view(request):
+    user = request.user
+    is_admin = user.is_staff or user.is_superuser
+    is_treasurer = hasattr(user, 'treasurer_profile')
+    
+    # Get user's department
+    try:
+        profile = UserProfile.objects.get(user=user)
+        user_department = profile.department
+    except UserProfile.DoesNotExist:
+        user_department = None
+    
+    # Filter budgets based on permissions
+    if is_admin or is_treasurer:
+        budgets = Budget.objects.all().select_related('department')
+    else:
+        if user_department:
+            budgets = Budget.objects.filter(department=user_department).select_related('department')
+        else:
+            budgets = Budget.objects.none()
+    
+    # Get filter parameters
+    selected_month = request.GET.get('month', '').strip()
+    show_all = request.GET.get('all', '') == 'true'
+    today = timezone.localdate()
+    
+    if selected_month and not show_all:
+        try:
+            year, month = map(int, selected_month.split('-'))
+            start_date = date(year, month, 1)
+            end_date = date(year, month, calendar.monthrange(year, month)[1])
+        except (ValueError, calendar.IllegalMonthError):
+            start_date = today.replace(day=1)
+            end_date = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+            selected_month = today.strftime('%Y-%m')
+    else:
+        if show_all:
+            start_date = None
+            end_date = None
+            selected_month = ''
+        else:
+            start_date = today.replace(day=1)
+            end_date = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+            selected_month = today.strftime('%Y-%m')
+    
+    budget_data = []
+    total_budget = 0
+    total_expenses = 0
+    total_balance = 0
+    
+    for budget in budgets:
+        dept_data = {
+            'department': budget.department,
+            'church_budget': {
+                'allocated': budget.church_budget,
+                'used': 0,
+                'balance': budget.church_budget,
+                'forms': []
+            },
+            'contribution1': {
+                'name': budget.contribution1_name,
+                'allocated': budget.contribution1_amount,
+                'used': 0,
+                'balance': budget.contribution1_amount,
+                'forms': []
+            },
+            'contribution2': {
+                'name': budget.contribution2_name,
+                'allocated': budget.contribution2_amount,
+                'used': 0,
+                'balance': budget.contribution2_amount,
+                'forms': []
+            },
+            'mk': {
+                'allocated': 0,  # MK has no limit
+                'used': 0,
+                'balance': 0,
+                'forms': []
+            }
+        }
+        
+        # Get paid forms for this department
+        forms_query = ExpenseRequest.objects.filter(
+            department=budget.department,
+            status__in=['approved', 'paid']
+        ).select_related('submitted_by')
+        
+        if start_date and end_date:
+            forms_query = forms_query.filter(date__gte=start_date, date__lte=end_date)
+        
+        forms = forms_query.order_by('-paid_at')
+        
+        for form in forms:
+            budget_type = form.budget_choice
+            if budget_type in dept_data:
+                dept_data[budget_type]['used'] += form.total_amount
+                dept_data[budget_type]['balance'] = dept_data[budget_type]['allocated'] - dept_data[budget_type]['used']
+                dept_data[budget_type]['forms'].append(form)
+        
+        # Calculate totals
+        dept_total_budget = sum([dept_data[bt]['allocated'] for bt in ['church_budget', 'contribution1', 'contribution2']])
+        dept_total_expenses = sum([dept_data[bt]['used'] for bt in ['church_budget', 'contribution1', 'contribution2', 'mk']])
+        dept_total_balance = dept_total_budget - (dept_total_expenses - dept_data['mk']['used'])  # MK doesn't count against balance
+        
+        budget_data.append({
+            'department': budget.department,
+            'data': dept_data,
+            'total_budget': dept_total_budget,
+            'total_expenses': dept_total_expenses,
+            'total_balance': dept_total_balance,
+        })
+        
+        total_budget += dept_total_budget
+        total_expenses += dept_total_expenses
+        total_balance += dept_total_balance
+    
+    return render(request, 'expenses/budget.html', {
+        'budget_data': budget_data,
+        'total_budget': total_budget,
+        'total_expenses': total_expenses,
+        'total_balance': total_balance,
+        'selected_month': selected_month,
+        'show_all': show_all,
+        'date_from': start_date,
+        'date_to': end_date,
+        'is_admin': is_admin,
+        'is_treasurer': is_treasurer,
+    })
+
+
+@login_required
 def create_expense(request):
     if hasattr(request.user, 'approver_profile'):
         messages.error(request, 'Approvers cannot create expense requests.')
@@ -142,10 +273,11 @@ def create_expense(request):
         dept_id = request.POST.get('department')
         request_date = request.POST.get('date')
         reason = request.POST.get('reason', '').strip()
+        budget_choice = request.POST.get('budget_choice', '').strip()
         descriptions = request.POST.getlist('item_description[]')
         amounts = request.POST.getlist('item_amount[]')
 
-        if not all([first_name, last_name, phone, dept_id, request_date, reason]):
+        if not all([first_name, last_name, phone, dept_id, request_date, reason, budget_choice]):
             messages.error(request, 'Please fill all required fields.')
             return render(request, 'expenses/form.html', {
                 'departments': departments,
@@ -164,6 +296,43 @@ def create_expense(request):
                 'action': 'create',
                 'today_date': date.today().isoformat(),
             })
+
+        # Validate budget choice and balance
+        if budget_choice != 'mk':
+            try:
+                budget = Budget.objects.get(department=dept)
+                if budget_choice == 'church_budget':
+                    available = budget.church_budget
+                elif budget_choice == 'contribution1':
+                    available = budget.contribution1_amount
+                elif budget_choice == 'contribution2':
+                    available = budget.contribution2_amount
+                else:
+                    available = 0
+                
+                # Calculate used amount for this budget
+                used_amount = ExpenseRequest.objects.filter(
+                    department=dept,
+                    budget_choice=budget_choice,
+                    status__in=['approved', 'paid']
+                ).aggregate(total=models.Sum('total_amount'))['total'] or 0
+                
+                if total > (available - used_amount):
+                    messages.error(request, f'Insufficient budget balance for {budget_choice}. Available: {available - used_amount}')
+                    return render(request, 'expenses/form.html', {
+                        'departments': departments,
+                        'profile': profile,
+                        'action': 'create',
+                        'today_date': date.today().isoformat(),
+                    })
+            except Budget.DoesNotExist:
+                messages.error(request, 'No budget configured for this department.')
+                return render(request, 'expenses/form.html', {
+                    'departments': departments,
+                    'profile': profile,
+                    'action': 'create',
+                    'today_date': date.today().isoformat(),
+                })
 
         total = 0
         items_data = []
@@ -191,6 +360,7 @@ def create_expense(request):
                 date=request_date,
                 reason=reason,
                 total_amount=total,
+                budget_choice=budget_choice,
                 status='draft',
             )
             for desc, amt, order in items_data:
@@ -245,8 +415,15 @@ def edit_expense(request, pk):
         dept_id = request.POST.get('department')
         request_date = request.POST.get('date')
         reason = request.POST.get('reason', '').strip()
+        budget_choice = request.POST.get('budget_choice', '').strip()
         descriptions = request.POST.getlist('item_description[]')
         amounts = request.POST.getlist('item_amount[]')
+
+        if not all([first_name, last_name, phone, dept_id, request_date, reason, budget_choice]):
+            messages.error(request, 'Please fill all required fields.')
+            return render(request, 'expenses/form.html', {
+                'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+            })
 
         try:
             dept = Department.objects.get(id=dept_id)
@@ -255,6 +432,37 @@ def edit_expense(request, pk):
             return render(request, 'expenses/form.html', {
                 'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
             })
+
+        # Validate budget choice and balance
+        if budget_choice != 'mk':
+            try:
+                budget = Budget.objects.get(department=dept)
+                if budget_choice == 'church_budget':
+                    available = budget.church_budget
+                elif budget_choice == 'contribution1':
+                    available = budget.contribution1_amount
+                elif budget_choice == 'contribution2':
+                    available = budget.contribution2_amount
+                else:
+                    available = 0
+                
+                # Calculate used amount for this budget, excluding current expense
+                used_amount = ExpenseRequest.objects.filter(
+                    department=dept,
+                    budget_choice=budget_choice,
+                    status__in=['approved', 'paid']
+                ).exclude(pk=expense.pk).aggregate(total=models.Sum('total_amount'))['total'] or 0
+                
+                if total > (available - used_amount):
+                    messages.error(request, f'Insufficient budget balance for {budget_choice}. Available: {available - used_amount}')
+                    return render(request, 'expenses/form.html', {
+                        'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                    })
+            except Budget.DoesNotExist:
+                messages.error(request, 'No budget configured for this department.')
+                return render(request, 'expenses/form.html', {
+                    'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                })
 
         total = 0
         items_data = []
@@ -279,6 +487,7 @@ def edit_expense(request, pk):
             expense.department = dept
             expense.date = request_date
             expense.reason = reason
+            expense.budget_choice = budget_choice
             expense.total_amount = total
             expense.save()
             expense.items.all().delete()

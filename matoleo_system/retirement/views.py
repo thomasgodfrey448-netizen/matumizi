@@ -166,7 +166,7 @@ def create_retirement(request):
         descriptions = request.POST.getlist('item_description[]')
         amounts = request.POST.getlist('item_amount[]')
 
-        if not all([first_name, last_name, phone, dept_id, date_request, date_retirement, reason]):
+        if not all([first_name, last_name, phone, dept_id, date_request, date_retirement, reason, exp_request_form_no, exp_request_form_no]):
             messages.error(request, 'Please fill all required fields.')
             return render(request, 'retirement/form.html', form_context)
 
