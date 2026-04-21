@@ -202,7 +202,7 @@
         <h6>Reason for Request</h6>
         <p style="color:rgba(255,255,255,0.8); font-size:0.9rem; line-height:1.6;">{{ expense.reason }}</p>
       </div>
-      {% if expense.budget_choice == 'mk' and (is_approver or is_admin or is_treasurer) %}
+      {% if expense.budget_choice == 'mk' and is_approver or is_admin or is_treasurer %}
       <div class="detail-section">
         <div style="background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.3); border-radius: 8px; padding: 12px; margin-top: 10px;">
           <div style="color: #ffc107; font-weight: 600; font-size: 0.9rem;">

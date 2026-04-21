@@ -55,16 +55,6 @@ class ExpenseRequest(models.Model):
     budget_choice = models.CharField(max_length=20, choices=BUDGET_CHOICES, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
 
-    form_number = models.CharField(max_length=30, unique=True, blank=True)
-    submitted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense_requests')
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=20)
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
-    date = models.DateField()
-    reason = models.TextField()
-    total_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0)
-
     # Approval tracking
     first_approver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
                                        related_name='first_approved_expenses')
