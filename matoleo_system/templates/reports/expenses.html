@@ -61,16 +61,17 @@
         <option value="unpaid" {% if payment_filter == 'unpaid' %}selected{% endif %}>Unpaid</option>
       </select>
     </div>
+    {% if is_admin or is_treasurer %}
     <div class="form-group">
       <label class="form-label"><i class="fas fa-wallet"></i> Budget</label>
       <select name="budget" class="form-control">
         <option value="">All Budgets</option>
-        <option value="church_budget" {% if budget_filter == 'church_budget' %}selected{% endif %}>Church Budget</option>
-        <option value="contribution1" {% if budget_filter == 'contribution1' %}selected{% endif %}>Contribution 1</option>
-        <option value="contribution2" {% if budget_filter == 'contribution2' %}selected{% endif %}>Contribution 2</option>
-        <option value="mk" {% if budget_filter == 'mk' %}selected{% endif %}>MK</option>
+        {% for option in budget_options %}
+        <option value="{{ option.value }}" {% if budget_filter == option.value %}selected{% endif %}>{{ option.label }}</option>
+        {% endfor %}
       </select>
     </div>
+    {% endif %}
     {% if is_admin or is_treasurer %}
     <div class="form-group">
       <label class="form-label"><i class="fas fa-sitemap"></i> Department</label>
