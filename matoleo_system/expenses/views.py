@@ -719,6 +719,7 @@ def expense_detail(request, pk):
     try:
         return render(request, 'expenses/detail.html', {
             'expense': expense,
+            'user': user,
             'is_approver': is_approver,
             'is_admin': is_admin,
             'is_treasurer': is_treasurer,
