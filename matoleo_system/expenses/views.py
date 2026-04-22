@@ -328,7 +328,7 @@ def create_expense(request):
 
             try:
                 dept = Department.objects.get(id=dept_id)
-            except Department.DoesNotExist:
+            except (Department.DoesNotExist, ValueError, TypeError):
                 messages.error(request, 'Invalid department.')
                 return render(request, 'expenses/form.html', {
                     'departments': departments,
