@@ -366,6 +366,45 @@ def create_expense(request):
                         messages.error(request, 'Invalid amount value. Please enter a valid number.')
                         return redirect(request.path)
 
+            # Validate budget choice and balance
+            if budget_choice != 'mk':
+                selected_budget_label = next((opt['label'] for opt in budget_options if opt['value'] == budget_choice), budget_choice.replace('_', ' ').title())
+                budget = Budget.objects.filter(department=dept).first()
+                if not budget:
+                    messages.error(request, 'No budget configured for this department.')
+                    return render(request, 'expenses/form.html', {
+                        'departments': departments,
+                        'profile': profile,
+                        'action': 'create',
+                        'today_date': date.today().isoformat(),
+                        'budget_options': budget_options,
+                    })
+
+                if budget_choice == 'church_budget':
+                    available = budget.church_budget
+                elif budget_choice == 'contribution1':
+                    available = budget.contribution1_amount
+                elif budget_choice == 'contribution2':
+                    available = budget.contribution2_amount
+                else:
+                    available = 0
+                
+                used_amount = ExpenseRequest.objects.filter(
+                    department=dept,
+                    budget_choice=budget_choice,
+                    status__in=['approved', 'paid']
+                ).aggregate(total=models.Sum('total_amount'))['total'] or 0
+                
+                if total > (available - used_amount):
+                    messages.error(request, f'Insufficient balance in {selected_budget_label}. Available: TZS {available - used_amount:,.0f}, Requested: TZS {total:,.0f}')
+                    return render(request, 'expenses/form.html', {
+                        'departments': departments,
+                        'profile': profile,
+                        'action': 'create',
+                        'today_date': date.today().isoformat(),
+                        'budget_options': budget_options,
+                    })
+
             with transaction.atomic():
                 expense = ExpenseRequest.objects.create(
                     submitted_by=request.user,
@@ -491,6 +530,39 @@ def edit_expense(request, pk):
                     except ValueError:
                         messages.error(request, 'Invalid amount value. Please enter a valid number.')
                         return redirect(request.path)
+
+            # Validate budget choice and balance
+            if budget_choice != 'mk':
+                selected_budget_label = next((opt['label'] for opt in budget_options if opt['value'] == budget_choice), budget_choice.replace('_', ' ').title())
+                budget = Budget.objects.filter(department=dept).first()
+                if not budget:
+                    messages.error(request, 'No budget configured for this department.')
+                    return render(request, 'expenses/form.html', {
+                        'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                        'budget_options': budget_options,
+                    })
+
+                if budget_choice == 'church_budget':
+                    available = budget.church_budget
+                elif budget_choice == 'contribution1':
+                    available = budget.contribution1_amount
+                elif budget_choice == 'contribution2':
+                    available = budget.contribution2_amount
+                else:
+                    available = 0
+                
+                used_amount = ExpenseRequest.objects.filter(
+                    department=dept,
+                    budget_choice=budget_choice,
+                    status__in=['approved', 'paid']
+                ).exclude(pk=expense.pk).aggregate(total=models.Sum('total_amount'))['total'] or 0
+                
+                if total > (available - used_amount):
+                    messages.error(request, f'Insufficient balance in {selected_budget_label}. Available: TZS {available - used_amount:,.0f}, Requested: TZS {total:,.0f}')
+                    return render(request, 'expenses/form.html', {
+                        'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                        'budget_options': budget_options,
+                    })
 
             with transaction.atomic():
                 expense.first_name = first_name
