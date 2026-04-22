@@ -104,12 +104,40 @@ class ExpenseRequest(models.Model):
     def save(self, *args, **kwargs):
         if not self.form_number:
             import datetime
+            from django.db.models import Max
+            from django.db import IntegrityError, transaction
             year = datetime.date.today().year
-            count = ExpenseRequest.objects.filter(
-                created_at__year=year
-            ).count() + 1
-            self.form_number = f"EXP-{year}-{count:04d}"
-        super().save(*args, **kwargs)
+            
+            max_retries = 5
+            for attempt in range(max_retries):
+                # Find the highest existing form number for this year
+                existing_numbers = ExpenseRequest.objects.filter(
+                    form_number__startswith=f"EXP-{year}-"
+                ).aggregate(max_num=Max('form_number'))['max_num']
+                
+                if existing_numbers:
+                    # Extract the number part and increment
+                    try:
+                        last_num = int(existing_numbers.split('-')[-1])
+                        count = last_num + 1
+                    except (ValueError, IndexError):
+                        count = 1
+                else:
+                    count = 1
+                
+                self.form_number = f"EXP-{year}-{count:04d}"
+                
+                try:
+                    super().save(*args, **kwargs)
+                    break  # Success, exit retry loop
+                except IntegrityError as e:
+                    if 'form_number' in str(e) and attempt < max_retries - 1:
+                        # Form number conflict, try again with updated count
+                        continue
+                    else:
+                        raise  # Re-raise if not a form_number conflict or max retries reached
+        else:
+            super().save(*args, **kwargs)
 
     def get_approval_ticks(self):
         if self.status == 'approved':
