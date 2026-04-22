@@ -321,6 +321,7 @@ def create_expense(request):
                 return render(request, 'expenses/form.html', {
                     'departments': departments,
                     'profile': profile,
+                    'user': request.user,
                     'action': 'create',
                     'today_date': date.today().isoformat(),
                     'budget_options': budget_options,
@@ -333,6 +334,7 @@ def create_expense(request):
                 return render(request, 'expenses/form.html', {
                     'departments': departments,
                     'profile': profile,
+                    'user': request.user,
                     'action': 'create',
                     'today_date': date.today().isoformat(),
                     'budget_options': budget_options,
@@ -345,6 +347,7 @@ def create_expense(request):
                 return render(request, 'expenses/form.html', {
                     'departments': departments,
                     'profile': profile,
+                    'user': request.user,
                     'action': 'create',
                     'today_date': date.today().isoformat(),
                     'budget_options': budget_options,
@@ -375,6 +378,7 @@ def create_expense(request):
                     return render(request, 'expenses/form.html', {
                         'departments': departments,
                         'profile': profile,
+                        'user': request.user,
                         'action': 'create',
                         'today_date': date.today().isoformat(),
                         'budget_options': budget_options,
@@ -400,6 +404,7 @@ def create_expense(request):
                     return render(request, 'expenses/form.html', {
                         'departments': departments,
                         'profile': profile,
+                        'user': request.user,
                         'action': 'create',
                         'today_date': date.today().isoformat(),
                         'budget_options': budget_options,
@@ -442,6 +447,7 @@ def create_expense(request):
             return render(request, 'expenses/form.html', {
                 'departments': departments,
                 'profile': profile,
+                'user': request.user,
                 'action': 'create',
                 'today_date': date.today().isoformat(),
                 'budget_options': budget_options,
@@ -453,6 +459,7 @@ def create_expense(request):
     return render(request, 'expenses/form.html', {
         'departments': departments,
         'profile': profile,
+        'user': request.user,
         'action': 'create',
         'today_date': today_date,
         'second_approver': second_approver,
@@ -500,7 +507,7 @@ def edit_expense(request, pk):
             if not all([first_name, last_name, phone, dept_id, request_date, reason, budget_choice]):
                 messages.error(request, 'Please fill all required fields.')
                 return render(request, 'expenses/form.html', {
-                    'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                    'departments': departments, 'expense': expense, 'profile': profile, 'user': request.user, 'action': 'edit', 'today_date': date.today().isoformat(),
                     'budget_options': budget_options,
                 })
 
@@ -511,7 +518,7 @@ def edit_expense(request, pk):
             if budget_choice not in allowed_budgets:
                 messages.error(request, 'Invalid budget choice for this department.')
                 return render(request, 'expenses/form.html', {
-                    'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                    'departments': departments, 'expense': expense, 'profile': profile, 'user': request.user, 'action': 'edit', 'today_date': date.today().isoformat(),
                     'budget_options': budget_options,
                 })
 
@@ -538,7 +545,7 @@ def edit_expense(request, pk):
                 if not budget:
                     messages.error(request, 'No budget configured for this department.')
                     return render(request, 'expenses/form.html', {
-                        'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                        'departments': departments, 'expense': expense, 'profile': profile, 'user': request.user, 'action': 'edit', 'today_date': date.today().isoformat(),
                         'budget_options': budget_options,
                     })
 
@@ -560,7 +567,7 @@ def edit_expense(request, pk):
                 if total > (available - used_amount):
                     messages.error(request, f'Insufficient balance in {selected_budget_label}. Available: TZS {available - used_amount:,.0f}, Requested: TZS {total:,.0f}')
                     return render(request, 'expenses/form.html', {
-                        'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit', 'today_date': date.today().isoformat(),
+                        'departments': departments, 'expense': expense, 'profile': profile, 'user': request.user, 'action': 'edit', 'today_date': date.today().isoformat(),
                         'budget_options': budget_options,
                     })
 
@@ -586,7 +593,7 @@ def edit_expense(request, pk):
             logger.error(f"Unexpected error in edit_expense POST: {e}\n{traceback.format_exc()}")
             messages.error(request, f'An unexpected error occurred: {str(e)}')
             return render(request, 'expenses/form.html', {
-                'departments': departments, 'expense': expense, 'profile': profile, 'action': 'edit',
+                'departments': departments, 'expense': expense, 'profile': profile, 'user': request.user, 'action': 'edit',
                 'today_date': date.today().isoformat(), 'budget_options': budget_options,
             })
 
