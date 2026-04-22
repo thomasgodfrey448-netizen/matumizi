@@ -63,17 +63,6 @@
     </div>
     {% if is_admin or is_treasurer %}
     <div class="form-group">
-      <label class="form-label"><i class="fas fa-wallet"></i> Budget</label>
-      <select name="budget" class="form-control">
-        <option value="">All Budgets</option>
-        {% for option in budget_options %}
-        <option value="{{ option.value }}" {% if budget_filter == option.value %}selected{% endif %}>{{ option.label }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    {% endif %}
-    {% if is_admin or is_treasurer %}
-    <div class="form-group">
       <label class="form-label"><i class="fas fa-sitemap"></i> Department</label>
       <select name="department" class="form-control">
         <option value="">All Departments</option>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from expenses.models import ExpenseRequest
+from expenses.models import ExpenseRequest, Budget
 from retirement.models import RetirementForm
 from core.models import Department
 import io
@@ -30,7 +30,6 @@ def expenses_report(request):
     status_filter = request.GET.get('status', '')
     department_id = request.GET.get('department', '')
     payment_filter = request.GET.get('payment', '').strip()
-    budget_filter = request.GET.get('budget', '').strip()
 
     # Set default date range to current month only when no filters are applied.
     today = timezone.localdate()
@@ -70,36 +69,13 @@ def expenses_report(request):
         qs = qs.filter(is_paid=False)
     if department_id and (is_admin or is_treasurer):
         qs = qs.filter(department_id=department_id)
-    if budget_filter and (is_admin or is_treasurer):
-        qs = qs.filter(budget_choice=budget_filter)
+    # Removed budget filter for admins and treasurers
 
     # Evaluate queryset and calculate totals
     expenses_list = list(qs)
     total = sum(e.total_amount for e in expenses_list)
     approved_count = sum(1 for e in expenses_list if e.status in ['approved', 'paid'])
     pending_count = len(expenses_list) - approved_count
-
-    # Build available budget options for admin/treasurer
-    budget_options = []
-    if is_admin or is_treasurer:
-        # Get all unique budget choices from existing expense requests
-        budget_choices = ExpenseRequest.objects.values_list('budget_choice', flat=True).distinct()
-        for choice in budget_choices:
-            if choice == 'church_budget':
-                budget_options.append({'value': 'church_budget', 'label': 'Church Budget'})
-            elif choice == 'contribution1':
-                # Get the name from budget records
-                budget_name = Budget.objects.filter(contribution1_name__isnull=False).values_list('contribution1_name', flat=True).first()
-                budget_options.append({'value': 'contribution1', 'label': budget_name or 'Contribution 1'})
-            elif choice == 'contribution2':
-                # Get the name from budget records
-                budget_name = Budget.objects.filter(contribution2_name__isnull=False).values_list('contribution2_name', flat=True).first()
-                budget_options.append({'value': 'contribution2', 'label': budget_name or 'Contribution 2'})
-            elif choice == 'mk':
-                budget_options.append({'value': 'mk', 'label': 'MK'})
-        # Remove duplicates
-        seen = set()
-        budget_options = [x for x in budget_options if not (x['value'] in seen or seen.add(x['value']))]
 
     return render(request, 'reports/expenses.html', {
         'expenses': expenses_list,
@@ -112,13 +88,11 @@ def expenses_report(request):
         'status_filter': status_filter,
         'department_id': department_id,
         'payment_filter': payment_filter,
-        'budget_filter': budget_filter,
         'is_admin': is_admin,
         'is_approver': is_approver,
         'is_treasurer': is_treasurer,
         'status_choices': [choice for choice in ExpenseRequest.STATUS_CHOICES if choice[0] != 'paid'],
         'departments': Department.objects.all().order_by('name'),
-        'budget_options': budget_options,
     })
 
 
