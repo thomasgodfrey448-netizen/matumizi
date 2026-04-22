@@ -91,7 +91,7 @@
         <div class="form-group">
           <label class="form-label">Bajeti ya Fedha <span style="color:var(--accent);">*</span></label>
           <select name="budget_choice" class="form-control" required>
-            <option value="">-- Chagua Bajeti ya Fedha unayohitaji Kutumia --</option>
+            <option value="">-- Chagua Bajeti--</option>
             {% for option in budget_options %}
             <option value="{{ option.value }}" {% if expense.budget_choice == option.value %}selected{% endif %}>{{ option.label }}</option>
             {% endfor %}
