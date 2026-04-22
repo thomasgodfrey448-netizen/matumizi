@@ -432,7 +432,7 @@ def create_expense(request):
                 logger.error(f"Error creating success message: {e}")
             
             try:
-                return redirect('expenses:detail', pk=expense.pk)
+                return redirect(f'/expenses/{expense.pk}/')
             except Exception as e:
                 logger.error(f"Error redirecting to detail page: {e}\n{traceback.format_exc()}")
                 raise
@@ -581,7 +581,7 @@ def edit_expense(request, pk):
                     )
 
             messages.success(request, 'Expense request updated.')
-            return redirect('expenses:detail', pk=expense.pk)
+            return redirect(f'/expenses/{expense.pk}/')
         except Exception as e:
             logger.error(f"Unexpected error in edit_expense POST: {e}\n{traceback.format_exc()}")
             messages.error(request, f'An unexpected error occurred: {str(e)}')
@@ -607,7 +607,7 @@ def delete_expense(request, pk):
         return redirect('expenses:dashboard')
     if not expense.can_edit():
         messages.error(request, 'Cannot delete after submission.')
-        return redirect('expenses:detail', pk=pk)
+        return redirect(f'/expenses/{pk}/')
     expense.delete()
     messages.success(request, 'Expense request deleted.')
     return redirect('expenses:dashboard')
@@ -621,7 +621,7 @@ def submit_expense(request, pk):
         return redirect('expenses:dashboard')
     if expense.status not in ['draft', 'rejected_for_editing']:
         messages.error(request, 'This form has already been submitted.')
-        return redirect('expenses:detail', pk=pk)
+        return redirect(f'/expenses/{pk}/')
 
     # Validate budget choice and balance before submitting
     if expense.budget_choice != 'mk':
@@ -649,7 +649,7 @@ def submit_expense(request, pk):
             budget_options = build_budget_options_for_department(expense.department)
             selected_budget_label = next((opt['label'] for opt in budget_options if opt['value'] == expense.budget_choice), expense.budget_choice.replace('_', ' ').title())
             messages.error(request, f'Insufficient balance in {selected_budget_label}. Please edit the form and choose a different budget or reduce the amount.')
-            return redirect('expenses:detail', pk=pk)
+            return redirect(f'/expenses/{pk}/')
 
     expense.status = 'submitted'
     expense.submitted_at = timezone.now()
@@ -670,7 +670,7 @@ def submit_expense(request, pk):
         )
 
     messages.success(request, 'Expense request submitted successfully.')
-    return redirect('expenses:detail', pk=pk)
+    return redirect(f'/expenses/{pk}/')
 
 
 @login_required
@@ -773,7 +773,7 @@ def approve_expense(request, pk):
                 'rejected_expense'
             )
             messages.success(request, 'Request rejected.')
-        return redirect('expenses:detail', pk=pk)
+        return redirect(f'/expenses/{pk}/')
 
     if action == 'mark_paid':
         if expense.status == 'approved' and not expense.is_paid and (is_admin or is_treasurer):
@@ -792,7 +792,7 @@ def approve_expense(request, pk):
             messages.success(request, 'Request marked as paid.')
         else:
             messages.error(request, 'You do not have permission to mark this as paid.')
-        return redirect('expenses:detail', pk=pk)
+        return redirect(f'/expenses/{pk}/')
 
     if is_approver:
         approver = user.approver_profile
@@ -869,7 +869,7 @@ def approve_expense(request, pk):
         )
         messages.success(request, 'Final approval granted by Treasurer.')
 
-    return redirect('expenses:detail', pk=pk)
+    return redirect(f'/expenses/{pk}/')
 
 
 @login_required
@@ -881,14 +881,14 @@ def update_payment(request, pk):
 
     if not (is_admin or is_treasurer) or expense.status != 'approved':
         messages.error(request, 'Permission denied.')
-        return redirect('expenses:detail', pk=pk)
+        return redirect(f'/expenses/{pk}/')
 
     if request.method == 'POST':
         payment_date = request.POST.get('payment_date')
 
         if not payment_date:
             messages.error(request, 'Payment date is required.')
-            return redirect('expenses:detail', pk=pk)
+            return redirect(f'/expenses/{pk}/')
 
         # Mark as paid with the provided payment date
         if not expense.is_paid:
@@ -910,7 +910,7 @@ def update_payment(request, pk):
         else:
             messages.info(request, 'This request has already been marked as paid.')
 
-    return redirect('expenses:detail', pk=pk)
+    return redirect(f'/expenses/{pk}/')
 
 
 @login_required
