@@ -5,7 +5,7 @@ services:
     plan: free
     rootDir: .
     buildCommand: python -m pip install -r requirements.txt
-    releaseCommand: cd matoleo_system && python manage.py collectstatic --noinput --clear
+    releaseCommand: cd matoleo_system && python manage.py migrate --noinput && python manage.py ensure_admin && python manage.py collectstatic --noinput --clear
     startCommand: cd matoleo_system && gunicorn matoleo_system.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY
@@ -15,7 +15,7 @@ services:
       - key: ALLOWED_HOSTS
         value: ".onrender.com,localhost,127.0.0.1"
       - key: CSRF_TRUSTED_ORIGINS
-        value: "https://matoleo-system.onrender.com"
+        value: "https://expenses-and-retirement-system-mkj.onrender.com"
       - key: DATABASE_URL
         fromDatabase:
           name: matoleo-db
@@ -33,9 +33,9 @@ services:
       - key: ADMIN_USERNAME
         value: "admin"
       - key: ADMIN_PASSWORD
-        value: "Admin123!@#"
+        value: "Admin@12345"
       - key: ADMIN_EMAIL
-        value: "admin@example.com"
+        value: "admin@church.local"
 
 databases:
   - name: matoleo-db
