@@ -11,27 +11,9 @@ class Command(BaseCommand):
     help = 'Ensure admin superuser and optional default login user exist with the correct password'
 
     def handle(self, *args, **options):
-        admin_username = (
-            os.environ.get('ADMIN_USERNAME')
-            or os.environ.get('admin_username')
-            or os.environ.get('USERNAME')
-            or os.environ.get('username')
-            or 'admin'
-        )
-        admin_password = (
-            os.environ.get('ADMIN_PASSWORD')
-            or os.environ.get('admin_password')
-            or os.environ.get('PASSWORD')
-            or os.environ.get('password')
-            or 'Admin@12345'
-        )
-        admin_email = (
-            os.environ.get('ADMIN_EMAIL')
-            or os.environ.get('admin_email')
-            or os.environ.get('EMAIL')
-            or os.environ.get('email')
-            or 'admin@example.com'
-        )
+        admin_username = os.environ.get('ADMIN_USERNAME', '').strip() or 'admin'
+        admin_password = os.environ.get('ADMIN_PASSWORD', '').strip() or 'Admin@12345'
+        admin_email = os.environ.get('ADMIN_EMAIL', '').strip() or 'admin@example.com'
 
         if User.objects.filter(username=admin_username).exists():
             admin = User.objects.get(username=admin_username)
