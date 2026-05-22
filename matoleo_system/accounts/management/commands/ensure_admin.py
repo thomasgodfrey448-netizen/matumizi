@@ -49,6 +49,20 @@ class Command(BaseCommand):
                 self.style.SUCCESS(f'✓ Admin user "{admin_username}" created successfully')
             )
 
+        # Ensure UserProfile exists for admin
+        try:
+            from core.models import UserProfile, Department
+            admin_user = User.objects.get(username=admin_username)
+            profile, created = UserProfile.objects.get_or_create(user=admin_user)
+            if created:
+                # Assign to first active department if it exists
+                default_dept = Department.objects.filter(is_active=True).first()
+                if default_dept:
+                    profile.department = default_dept
+                    profile.save()
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f'  Note: UserProfile handling: {e}'))
+
         self.stdout.write(self.style.WARNING(f'  Username: {admin_username}'))
         self.stdout.write(self.style.WARNING(f'  Password: {admin_password}'))
         self.stdout.write(self.style.WARNING(f'  Email: {admin_email}'))

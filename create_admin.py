@@ -10,7 +10,7 @@ django.setup()
 
 from django.contrib.auth.models import User
 
-username = 'thomas'
+username = 'Thomas'
 email = 'thomasgodfrey448@gmail.com'
 password = 'Hot@2000'
 

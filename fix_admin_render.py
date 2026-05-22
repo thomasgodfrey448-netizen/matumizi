@@ -15,18 +15,12 @@ django.setup()
 from django.contrib.auth.models import User
 from django.db import connection
 
-# Render deployment credentials (hardcoded override)
-# IMPORTANT: These must match render.yaml envVars
-username = os.environ.get('ADMIN_USERNAME', os.environ.get('USERNAME', 'Thomas')).strip()
-password = os.environ.get('ADMIN_PASSWORD', os.environ.get('PASSWORD', 'Hot@2000')).strip()
-email = os.environ.get('ADMIN_EMAIL', os.environ.get('EMAIL', 'thomasgodfrey448@gmail.com')).strip()
-
-if not username:
-    username = 'Thomas'
-if not password:
-    password = 'Hot@2000'
-if not email:
-    email = 'thomasgodfrey448@gmail.com'
+# Render deployment credentials (hardcoded override for consistency)
+# IMPORTANT: Use Render env vars if explicitly set, otherwise use defaults
+# Do NOT use system environment variables as fallback (e.g., USERNAME, PASSWORD)
+username = os.environ.get('ADMIN_USERNAME', '').strip() or 'Thomas'
+password = os.environ.get('ADMIN_PASSWORD', '').strip() or 'Hot@2000'
+email = os.environ.get('ADMIN_EMAIL', '').strip() or 'thomasgodfrey448@gmail.com'
 
 print(f"🔧 Fixing admin user on Render database...")
 print(f"  User: {username}")
@@ -58,6 +52,26 @@ except User.DoesNotExist:
 except Exception as e:
     print(f"✗ Error: {e}")
     sys.exit(1)
+
+# Ensure UserProfile exists for the superuser
+try:
+    from core.models import UserProfile, Department
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    if created:
+        print(f"✓ Created UserProfile for {username}")
+        # Assign to a default department if needed
+        try:
+            default_dept = Department.objects.filter(is_active=True).first()
+            if default_dept:
+                profile.department = default_dept
+                profile.save()
+                print(f"✓ Assigned default department to {username}")
+        except Exception as dept_err:
+            print(f"  (Note: Could not assign department: {dept_err})")
+    else:
+        print(f"✓ UserProfile exists for {username}")
+except Exception as profile_err:
+    print(f"  (Warning: Could not verify/create UserProfile: {profile_err})")
 
 # Verify
 print(f"\n✓ Admin credentials:")
