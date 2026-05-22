@@ -245,10 +245,13 @@ def download_expense_report(request):
         story.append(Paragraph(period, ParagraphStyle('p', parent=styles['Normal'],
                                 fontSize=10, alignment=TA_CENTER, spaceAfter=8)))
 
-    headers = [['#', 'Form No', 'Name', 'Department', 'Date', 'Reason', 'Amount (TZS)', 'Status', 'Paid']]
+    headers = [['#', 'Form No', 'Name', 'Department', 'Date', 'Reason', 'Amount (TZS)', 'Status', 'Date Paid']]
     rows = []
     total = 0
     for i, e in enumerate(qs):
+        paid_date = ''
+        if e.is_paid:
+            paid_date = e.payment_date.strftime('%Y-%m-%d') if e.payment_date else (e.paid_at.strftime('%Y-%m-%d') if e.paid_at else '')
         rows.append([
             str(i+1), e.form_number,
             f"{e.first_name} {e.last_name}",
@@ -256,7 +259,7 @@ def download_expense_report(request):
             str(e.date), e.reason[:40],
             f"{e.total_amount:,.2f}",
             e.get_status_display(),
-            'Yes' if e.is_paid else 'No',
+            paid_date,
         ])
         total += e.total_amount
     rows.append(['', '', '', '', '', 'TOTAL', f"{total:,.2f}", '', ''])
