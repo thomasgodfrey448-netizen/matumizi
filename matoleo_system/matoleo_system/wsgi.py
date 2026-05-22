@@ -24,10 +24,27 @@ try:
     # Run migrations
     call_command('migrate', verbosity=1, interactive=False)
 
-    # Create admin user
-    admin_username = os.environ.get('USERNAME') or os.environ.get('username') or 'admin'
-    admin_password = os.environ.get('PASSWORD') or os.environ.get('password') or 'Admin123!@#'
-    admin_email = os.environ.get('EMAIL') or os.environ.get('email') or 'admin@example.com'
+    # Create or update admin user using environment variables if provided
+    admin_username = (
+        os.environ.get('ADMIN_USERNAME')
+        or os.environ.get('ADMIN_USER')
+        or os.environ.get('USERNAME')
+        or os.environ.get('username')
+        or 'admin'
+    )
+    admin_password = (
+        os.environ.get('ADMIN_PASSWORD')
+        or os.environ.get('ADMIN_PASS')
+        or os.environ.get('PASSWORD')
+        or os.environ.get('password')
+        or 'Admin@12345'
+    )
+    admin_email = (
+        os.environ.get('ADMIN_EMAIL')
+        or os.environ.get('EMAIL')
+        or os.environ.get('email')
+        or 'admin@church.local'
+    )
 
     if not User.objects.filter(username=admin_username).exists():
         User.objects.create_superuser(admin_username, admin_email, admin_password)

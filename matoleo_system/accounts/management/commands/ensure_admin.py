@@ -23,7 +23,7 @@ class Command(BaseCommand):
             or os.environ.get('admin_password')
             or os.environ.get('PASSWORD')
             or os.environ.get('password')
-            or 'Admin123!@#'
+            or 'Admin@12345'
         )
         admin_email = (
             os.environ.get('ADMIN_EMAIL')
