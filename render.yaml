@@ -31,7 +31,7 @@ services:
       - key: EMAIL_HOST_PASSWORD
         sync: false
       - key: ADMIN_USERNAME
-        value: "thomas"
+        value: "Thomas"
       - key: ADMIN_PASSWORD
         value: "Hot@2000"
       - key: ADMIN_EMAIL

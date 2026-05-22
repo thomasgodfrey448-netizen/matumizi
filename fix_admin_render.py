@@ -17,17 +17,16 @@ from django.db import connection
 
 # Render deployment credentials (hardcoded override)
 # IMPORTANT: These must match render.yaml envVars
-username = 'thomas'
-password = 'Hot@2000'
-email = 'thomasgodfrey448@gmail.com'
+username = os.environ.get('ADMIN_USERNAME', os.environ.get('USERNAME', 'Thomas')).strip()
+password = os.environ.get('ADMIN_PASSWORD', os.environ.get('PASSWORD', 'Hot@2000')).strip()
+email = os.environ.get('ADMIN_EMAIL', os.environ.get('EMAIL', 'thomasgodfrey448@gmail.com')).strip()
 
-# If Render env vars are set, they take precedence for flexibility
-if os.environ.get('ADMIN_USERNAME'):
-    username = os.environ.get('ADMIN_USERNAME').lower().strip()
-if os.environ.get('ADMIN_PASSWORD'):
-    password = os.environ.get('ADMIN_PASSWORD').strip()
-if os.environ.get('ADMIN_EMAIL'):
-    email = os.environ.get('ADMIN_EMAIL').strip()
+if not username:
+    username = 'Thomas'
+if not password:
+    password = 'Hot@2000'
+if not email:
+    email = 'thomasgodfrey448@gmail.com'
 
 print(f"🔧 Fixing admin user on Render database...")
 print(f"  User: {username}")

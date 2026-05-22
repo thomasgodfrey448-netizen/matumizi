@@ -9,10 +9,10 @@ django.setup()
 from django.contrib.auth.models import User
 
 # Update the superuser to match Render credentials
-u = User.objects.get(username='thomas')
+u = User.objects.get(username='Thomas')
 u.set_password('Hot@2000')
 u.save()
-print('✓ Updated superuser thomas password to: Hot@2000')
+print('✓ Updated superuser Thomas password to: Hot@2000')
 print('✓ Local credentials now match Render config:')
-print('  Username: thomas')
+print('  Username: Thomas')
 print('  Password: Hot@2000')
