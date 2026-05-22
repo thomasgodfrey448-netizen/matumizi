@@ -31,11 +31,11 @@ services:
       - key: EMAIL_HOST_PASSWORD
         sync: false
       - key: ADMIN_USERNAME
-        value: "admin"
+        value: "thomas"
       - key: ADMIN_PASSWORD
-        value: "Admin@12345"
+        value: "Hot@2000"
       - key: ADMIN_EMAIL
-        value: "admin@church.local"
+        value: "thomasgodfrey448@gmail.com"
 
 databases:
   - name: matoleo-db
