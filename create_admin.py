@@ -10,9 +10,9 @@ django.setup()
 
 from django.contrib.auth.models import User
 
-username = 'admin'
-email = 'admin@church.local'
-password = 'Admin@12345'
+username = 'Thomas'
+email = 'thomasgodfrey448@gmail.com'
+password = 'Hot@2000'
 
 try:
     user = User.objects.create_superuser(username, email, password)
