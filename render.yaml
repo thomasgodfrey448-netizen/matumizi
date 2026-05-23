@@ -17,7 +17,7 @@ services:
       - key: CSRF_TRUSTED_ORIGINS
         value: "https://matoleo-system.onrender.com"
       - key: DATABASE_URL
-        value: "postgresql://matumizi_database_user:OEnmRBnovtl3p0kN9lxw86KKVzBTt9IR@dpg-d881004m0tmc7389mvqg-a/matumizi_database"
+        value: "postgresql://matumizi_database_user:OEnmRBnovtl3p0kN9lxw86KKVzBTt9IR@dpg-d881004m0tmc7389mvqg-a.postgres.render.com/matumizi_database?sslmode=require"
       - key: EMAIL_HOST
         sync: false
       - key: EMAIL_PORT
